@@ -14,7 +14,7 @@
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
 ;
 ; Supported Gadget:
-;   Window, Button, ButtonImage, Calendar, CheckBox, ComboBox, Container, Date, Editor, ExplorerList, ExplorerTree,Frame, HyperLink,         
+;   Window, Button, ButtonImage, Calendar, CheckBox, ComboBox, Container, Date, Editor, ExplorerList, ExplorerTree, Frame, HyperLink,         
 ;   ListIcon, ListView, Option, Panel, ProgressBar, ScrollArea, ScrollBar, Spin, Splitter, String, Text, TrackBar, Tree           
 ; 
 ; (*) How tu use: 
@@ -29,6 +29,12 @@
 ;         Or add the flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED to the ComboBoxes (but Not to the Combox Images) so that the drop-down List is painted
 ;
 ; See ObjectTheme_DataSection.pbi for the theme color attribute for each GadgetType
+; . It uses the same attributes as SetGadgetColor():
+;     #PB_Gadget_FrontColor, #PB_Gadget_BackColor, #PB_Gadget_LineColor, #PB_Gadget_TitleFrontColor, #PB_Gadget_TitleBackColor, #PB_Gadget_GrayTextColor
+; . With new attributes:
+;     #PB_Gadget_DarkMode, #PB_Gadget_ActiveTab, #PB_Gadget_InactiveTab, #PB_Gadget_HighLightColor, #PB_Gadget_EditBoxColor, #PB_Gadget_OuterColor,
+;     #PB_Gadget_CornerColor, #PB_Gadget_GrayBackColor, #PB_Gadget_EnableShadow, #PB_Gadget_ShadowColor, #PB_Gadget_BorderColor, #PB_Gadget_RoundX,
+;     #PB_Gadget_RoundY, #PB_Gadget_SplitterBorder, #PB_Gadget_SplitterBorderColor, #PB_Gadget_UseUxGripper, #PB_Gadget_GripperColor, #PB_Gadget_LargeGripper
 ;
 ;  ----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 ;  |             Public Functions                            |      Description                                                                                    |
@@ -186,11 +192,6 @@ Declare ScaleGrayCallbackOT(x, y, SourceColor, TargetColor)
 Declare DisabledDarkColorOT(Color)
 Declare DisabledLightColorOT(Color)
 
-Declare LoadThemeAttribute(Theme, WindowColor)
-Declare SetWindowTheme(GadgetID, Theme.s)
-Declare SetWindowThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
-Declare AddWindowTheme(Window, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
-
 Declare SplitterCalc(hWnd, *rc.RECT)
 Declare SplitterPaint(hWnd, hdc, *rc.RECT, *ObjectTheme.ObjectTheme_INFO)
 Declare SplitterProc(hWnd, uMsg, wParam, lParam)
@@ -200,6 +201,11 @@ Declare CalendarProc(hWnd, uMsg, wParam, lParam)
 Declare EditorProc(hWnd, uMsg, wParam, lParam)
 Declare StaticProc(hWnd, uMsg, wParam, lParam)
 Declare WinCallback(hWnd, uMsg, wParam, lParam)
+
+Declare LoadThemeAttribute(Theme, WindowColor)
+Declare SetWindowTheme(GadgetID, Theme.s)
+Declare SetWindowThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
+Declare AddWindowTheme(Window, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
 
 Declare IsBrushUsed(Brush)
 Declare DeleteUnusedBrush(Color)
