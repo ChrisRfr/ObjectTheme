@@ -1,4 +1,4 @@
-# ObjectTheme
+# ObjectTheme for Dark or Light Theme
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=9WZ5EDAMPH6SE)
 
