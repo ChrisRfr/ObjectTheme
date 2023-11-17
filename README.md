@@ -45,6 +45,7 @@ Add: XIncludeFile "ObjectTheme.pbi"<br>
  - **SetObjectTheme(#ObjectTheme [, WindowColor])**<br>
 Apply or change a Theme. Optional WindowColor, the new color to use for the window background<br>
 >  -- Ex: SetObjectTheme(#ObjectTheme_DarkBlue)<br>
+>  -- Ex: SetObjectTheme(#ObjectTheme_LightBlue)<br>
 >  -- Ex: SetObjectTheme(#ObjectTheme_Auto, #Black)<br>
 
  - **GetObjectTheme()**<br>
