@@ -31,7 +31,7 @@ SetObjectTheme(#SetObjectTheme(#ObjectTheme_Auto, #Black)):<br>
 **Note that** you can SetObjectTheme(Theme [, WindowColor]) anywhere you like in your source, before or after creating the window, gadget's<br>
    **But note** the special case for the ComboBox Gadget:<br> 
          - Either you call the SetObjectTheme() function at the beginning of the program before creating the Windows and ComboBoxes<br>
-         - Or add the flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED to the ComboBoxes (but Not to the Combox Images) so that the drop-down List is painted<br>
+         - Or add the flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED to the ComboBoxes (but Not for the ComboBox_Image) so that the drop-down List is painted<br>
 
  See ObjectTheme_DataSection.pbi for the theme color attribute for each GadgetType<br>
 - It uses the same attributes as SetGadgetColor()<br>
