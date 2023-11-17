@@ -10,7 +10,7 @@
 ;        Version: 1.0
 ;     PB-Version: 6.0 or other
 ;             OS: Windows Only
-;          Forum: https://www.purebasic.fr/english/viewtopic.php?t=82592
+;          Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
 ;
 ; Supported Gadget:
@@ -20,13 +20,13 @@
 ; (*) How tu use: 
 ;     Add: XIncludeFile "ObjectTheme.pbi"
 ;     And apply a theme with the function:
-;         - SetObjectTheme(#ObjectTheme [, WindowColor])   , With #ObjectTheme = #ObjectTheme_DarkBlue, #ObjectTheme_LightBlue or #ObjectTheme_Auto
+;         - SetObjectTheme(#ObjectTheme [, WindowColor]) - With #ObjectTheme = #ObjectTheme_DarkBlue, #ObjectTheme_LightBlue or #ObjectTheme_Auto
 ;   Easy ;) That's all :) 
 
-;   Note that you can SetObjectTheme(Theme [, WindowColor]) anywhere you like in your source, before or after creating the window, gadget's and buttons.
+;   Note that you can SetObjectTheme(Theme [, WindowColor]) anywhere you like in your source, before or after creating the Window, Gadget's
 ;   But note the special case for the ComboBox Gadget: 
-;         Either you call the SetObjectTheme() function at the beginning of the program before creating the windows And ComboBoxes
-;         Or add the flags To the ComboBoxes (but Not To the Combox Images) so that the drop-down List is painted
+;         Either you call the SetObjectTheme() function at the beginning of the program before creating the Windows and ComboBoxes
+;         Or add the flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED to the ComboBoxes (but Not to the Combox Images) so that the drop-down List is painted
 ;
 ; See ObjectTheme_DataSection.pbi for the theme color attribute for each GadgetType
 ;
@@ -3198,7 +3198,4 @@ CompilerIf #PB_Compiler_IsMainFile
 CompilerEndIf
 
 ; IDE Options = PureBasic 6.03 LTS (Windows - x64)
-; CursorPosition = 45
-; FirstLine = 25
-; Folding = ------------
 ; EnableXP

@@ -10,7 +10,7 @@
 ;        Version: 1.0
 ;     PB-Version: 6.0 or other
 ;             OS: Windows Only
-;          Forum: https://www.purebasic.fr/english/viewtopic.php?t=82592
+;          Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
 
 CompilerIf Defined(PB_WindowType, #PB_Constant)
