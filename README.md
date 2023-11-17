@@ -13,9 +13,15 @@ All gadgets will still work in the same way as PureBasic Gadget<br>
          - - - With #ObjectTheme = #ObjectTheme_DarkBlue, #ObjectTheme_LightBlue or #ObjectTheme_Auto<br>
    Easy ;) That's all :)<br>
 <br>
+SetObjectTheme(#ObjectTheme_DarkBlue):<br>
+<br>
 ![Alt text](/Images/ObjectTheme_DarkBlue.png?raw=true "ObjectTheme_DarkBlue")<br>
 <br>
+SetObjectTheme(#ObjectTheme_LightBlue):<br>
+<br>
 ![Alt text](/Images/ObjectTheme_LightBlue.png?raw=true "ObjectTheme_LightBlue")<br>
+<br>
+SetObjectTheme(#SetObjectTheme(#ObjectTheme_Auto, #Black)):<br>
 <br>
 ![Alt text](/Images/ObjectTheme_Auto_Black.png?raw=true "ObjectTheme_LightBlue")<br>
 
