@@ -26,8 +26,7 @@ SetObjectTheme(#SetObjectTheme(#ObjectTheme_Auto, #Black)):<br>
 ![Alt text](/Images/ObjectTheme_Auto_Black.png?raw=true "ObjectTheme_LightBlue")<br>
 
 **Supported Gadget**<br>
-   Window, Button, ButtonImage, Calendar, CheckBox, ComboBox, Container, Date, Editor, ExplorerList, ExplorerTree,Frame, HyperLink,        
-   ListIcon, ListView, Option, Panel, ProgressBar, ScrollArea, ScrollBar, Spin, Splitter, String, Text, TrackBar, Tree<br>   
+   Window, Button, ButtonImage, Calendar, CheckBox, ComboBox, Container, Date, Editor, ExplorerList, ExplorerTree, Frame, HyperLink, ListIcon, ListView, Option, Panel, ProgressBar, ScrollArea, ScrollBar, Spin, Splitter, String, Text, TrackBar, Tree<br>   
   
 **Note that** you can SetObjectTheme(Theme [, WindowColor]) anywhere you like in your source, before or after creating the window, gadget's<br>
    **But note** the special case for the ComboBox Gadget:<br> 
