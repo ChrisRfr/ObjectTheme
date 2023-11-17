@@ -29,6 +29,11 @@ All gadgets will still work in the same way as PureBasic Gadget<br>
          - Or add the flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED to the ComboBoxes (but Not to the Combox Images) so that the drop-down List is painted<br>
 
  See ObjectTheme_DataSection.pbi for the theme color attribute for each GadgetType<br>
+- It uses the same attributes as SetGadgetColor()<br>
+#PB_Gadget_FrontColor, #PB_Gadget_BackColor, #PB_Gadget_LineColor, #PB_Gadget_TitleFrontColor, #PB_Gadget_TitleBackColor, #PB_Gadget_GrayTextColor<br>
+
+- With new attributes<br>
+#PB_Gadget_DarkMode, #PB_Gadget_ActiveTab, #PB_Gadget_InactiveTab, #PB_Gadget_HighLightColor, #PB_Gadget_EditBoxColor, #PB_Gadget_OuterColor, #PB_Gadget_CornerColor, #PB_Gadget_GrayBackColor, #PB_Gadget_EnableShadow, #PB_Gadget_ShadowColor, #PB_Gadget_BorderColor, #PB_Gadget_RoundX, #PB_Gadget_RoundY, #PB_Gadget_SplitterBorder, #PB_Gadget_SplitterBorderColor, #PB_Gadget_UseUxGripper, #PB_Gadget_GripperColor, #PB_Gadget_LargeGripper<br>
 
 ## Usage:
 Add: XIncludeFile "ObjectTheme.pbi"<br>
