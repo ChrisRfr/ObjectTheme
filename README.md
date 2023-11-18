@@ -10,7 +10,7 @@ All gadgets will still work in the same way as PureBasic Gadget<br>
    Add: XIncludeFile "ObjectTheme.pbi"<br>
    And apply a theme with the function:<br>
       - - SetObjectTheme(#ObjectTheme [, WindowColor])<br>
-         - - - With #ObjectTheme = #ObjectTheme_DarkBlue, #ObjectTheme_LightBlue or #ObjectTheme_Auto<br>
+         - - - With #ObjectTheme = #ObjectTheme_DarkBlue, #ObjectTheme_DarkBlue, #ObjectTheme_LightBlue or #ObjectTheme_Auto<br>
    Easy ;) That's all :)<br>
 <br>
 SetObjectTheme(#ObjectTheme_DarkBlue):<br>
