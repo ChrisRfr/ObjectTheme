@@ -1526,6 +1526,8 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
       EndIf
   EndSelect
   
+  _ToolTipHandleOT()
+  
   With *ObjectTheme\ObjectInfo
     ; ---------- BackColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_BackColor))
