@@ -294,7 +294,7 @@ Macro _ToolTipHandleOT()
   If Tooltip
     SetWindowTheme_(Tooltip, @"", @"")
     ;SendMessage_(Tooltip, #TTM_SETDELAYTIME, #TTDT_INITIAL, 250) : SendMessage_(Tooltip, #TTM_SETDELAYTIME,#TTDT_AUTOPOP, 5000) : SendMessage_(Tooltip, #TTM_SETDELAYTIME,#TTDT_RESHOW, 250)
-    Protected TmpBackColor = GetObjectThemeAttribute(#PB_GadgetType_Button, #PB_Gadget_CornerColor)
+    Protected TmpBackColor = GetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BackColor)
     SendMessage_(Tooltip, #TTM_SETTIPBKCOLOR, TmpBackColor, 0)
     If IsDarkColorOT(TmpBackColor)
       SendMessage_(Tooltip, #TTM_SETTIPTEXTCOLOR, #White, 0)

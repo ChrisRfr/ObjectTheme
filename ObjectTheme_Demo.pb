@@ -93,6 +93,7 @@ Procedure Open_Window_1(X = 20, Y = 20, Width = 580, Height = 460)
     CheckBoxGadget(#Check_1, 20, 20, 130, 30, "Disable Gadgets")
     OptionGadget(#Opt_1, 170, 10, 130, 24, "Option_1")
     OptionGadget(#Opt_2, 170, 35, 130, 24, "Option_2")
+    SetGadgetState(#Opt_1, #True)
     CloseGadgetList()   ; #Cont_1
     
     EditorGadget(#Edit_1, 360, 20, 200, 70)
