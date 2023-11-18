@@ -224,14 +224,28 @@ Repeat
           
         Case #ApplyTheme_1
           Select GetGadgetText(#ApplyTheme_1)
+            Case "Apply Dark Blue Theme"
+              SetGadgetText(#ApplyTheme_1, "Apply Dark Red Theme")
+              SetObjectTheme(#ObjectTheme_DarkBlue)
             Case "Apply Light Blue Theme"
               SetGadgetText(#ApplyTheme_1, "Apply Dark Blue Theme")
               SetObjectTheme(#ObjectTheme_LightBlue)
-            Case "Apply Dark Blue Theme"
+            Case "Apply Dark Red Theme"
               SetGadgetText(#ApplyTheme_1, "Apply Light Blue Theme")
-              SetObjectTheme(#ObjectTheme_DarkBlue)
+              SetObjectTheme(#ObjectTheme_DarkRed)
           EndSelect
           
+;                       Select GetObjectTheme()
+;               Case #ObjectTheme_DarkBlue
+;                 SetGadgetText(#ApplyTheme, "Apply Dark Red Theme")
+;                 SetObjectTheme(#ObjectTheme_LightBlue)
+;               Case #ObjectTheme_LightBlue
+;                 SetGadgetText(#ApplyTheme, "Apply Dark Blue Theme")
+;                 SetObjectTheme(#ObjectTheme_DarkRed)
+;               Case #ObjectTheme_DarkRed
+;                 SetGadgetText(#ApplyTheme, "Apply Light Blue Theme")
+;                 SetObjectTheme(#ObjectTheme_DarkBlue)
+;             EndSelect
         Case #ApplyTheme_2
           Define Color = ColorRequester(GetWindowColor(#Window_2))
           SetObjectTheme(#ObjectTheme_Auto, Color)

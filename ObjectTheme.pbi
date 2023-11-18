@@ -71,6 +71,7 @@
 Enumeration ObjectTheme 0
   #ObjectTheme
   #ObjectTheme_DarkBlue
+  #ObjectTheme_DarkRed
   #ObjectTheme_LightBlue
   #ObjectTheme_Auto
 EndEnumeration
@@ -183,9 +184,6 @@ Structure ObjectTheme_INFO
   *OldProc
 EndStructure
 
-Declare ToolTipHandleOT() 
-Declare WindowPBOT(WindowID)
-Declare ImagePBOT(ImageID)
 Declare IsDarkColorOT(Color)
 Declare AccentColorOT(Color, AddColorValue)
 Declare ScaleGrayCallbackOT(x, y, SourceColor, TargetColor)
@@ -201,6 +199,10 @@ Declare CalendarProc(hWnd, uMsg, wParam, lParam)
 Declare EditorProc(hWnd, uMsg, wParam, lParam)
 Declare StaticProc(hWnd, uMsg, wParam, lParam)
 Declare WinCallback(hWnd, uMsg, wParam, lParam)
+
+Declare ToolTipHandleOT() 
+Declare WindowPBOT(WindowID)
+Declare ImagePBOT(ImageID)
 
 Declare LoadThemeAttribute(Theme, WindowColor)
 Declare SetWindowTheme(GadgetID, Theme.s)
@@ -236,9 +238,9 @@ Global NewMap ObjectTheme.ObjectTheme_INFO()
 Global NewMap ObjectBrush()
 Global Tooltip
 
-Macro _ProcedureReturnIfOT(Cond, ReturnVal = 0)
+Macro _ProcedureReturnIfOT(Cond, ReturnValue = #False)
   If Cond
-    ProcedureReturn ReturnVal
+    ProcedureReturn ReturnValue
   EndIf
 EndMacro
 
@@ -321,68 +323,6 @@ EndMacro
 ;- IncludeFile CreateGadget DataSection.pbi
 XIncludeFile "ObjectTheme_CreateGadget.pbi"
 XIncludeFile "ObjectTheme_DataSection.pbi"
-
-;
-; -----------------------------------------------------------------------------
-;- ----- ToolTip, WindowPB, ImagePB -----
-; -----------------------------------------------------------------------------
-;
-
-CompilerIf Not Defined(PB_Globals, #PB_Structure)
-  Structure PB_Globals
-    CurrentWindow.i
-    FirstOptionGadget.i
-    DefaultFont.i
-    *PanelStack
-    PanelStackIndex.l
-    PanelStackSize.l
-    ToolTipWindow.i
-  EndStructure
-CompilerEndIf
-
-Import ""
-  CompilerIf Not Defined(PB_Object_EnumerateStart, #PB_Procedure)  : PB_Object_EnumerateStart(PB_Gadget_Objects)                 : CompilerEndIf
-  CompilerIf Not Defined(PB_Object_EnumerateNext, #PB_Procedure)   : PB_Object_EnumerateNext(PB_Gadget_Objects, *Object.Integer) : CompilerEndIf
-  CompilerIf Not Defined(PB_Object_EnumerateAbort, #PB_Procedure)  : PB_Object_EnumerateAbort(PB_Gadget_Objects)                 : CompilerEndIf
-  CompilerIf Not Defined(PB_Object_GetThreadMemory, #PB_Procedure) : PB_Object_GetThreadMemory(*Mem)                             : CompilerEndIf
-  CompilerIf Not Defined(PB_Window_Objects, #PB_Variable)          : PB_Window_Objects.i                                         : CompilerEndIf
-  CompilerIf Not Defined(PB_Gadget_Objects, #PB_Variable)          : PB_Gadget_Objects.i                                         : CompilerEndIf
-  CompilerIf Not Defined(PB_Image_Objects, #PB_Variable)           : PB_Image_Objects.i                                          : CompilerEndIf
-  CompilerIf Not Defined(PB_Gadget_Globals, #PB_Variable)          : PB_Gadget_Globals.i                                         : CompilerEndIf
-EndImport
-
-Procedure ToolTipHandleOT() 
-  Protected *PBGadget.PB_Globals 
-  *PBGadget = PB_Object_GetThreadMemory(PB_Gadget_Globals) 
-  ProcedureReturn *PBGadget\ToolTipWindow 
-EndProcedure
-
-Procedure WindowPBOT(WindowID) ; Find pb-id over handle
-  Protected Result = -1, Window
-  PB_Object_EnumerateStart(PB_Window_Objects)
-  While PB_Object_EnumerateNext(PB_Window_Objects, @Window)
-    If WindowID = WindowID(Window)
-      Result = Window
-      Break
-    EndIf
-  Wend
-  PB_Object_EnumerateAbort(PB_Window_Objects)
-  ProcedureReturn Result
-EndProcedure
-
-Procedure ImagePBOT(ImageID) ; Find pb-id over handle
-  Protected result, image
-  result = -1
-  PB_Object_EnumerateStart(PB_Image_Objects)
-  While PB_Object_EnumerateNext(PB_Image_Objects, @image)
-    If ImageID = ImageID(image)
-      result = image
-      Break
-    EndIf
-  Wend
-  PB_Object_EnumerateAbort(PB_Image_Objects)
-  ProcedureReturn result
-EndProcedure
 
 ;
 ; -----------------------------------------------------------------------------
@@ -982,6 +922,68 @@ EndProcedure
 
 ;
 ; -----------------------------------------------------------------------------
+;- ----- ToolTip, WindowPB, ImagePB -----
+; -----------------------------------------------------------------------------
+;
+
+CompilerIf Not Defined(PB_Globals, #PB_Structure)
+  Structure PB_Globals
+    CurrentWindow.i
+    FirstOptionGadget.i
+    DefaultFont.i
+    *PanelStack
+    PanelStackIndex.l
+    PanelStackSize.l
+    ToolTipWindow.i
+  EndStructure
+CompilerEndIf
+
+Import ""
+  CompilerIf Not Defined(PB_Object_EnumerateStart, #PB_Procedure)  : PB_Object_EnumerateStart(PB_Gadget_Objects)                 : CompilerEndIf
+  CompilerIf Not Defined(PB_Object_EnumerateNext, #PB_Procedure)   : PB_Object_EnumerateNext(PB_Gadget_Objects, *Object.Integer) : CompilerEndIf
+  CompilerIf Not Defined(PB_Object_EnumerateAbort, #PB_Procedure)  : PB_Object_EnumerateAbort(PB_Gadget_Objects)                 : CompilerEndIf
+  CompilerIf Not Defined(PB_Object_GetThreadMemory, #PB_Procedure) : PB_Object_GetThreadMemory(*Mem)                             : CompilerEndIf
+  CompilerIf Not Defined(PB_Window_Objects, #PB_Variable)          : PB_Window_Objects.i                                         : CompilerEndIf
+  CompilerIf Not Defined(PB_Gadget_Objects, #PB_Variable)          : PB_Gadget_Objects.i                                         : CompilerEndIf
+  CompilerIf Not Defined(PB_Image_Objects, #PB_Variable)           : PB_Image_Objects.i                                          : CompilerEndIf
+  CompilerIf Not Defined(PB_Gadget_Globals, #PB_Variable)          : PB_Gadget_Globals.i                                         : CompilerEndIf
+EndImport
+
+Procedure ToolTipHandleOT() 
+  Protected *PBGadget.PB_Globals 
+  *PBGadget = PB_Object_GetThreadMemory(PB_Gadget_Globals) 
+  ProcedureReturn *PBGadget\ToolTipWindow 
+EndProcedure
+
+Procedure WindowPBOT(WindowID) ; Find pb-id over handle
+  Protected Result = -1, Window
+  PB_Object_EnumerateStart(PB_Window_Objects)
+  While PB_Object_EnumerateNext(PB_Window_Objects, @Window)
+    If WindowID = WindowID(Window)
+      Result = Window
+      Break
+    EndIf
+  Wend
+  PB_Object_EnumerateAbort(PB_Window_Objects)
+  ProcedureReturn Result
+EndProcedure
+
+Procedure ImagePBOT(ImageID) ; Find pb-id over handle
+  Protected result, image
+  result = -1
+  PB_Object_EnumerateStart(PB_Image_Objects)
+  While PB_Object_EnumerateNext(PB_Image_Objects, @image)
+    If ImageID = ImageID(image)
+      result = image
+      Break
+    EndIf
+  Wend
+  PB_Object_EnumerateAbort(PB_Image_Objects)
+  ProcedureReturn result
+EndProcedure
+
+;
+; -----------------------------------------------------------------------------
 ;- ----- Load Theme Private -----
 ; -----------------------------------------------------------------------------
 ;
@@ -992,6 +994,8 @@ Procedure LoadThemeAttribute(Theme, WindowColor)
   Select Theme
     Case #ObjectTheme_DarkBlue
       Restore DarkBlue
+    Case #ObjectTheme_DarkRed
+      Restore DarkRed
     Case #ObjectTheme_LightBlue
       Restore LightBlue
     Case #ObjectTheme_Auto
@@ -1076,7 +1080,7 @@ Macro _SubSetWindowThemeColor(ObjectType, Attribute)
 EndMacro
 
 Procedure SetWindowThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
-  Protected RetVal = #PB_Default
+  Protected ReturnValue = #PB_Default
   
   Select Attribute
     Case #PB_Gadget_BackColor
@@ -1111,7 +1115,7 @@ Procedure SetWindowThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
       _SubSetWindowThemeColor(#PB_GadgetType_Text,         #PB_Gadget_BackColor)
       _SubSetWindowThemeColor(#PB_GadgetType_TrackBar,     #PB_Gadget_BackColor)
       _SubSetWindowThemeColor(#PB_GadgetType_Tree,         #PB_Gadget_BackColor)
-      RetVal = #True
+      ReturnValue = #True
       
     Case #PB_Gadget_DarkMode
       If Value = #PB_Default
@@ -1130,19 +1134,19 @@ Procedure SetWindowThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         EndSelect
       Next
       PopMapPosition(ObjectTheme())
-      RetVal = #True
+      ReturnValue = #True
       
   EndSelect
   
   ;If InitLevel = #True
   ;EndIf
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure AddWindowTheme(Window, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
   _ProcedureReturnIfOT(Not IsWindow(Window)) 
-  Protected ObjectType.s, RetVal
+  Protected ObjectType.s, ReturnValue
   
   With *ObjectTheme
     If Not UpdateTheme
@@ -1164,7 +1168,7 @@ Procedure AddWindowTheme(Window, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
     EndIf
   EndWith
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 ;
@@ -1227,11 +1231,11 @@ Macro _SubSetObjectThemeColor(ObjectType, Attribute)
 EndMacro
 
 Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
-  Protected SavBackColor, RetVal = #PB_Default
+  Protected SavBackColor, ReturnValue = #PB_Default
   Protected ObjectType.s = Str(*ObjectTheme\PBGadgetType) + "|"
   
   If Not FindMapElement(ThemeAttribute(), ObjectType + Str(Attribute))
-    ProcedureReturn RetVal
+    ProcedureReturn ReturnValue
   EndIf
   
   With *ObjectTheme\ObjectInfo
@@ -1274,7 +1278,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
             SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \iBackColor)
             
         EndSelect  
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- ActiveTabColor ----------
       Case #PB_Gadget_ActiveTab
@@ -1286,7 +1290,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         EndIf
         
         _SetObjectBrush(\iActiveTabColor, \iBrushActiveTabColor, SavBackColor)
-        RetVal = #True
+        ReturnValue = #True
                 
       ; ---------- InactiveTabColor ----------
       Case #PB_Gadget_InactiveTab
@@ -1298,7 +1302,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         EndIf
         
         _SetObjectBrush(\iInactiveTabColor, \iInactiveTabColor, SavBackColor)
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- HighLightColor ----------
       Case #PB_Gadget_HighLightColor
@@ -1310,7 +1314,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         EndIf
         
         _SetObjectBrush(\iHighLightColor, \iBrushHighLightColor, SavBackColor)
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- EditBoxColor ----------
       Case #PB_Gadget_EditBoxColor
@@ -1322,7 +1326,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         EndIf
         
         _SetObjectBrush(\iEditBoxColor, \iBrushEditBoxColor, SavBackColor)
-        RetVal = #True
+        ReturnValue = #True
         
         ; ---------- SplitterBorderColor ----------
       Case #PB_Gadget_SplitterBorderColor
@@ -1331,7 +1335,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         Else
           \iSplitterBorderColor = Value
         EndIf
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- FrontColor ----------
       Case #PB_Gadget_FrontColor
@@ -1354,7 +1358,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
              #PB_GadgetType_String, #PB_GadgetType_Tree
             SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_FrontColor, \iFrontColor)
         EndSelect
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- GrayTextColor ----------
       Case #PB_Gadget_GrayTextColor
@@ -1363,7 +1367,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         Else
           \iGrayTextColor = Value
         EndIf
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- LineColor ----------
       Case #PB_Gadget_LineColor
@@ -1373,7 +1377,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
           \iLineColor = Value
         EndIf
         SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_LineColor, \iLineColor)   ; Display if #PB_Explorer_GridLines used
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- TitleBackColor ----------
       Case #PB_Gadget_TitleBackColor
@@ -1395,7 +1399,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         EndSelect
         
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_TitleFrontColor)
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- TitleFrontColor ----------
       Case #PB_Gadget_TitleFrontColor
@@ -1405,7 +1409,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
           \iTitleFrontColor = Value
         EndIf
         SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleFrontColor, \iTitleFrontColor)   ; Display if #PB_Explorer_GridLines used
-        RetVal = #True
+        ReturnValue = #True
         
         ; ---------- SplitterBorder ----------
       Case #PB_Gadget_SplitterBorder
@@ -1414,7 +1418,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         Else
           \iSplitterBorder = Value
         EndIf
-        RetVal = #True
+        ReturnValue = #True
         
         ; ---------- LargeGripper ----------
       Case #PB_Gadget_LargeGripper
@@ -1423,7 +1427,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         Else
           \iLargeGripper = Value
         EndIf
-        RetVal = #True
+        ReturnValue = #True
         
         ; ---------- GripperColor ----------
       Case  #PB_Gadget_GripperColor
@@ -1434,7 +1438,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
           \iGripperColor = Value
         EndIf
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_UseUxGripper)
-        RetVal = #True
+        ReturnValue = #True
         
         ; ---------- UseUxGripper ----------
       Case #PB_Gadget_UseUxGripper
@@ -1458,7 +1462,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
           \iSplitterGripper = CreatePatternBrush_(ImageID(SplitterImg))
           FreeImage(SplitterImg)
         EndIf
-        RetVal = #True 
+        ReturnValue = #True 
         
     EndSelect
   EndWith
@@ -1489,12 +1493,12 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
   EndIf
   
   ;InvalidateRect_(*ObjectTheme\IDGadget, 0, 1)
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
   _ProcedureReturnIfOT(Not IsGadget(Gadget)) 
-  Protected ObjectType.s, SavBackColor, DarkMode, RetVal
+  Protected ObjectType.s, SavBackColor, DarkMode, ReturnValue
   
   With *ObjectTheme
     If Not UpdateTheme
@@ -1800,7 +1804,7 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
     EndSelect
   EndWith
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 ;
@@ -2328,7 +2332,7 @@ Procedure MakeButtonImageTheme(cX, cY, *ObjectTheme.ObjectTheme_INFO)
 EndProcedure
 
 Procedure ChangeButtonTheme(Gadget)
-  Protected RetVal
+  Protected ReturnValue
   Protected *ObjectTheme.ObjectTheme_INFO : _ObjectThemeID(*ObjectTheme, GadgetID(Gadget), #False)
   
   ; DesktopScaledX(Y) is done in MakeButtonTheme
@@ -2347,13 +2351,13 @@ Procedure ChangeButtonTheme(Gadget)
     SelectObject_(\hDcDisabled,  ImageID(\imgDisabled))
   EndWith
   InvalidateRect_(*ObjectTheme\IDGadget, 0, 0)
-  RetVal = #True
+  ReturnValue = #True
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure UpdateButtonTheme(*ObjectTheme.ObjectTheme_INFO)
-  Protected hGenDC, CancelOut, RetVal
+  Protected hGenDC, CancelOut, ReturnValue
   
   With *ObjectTheme\BtnInfo
     SelectObject_(\hDcRegular,   \hObjRegular)   : DeleteDC_(\hDcRegular)
@@ -2400,14 +2404,14 @@ Procedure UpdateButtonTheme(*ObjectTheme.ObjectTheme_INFO)
     
     ReleaseDC_(#Null, hGenDC)
     InvalidateRect_(*ObjectTheme\IDGadget, 0, 0)
-    RetVal = #True
+    ReturnValue = #True
   EndWith
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure FreeButtonTheme(IDGadget)
-  Protected SavText.s, SavState.b, RetVal
+  Protected SavText.s, SavState.b, ReturnValue
   Protected *ObjectTheme.ObjectTheme_INFO : _ObjectThemeID(*ObjectTheme, IDGadget, #False)
   Protected Gadget = *ObjectTheme\PBGadget
   
@@ -2445,9 +2449,9 @@ Procedure FreeButtonTheme(IDGadget)
     SetGadgetState(Gadget, SavState)
     InvalidateRect_(GadgetID(Gadget), 0, 0)
   EndIf
-  RetVal = #True
+  ReturnValue = #True
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Macro _SubSetObjectButtonColor(ObjectType, Attribute)
@@ -2459,7 +2463,7 @@ Macro _SubSetObjectButtonColor(ObjectType, Attribute)
 EndMacro
 
 Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
-  Protected RetVal = #PB_Default
+  Protected ReturnValue = #PB_Default
   Protected ObjectType.s = Str(*ObjectTheme\PBGadgetType) + "|"
   
   With *ObjectTheme\BtnInfo
@@ -2482,7 +2486,7 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
         _SubSetObjectButtonColor(*ObjectTheme\PBGadgetType, #PB_Gadget_GrayBackColor)
         _SubSetObjectButtonColor(*ObjectTheme\PBGadgetType, #PB_Gadget_FrontColor)
         _SubSetObjectButtonColor(*ObjectTheme\PBGadgetType, #PB_Gadget_BorderColor)
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- OuterColor ----------
       Case #PB_Gadget_OuterColor
@@ -2495,7 +2499,7 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
         Else
           \iButtonOuterColor     = Value
         EndIf
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- CornerColor ----------
       Case #PB_Gadget_CornerColor
@@ -2507,7 +2511,7 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
         Else
           \iButtonCornerColor     = Value
         EndIf
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- GrayBackColor ----------
       Case #PB_Gadget_GrayBackColor
@@ -2520,7 +2524,7 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
         Else
           \iGrayBackColor    = Value
         EndIf
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- FrontColor ----------
       Case #PB_Gadget_FrontColor
@@ -2536,7 +2540,7 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
         
         _SubSetObjectButtonColor(*ObjectTheme\PBGadgetType, #PB_Gadget_GrayTextColor)
         _SubSetObjectButtonColor(*ObjectTheme\PBGadgetType, #PB_Gadget_ShadowColor)
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- GrayTextColor ----------
       Case #PB_Gadget_GrayTextColor
@@ -2549,13 +2553,13 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
         Else
           \iGrayTextColor      = Value
         EndIf
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- EnableShadow ----------
       Case #PB_Gadget_EnableShadow
         If Value = #PB_Default : Value = 0 : EndIf
         \bEnableShadow             = Value
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- ShadowColor ----------
       Case #PB_Gadget_ShadowColor
@@ -2568,7 +2572,7 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
         Else
           \iShadowColor            = Value
         EndIf
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- BorderColor ----------
       Case #PB_Gadget_BorderColor
@@ -2581,19 +2585,19 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
         Else
           \iBorderColor            = Value
         EndIf
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- RoundX ----------
       Case #PB_Gadget_RoundX
         If Value = #PB_Default : Value = 8 : EndIf
         \iRoundX                   = Value
-        RetVal = #True
+        ReturnValue = #True
         
       ; ---------- RoundY ----------
       Case #PB_Gadget_RoundY
         If Value = #PB_Default : Value = 8 : EndIf
         \iRoundY                   = Value
-        RetVal = #True
+        ReturnValue = #True
         
     EndSelect
   EndWith
@@ -2601,15 +2605,15 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
   If InitLevel = #True And Not UpdateButtonTheme(*ObjectTheme)   ; or ChangeButtonTheme(Gadget)
     FreeMemory(ObjectTheme()\BtnInfo)
     DeleteMapElement(ObjectTheme())
-    RetVal = #PB_Default
+    ReturnValue = #PB_Default
   EndIf
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure AddButtonTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
   _ProcedureReturnIfOT(Not IsGadget(Gadget)) 
-  Protected hGenDC, ObjectType.s, CancelOut, RetVal
+  Protected hGenDC, ObjectType.s, CancelOut, ReturnValue
   
   If UpdateTheme
     With *ObjectTheme\BtnInfo
@@ -2806,10 +2810,10 @@ Procedure AddButtonTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
       SetWindowLongPtr_(*ObjectTheme\IDGadget, #GWLP_WNDPROC, @ButtonThemeProc())
     EndIf
     
-    RetVal = #True
+    ReturnValue = #True
   EndWith
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 ;
@@ -2819,42 +2823,42 @@ EndProcedure
 ;
 
 Procedure IsObjectTheme(Gadget)
-  Protected RetVal
-  If Not IsGadget(Gadget) : ProcedureReturn RetVal : EndIf
+  Protected ReturnValue
+  If Not IsGadget(Gadget) : ProcedureReturn ReturnValue : EndIf
   
   If FindMapElement(ObjectTheme(), Str(GadgetID(Gadget)))
-    RetVal = #True
+    ReturnValue = #True
   EndIf
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure GetObjectThemeAttribute(ObjectType, Attribute)
-  Protected RetVal = #PB_Default
+  Protected ReturnValue = #PB_Default
   
   If FindMapElement(ThemeAttribute(), Str(ObjectType) + "|" + Str(Attribute))
-    RetVal = ThemeAttribute()
+    ReturnValue = ThemeAttribute()
   EndIf
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure SetObjectThemeAttribute(ObjectType, Attribute, Value)
-  Protected RetVal = #PB_Default
+  Protected ReturnValue = #PB_Default
   
   If FindMapElement(ThemeAttribute(), Str(ObjectType) + "|" + Str(Attribute))
     ThemeAttribute() = Value
-    RetVal = SetObjectTypeColor(ObjectType, Attribute, Value)
+    ReturnValue = SetObjectTypeColor(ObjectType, Attribute, Value)
   EndIf
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure GetObjectColor(Gadget, Attribute)
   _ProcedureReturnIfOT(Not IsGadget(Gadget), #PB_Default)
-  Protected RetVal = #PB_Default
+  Protected ReturnValue = #PB_Default
   
   If Not FindMapElement(ThemeAttribute(), Str(GadgetType(Gadget)) + "|" + Str(Attribute))
-    ProcedureReturn RetVal
+    ProcedureReturn ReturnValue
   EndIf
   Protected *ObjectTheme.ObjectTheme_INFO : _ObjectThemeID(*ObjectTheme, GadgetID(Gadget), #False)
   
@@ -2863,27 +2867,27 @@ Procedure GetObjectColor(Gadget, Attribute)
       With *ObjectTheme\BtnInfo
         Select Attribute
           Case #PB_Gadget_BackColor
-            RetVal = \iButtonBackColor
+            ReturnValue = \iButtonBackColor
           Case #PB_Gadget_OuterColor
-            RetVal = \iButtonOuterColor
+            ReturnValue = \iButtonOuterColor
           Case #PB_Gadget_CornerColor
-            RetVal = \iButtonCornerColor
+            ReturnValue = \iButtonCornerColor
           Case #PB_Gadget_GrayBackColor
-            RetVal = \iGrayBackColor
+            ReturnValue = \iGrayBackColor
           Case #PB_Gadget_FrontColor
-            RetVal = \iFrontColor
+            ReturnValue = \iFrontColor
           Case #PB_Gadget_GrayTextColor
-            RetVal = \iGrayTextColor
+            ReturnValue = \iGrayTextColor
           Case #PB_Gadget_EnableShadow
-            RetVal = \bEnableShadow
+            ReturnValue = \bEnableShadow
           Case #PB_Gadget_ShadowColor
-            RetVal = \iShadowColor
+            ReturnValue = \iShadowColor
           Case #PB_Gadget_BorderColor
-            RetVal = \iBorderColor
+            ReturnValue = \iBorderColor
           Case #PB_Gadget_RoundX
-            RetVal = \iRoundX
+            ReturnValue = \iRoundX
           Case #PB_Gadget_RoundY
-            RetVal = \iRoundY
+            ReturnValue = \iRoundY
         EndSelect
       EndWith
       
@@ -2894,48 +2898,48 @@ Procedure GetObjectColor(Gadget, Attribute)
       With *ObjectTheme\ObjectInfo
         Select Attribute
           Case #PB_Gadget_BackColor
-            RetVal = \iBackColor
+            ReturnValue = \iBackColor
           Case #PB_Gadget_FrontColor
-            RetVal = \iFrontColor
+            ReturnValue = \iFrontColor
           Case #PB_Gadget_GrayTextColor
-            RetVal = \iGrayTextColor
+            ReturnValue = \iGrayTextColor
           Case #PB_Gadget_LineColor
-            RetVal = \iLineColor
+            ReturnValue = \iLineColor
           Case #PB_Gadget_TitleBackColor 
-            RetVal = \iTitleBackColor
+            ReturnValue = \iTitleBackColor
           Case #PB_Gadget_TitleFrontColor
-            RetVal = \iTitleFrontColor
+            ReturnValue = \iTitleFrontColor
           Case #PB_Gadget_ActiveTab
-            RetVal = \iActiveTabColor
+            ReturnValue = \iActiveTabColor
           Case #PB_Gadget_InactiveTab
-            RetVal = \iInactiveTabColor
+            ReturnValue = \iInactiveTabColor
           Case #PB_Gadget_HighLightColor
-            RetVal = \iHighLightColor
+            ReturnValue = \iHighLightColor
           Case #PB_Gadget_EditBoxColor
-            RetVal = \iEditBoxColor
+            ReturnValue = \iEditBoxColor
           Case #PB_Gadget_SplitterBorder
-            RetVal = \iSplitterBorder
+            ReturnValue = \iSplitterBorder
           Case #PB_Gadget_SplitterBorderColor
-            RetVal = \iSplitterBorderColor
+            ReturnValue = \iSplitterBorderColor
           Case #PB_Gadget_UseUxGripper
-            RetVal = \iUseUxGripper
+            ReturnValue = \iUseUxGripper
           Case #PB_Gadget_LargeGripper
-            RetVal = \iLargeGripper
+            ReturnValue = \iLargeGripper
           Case #PB_Gadget_GripperColor
-            RetVal = \iGripperColor
+            ReturnValue = \iGripperColor
         EndSelect
       EndWith
       
   EndSelect
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure SetObjectTypeColor(ObjectType, Attribute, Value)
-  Protected RetVal = #PB_Default 
+  Protected ReturnValue = #PB_Default 
   
   If Not FindMapElement(ThemeAttribute(), Str(ObjectType) + "|" + Str(Attribute))
-    ProcedureReturn RetVal
+    ProcedureReturn ReturnValue
   EndIf
   
   ForEach ObjectTheme()
@@ -2943,7 +2947,7 @@ Procedure SetObjectTypeColor(ObjectType, Attribute, Value)
       Select ObjectType
         Case #PB_WindowType
           PushMapPosition(ObjectTheme())
-          RetVal = SetWindowThemeColor(ObjectTheme(), Attribute, Value)
+          ReturnValue = SetWindowThemeColor(ObjectTheme(), Attribute, Value)
           PopMapPosition(ObjectTheme())
           
         Case #PB_GadgetType_Calendar, #PB_GadgetType_CheckBox, #PB_GadgetType_ComboBox, #PB_GadgetType_Container, #PB_GadgetType_Date, #PB_GadgetType_Editor,
@@ -2951,26 +2955,26 @@ Procedure SetObjectTypeColor(ObjectType, Attribute, Value)
            #PB_GadgetType_Option, #PB_GadgetType_Panel, #PB_GadgetType_ProgressBar, #PB_GadgetType_ScrollArea, #PB_GadgetType_ScrollBar, #PB_GadgetType_Spin,
            #PB_GadgetType_String, #PB_GadgetType_Splitter,#PB_GadgetType_Text, #PB_GadgetType_TrackBar, #PB_GadgetType_Tree
           PushMapPosition(ObjectTheme())
-          RetVal = SetObjectThemeColor(ObjectTheme(), Attribute, Value)
+          ReturnValue = SetObjectThemeColor(ObjectTheme(), Attribute, Value)
           PopMapPosition(ObjectTheme())
           
         Case #PB_GadgetType_Button, #PB_GadgetType_ButtonImage
           PushMapPosition(ObjectTheme())
-          RetVal = SetObjectButtonColor(ObjectTheme(), Attribute, Value)
+          ReturnValue = SetObjectButtonColor(ObjectTheme(), Attribute, Value)
           PopMapPosition(ObjectTheme())
       EndSelect
     EndIf
   Next
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure SetObjectColor(Gadget, Attribute, Value)
   _ProcedureReturnIfOT(Not IsGadget(Gadget), #PB_Default)
-  Protected RetVal = #PB_Default 
+  Protected ReturnValue = #PB_Default 
   
   If Not FindMapElement(ThemeAttribute(), Str(GadgetType(Gadget)) + "|" + Str(Attribute))
-    ProcedureReturn RetVal
+    ProcedureReturn ReturnValue
   EndIf
   
   If FindMapElement(ObjectTheme(), Str(GadgetID(Gadget)))
@@ -2979,18 +2983,18 @@ Procedure SetObjectColor(Gadget, Attribute, Value)
            #PB_GadgetType_ExplorerList, #PB_GadgetType_ExplorerTree, #PB_GadgetType_Frame, #PB_GadgetType_HyperLink, #PB_GadgetType_ListIcon, #PB_GadgetType_ListView,
            #PB_GadgetType_Option, #PB_GadgetType_Panel, #PB_GadgetType_ProgressBar, #PB_GadgetType_ScrollArea, #PB_GadgetType_ScrollBar, #PB_GadgetType_Spin,
            #PB_GadgetType_String, #PB_GadgetType_Splitter,#PB_GadgetType_Text, #PB_GadgetType_TrackBar, #PB_GadgetType_Tree
-        RetVal = SetObjectThemeColor(ObjectTheme(), Attribute, Value)
+        ReturnValue = SetObjectThemeColor(ObjectTheme(), Attribute, Value)
         
       Case #PB_GadgetType_Button, #PB_GadgetType_ButtonImage
-        RetVal = SetObjectButtonColor(ObjectTheme(), Attribute, Value)
+        ReturnValue = SetObjectButtonColor(ObjectTheme(), Attribute, Value)
     EndSelect
   EndIf
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure FreeObjectTheme()
-  Protected RetVal
+  Protected ReturnValue
   
   With ObjectTheme()
     ForEach ObjectTheme()
@@ -3001,27 +3005,27 @@ Procedure FreeObjectTheme()
           SetWindowTheme_(\IDGadget, 0, 0)
           FreeMemory(\ObjectInfo)
           DeleteMapElement(ObjectTheme())
-          RetVal = #True
+          ReturnValue = #True
           
         Case #PB_GadgetType_Panel  
           SetWindowLongPtr_(\IDGadget, #GWL_STYLE, GetWindowLongPtr_(\IDGadget, #GWL_STYLE) &~ #TCS_OWNERDRAWFIXED)
           SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc)
           FreeMemory(\ObjectInfo)
           DeleteMapElement(ObjectTheme())
-          RetVal = #True
+          ReturnValue = #True
           
         Case #PB_GadgetType_Container, #PB_GadgetType_ProgressBar, #PB_GadgetType_ScrollArea, #PB_GadgetType_HyperLink, #PB_GadgetType_Spin, #PB_GadgetType_String,
              #PB_GadgetType_ExplorerTree, #PB_GadgetType_Tree, #PB_GadgetType_Date, #PB_GadgetType_ComboBox, #PB_GadgetType_ScrollBar
           FreeMemory(\ObjectInfo)
           DeleteMapElement(ObjectTheme())
-          RetVal = #True
+          ReturnValue = #True
           
         Case #PB_GadgetType_ListView
           FreeMemory(\ObjectInfo)
           DeleteMapElement(ObjectTheme())
           SetWindowLongPtr_(\IDGadget, #GWL_STYLE, GetWindowLongPtr_(\IDGadget, #GWL_STYLE) &~ #WS_BORDER)
           SetWindowLongPtr_(\IDGadget, #GWL_EXSTYLE, GetWindowLongPtr_(\IDGadget, #GWL_EXSTYLE) | #WS_EX_CLIENTEDGE)
-          RetVal = #True
+          ReturnValue = #True
           
         Case #PB_GadgetType_Splitter
           If \ObjectInfo\iSplitterGripper : DeleteObject_(\ObjectInfo\iSplitterGripper) : EndIf
@@ -3030,32 +3034,32 @@ Procedure FreeObjectTheme()
           SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc)
           FreeMemory(\ObjectInfo)
           DeleteMapElement(ObjectTheme())
-          RetVal = #True
+          ReturnValue = #True
           
         Case #PB_GadgetType_Button, #PB_GadgetType_ButtonImage
           FreeButtonTheme(\IDGadget)
-          RetVal = #True
+          ReturnValue = #True
       EndSelect
     Next
   EndWith
   ClearMap(ObjectBrush())
   ClearMap(ThemeAttribute())
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure GetObjectTheme()
-  Protected RetVal = #PB_Default
+  Protected ReturnValue = #PB_Default
   
   If FindMapElement(ThemeAttribute(), Str(#ObjectTheme))
-    RetVal = ThemeAttribute()
+    ReturnValue = ThemeAttribute()
   EndIf
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 Procedure SetObjectTheme(Theme, WindowColor = #PB_Default)
-  Protected Window, Object, IsJellyButton, RetVal, ObjectID, Buffer.s = Space(64) 
+  Protected Window, Object, IsJellyButton, ReturnValue, ObjectID, Buffer.s = Space(64) 
   
   If Theme = #PB_Default 
     If MapSize(ThemeAttribute()) = 0
@@ -3125,7 +3129,7 @@ Procedure SetObjectTheme(Theme, WindowColor = #PB_Default)
   
   SetWindowCallback(@WinCallback())
   
-  ProcedureReturn RetVal
+  ProcedureReturn ReturnValue
 EndProcedure
 
 ;
@@ -3165,7 +3169,7 @@ CompilerIf #PB_Compiler_IsMainFile
       AddGadgetItem(#Editor_1, -1, "Editor Line 2")
       AddGadgetItem(#Editor_1, -1, "Editor Line 3")
       CloseGadgetList()   ; #ScrollArea_1
-      ButtonGadget(#ApplyTheme, 20, 230, 400, 50, "Apply Light Blue tTheme")
+      ButtonGadget(#ApplyTheme, 20, 230, 400, 50, "Apply Light Blue Theme")
     EndIf
   EndProcedure
 
@@ -3190,13 +3194,17 @@ CompilerIf #PB_Compiler_IsMainFile
             ;SetObjectColor(#ApplyTheme, #PB_Gadget_BackColor,  #Cyan)
             
           Case #ApplyTheme
-            If GetObjectTheme() = #ObjectTheme_DarkBlue
-              SetGadgetText(#ApplyTheme, "Apply Dark Blue Theme")
-              SetObjectTheme(#ObjectTheme_LightBlue)
-            Else
-              SetGadgetText(#ApplyTheme, "Apply Light Blue tTheme")
-              SetObjectTheme(#ObjectTheme_DarkBlue)
-            EndIf
+            Select GetObjectTheme()
+              Case #ObjectTheme_DarkBlue
+                SetGadgetText(#ApplyTheme, "Apply Dark Red Theme")
+                SetObjectTheme(#ObjectTheme_LightBlue)
+              Case #ObjectTheme_LightBlue
+                SetGadgetText(#ApplyTheme, "Apply Dark Blue Theme")
+                SetObjectTheme(#ObjectTheme_DarkRed)
+              Case #ObjectTheme_DarkRed
+                SetGadgetText(#ApplyTheme, "Apply Light Blue Theme")
+                SetObjectTheme(#ObjectTheme_DarkBlue)
+            EndSelect
         EndSelect
     EndSelect
   ForEver
