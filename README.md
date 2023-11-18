@@ -17,6 +17,10 @@ SetObjectTheme(#ObjectTheme_DarkBlue):<br>
 <br>
 ![Alt text](/Images/ObjectTheme_DarkBlue.png?raw=true "ObjectTheme_DarkBlue")<br>
 <br>
+SetObjectTheme(#ObjectTheme_DarkRed):<br>
+<br>
+![Alt text](/Images/ObjectTheme_DarkRed.png?raw=true "ObjectTheme_DarkRed")<br>
+<br>
 SetObjectTheme(#ObjectTheme_LightBlue):<br>
 <br>
 ![Alt text](/Images/ObjectTheme_LightBlue.png?raw=true "ObjectTheme_LightBlue")<br>
@@ -25,9 +29,6 @@ SetObjectTheme(#SetObjectTheme(#ObjectTheme_Auto, #Black)):<br>
 <br>
 ![Alt text](/Images/ObjectTheme_Auto_Black.png?raw=true "ObjectTheme_LightBlue")<br>
 <br>
-SetObjectTheme(#ObjectTheme_DarkRed):<br>
-<br>
-![Alt text](/Images/ObjectTheme_DarkRed.png?raw=true "ObjectTheme_DarkRed")<br>
 <br>
 **Supported Gadget**<br>
    Window, Button, ButtonImage, Calendar, CheckBox, ComboBox, Container, Date, Editor, ExplorerList, ExplorerTree, Frame, HyperLink, ListIcon, ListView, Option, Panel, ProgressBar, ScrollArea, ScrollBar, Spin, Splitter, String, Text, TrackBar, Tree<br>   
