@@ -117,7 +117,7 @@ Procedure Open_Window_1(X = 20, Y = 20, Width = 580, Height = 460)
     SetGadgetState(#Spin_1, 66)
     StringGadget(#String_1, 110, 56, 150, 26, "String_1")
     
-    ComboBoxGadget(#Combo_1, 20, 102, 180, 28, #PB_ComboBox_Editable | #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED)
+    ComboBoxGadget(#Combo_1, 20, 102, 180, 28, #PB_ComboBox_Editable)   ; #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED flags will be auto added with SetObjectTheme() done before the combobox creation
     SendMessage_(GadgetID(#Combo_1), #CB_SETMINVISIBLE, 5, 0)   ; Only 5 elements visible to display the ScrollBar for the Dark or Explorer theme
     For I = 1 To 10 : AddGadgetItem(#Combo_1, -1, "Combo Editable Element " + Str(I)) : Next
     SetGadgetState(#Combo_1, 0)
@@ -161,7 +161,7 @@ Procedure Open_Window_2(X = 620, Y = 20, Width = 420, Height = 460)
     SetGadgetItemState(#Tree_1, 1, #PB_Tree_Expanded)
     StringGadget(#String_2, 200, 80, 150, 25, "String_2")
     
-    ComboBoxGadget(#Combo_3, 200, 112, 150, 28, #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED)
+    ComboBoxGadget(#Combo_3, 200, 112, 150, 28)   ; #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED flags will be auto added with SetObjectTheme() done before the combobox creation
     SendMessage_(GadgetID(#Combo_3), #CB_SETMINVISIBLE, 5, 0)   ; Only 5 elements visible to display the ScrollBar for the Dark or Explorer theme
     For I = 1 To 10 : AddGadgetItem(#Combo_3, -1, "Combo Element " + Str(I)) : Next
     SetGadgetState(#Combo_3, 0)
@@ -236,17 +236,6 @@ Repeat
               SetObjectTheme(#ObjectTheme_DarkRed)
           EndSelect
           
-;                       Select GetObjectTheme()
-;               Case #ObjectTheme_DarkBlue
-;                 SetGadgetText(#ApplyTheme, "Apply Dark Red Theme")
-;                 SetObjectTheme(#ObjectTheme_LightBlue)
-;               Case #ObjectTheme_LightBlue
-;                 SetGadgetText(#ApplyTheme, "Apply Dark Blue Theme")
-;                 SetObjectTheme(#ObjectTheme_DarkRed)
-;               Case #ObjectTheme_DarkRed
-;                 SetGadgetText(#ApplyTheme, "Apply Light Blue Theme")
-;                 SetObjectTheme(#ObjectTheme_DarkBlue)
-;             EndSelect
         Case #ApplyTheme_2
           Define Color = ColorRequester(GetWindowColor(#Window_2))
           SetObjectTheme(#ObjectTheme_Auto, Color)

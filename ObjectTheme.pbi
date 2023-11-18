@@ -156,17 +156,17 @@ Structure ObjectInfo_INFO
   iGrayTextColor.i
   iLineColor.i
   iTitleBackColor.i
-  iBrushTitleBackColor.i
+  hBrushTitleBackColor.i
   iTitleFrontColor.i
   iActiveTabColor.i
-  iBrushActiveTabColor.i
+  hBrushActiveTabColor.i
   iInactiveTabColor.i
-  iBrushInactiveTabColor.i
+  hBrushInactiveTabColor.i
   iHighLightColor.i
-  iBrushHighLightColor.i
+  hBrushHighLightColor.i
   iEditBoxColor.i
-  iBrushEditBoxColor.i
-  iSplitterGripper.i
+  hBrushEditBoxColor.i
+  hSplitterGripper.i
   iSplitterBorder.i
   iSplitterBorderColor.i
   iUseUxGripper.i
@@ -331,7 +331,7 @@ XIncludeFile "ObjectTheme_DataSection.pbi"
 ;
 
 Procedure IsDarkColorOT(Color)
-  If Red(Color)*0.299 + Green(Color)*0.587 +Blue(Color)*0.114 < 128   ; Based on Human perception of color, following the RGB values (0.299, 0.587, 0.114)
+  If Red(Color)*0.299 + Green(Color)*0.587 + Blue(Color)*0.114 < 128   ; Based on Human perception of color, following the RGB values (0.299, 0.587, 0.114)
     ProcedureReturn #True
   EndIf
   ProcedureReturn #False
@@ -392,7 +392,6 @@ Procedure SplitterCalc(hWnd, *rc.RECT)
 EndProcedure
 
 Procedure SplitterPaint(hWnd, hdc, *rc.RECT, *ObjectTheme.ObjectTheme_INFO)
-  ;\ObjectInfo\iBackColor, \ObjectInfo\iSplitterGripper, \ObjectInfo\iSplitterBorder, \ObjectInfo\iSplitterBorderColor, \ObjectInfo\iUseUxGripper, \ObjectInfo\iLargeGripper
   With *ObjectTheme\ObjectInfo
     If \iSplitterBorder
       SetDCBrushColor_(hdc, \iSplitterBorderColor)
@@ -403,9 +402,6 @@ Procedure SplitterPaint(hWnd, hdc, *rc.RECT, *ObjectTheme.ObjectTheme_INFO)
     InflateRect_(*rc, -1, -1)
     SetDCBrushColor_(hdc, \iBackColor)
     FillRect_(hdc, *rc, GetStockObject_(#DC_BRUSH))
-    ;InflateRect_(*rc, -1, -1)
-    ;Debug Str(*rc\left) + ", " + Str(*rc\top) + ", " + Str(*rc\right) + ", " + Str(*rc\bottom)
-    
     
     If \iUseUxGripper
       Protected htheme = OpenThemeData_(hWnd, "Rebar")
@@ -442,14 +438,13 @@ Procedure SplitterPaint(hWnd, hdc, *rc.RECT, *ObjectTheme.ObjectTheme_INFO)
         EndIf
       EndIf
       SetBrushOrgEx_(hdc, *rc\left, *rc\top, 0)
-      FillRect_(hdc, *rc, \iSplitterGripper)
+      FillRect_(hdc, *rc, \hSplitterGripper)
       SetBrushOrgEx_(hdc, 0, 0, 0)
     EndIf
   EndWith
 EndProcedure
 
 Procedure SplitterProc(hWnd, uMsg, wParam, lParam)
-  Protected SplitterGripper, ps.PAINTSTRUCT
   
   If FindMapElement(ObjectTheme(), Str(hWnd))
     Protected *ObjectTheme.ObjectTheme_INFO = @ObjectTheme()
@@ -457,18 +452,19 @@ Procedure SplitterProc(hWnd, uMsg, wParam, lParam)
   Else
     ProcedureReturn DefWindowProc_(hWnd, uMsg, wParam, lParam)
   EndIf
+  Protected SplitterGripper, ps.PAINTSTRUCT
   
   With *ObjectTheme
     Select uMsg
       Case #WM_NCDESTROY
-        ; Delete map element for all children's gadgets that no longer exist after CloseWindow(). Useful in case of multiple windows
+        ; Delete map element for all children's gadgets that no longer exist
         ForEach ObjectTheme()
           *ObjectTheme = @ObjectTheme()
           If Not IsGadget(\PBGadget)
             If \OldProc
               SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc)
             EndIf
-            If \ObjectInfo\iSplitterGripper : DeleteObject_(\ObjectInfo\iSplitterGripper) : EndIf
+            If \ObjectInfo\hSplitterGripper : DeleteObject_(\ObjectInfo\hSplitterGripper) : EndIf
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
           EndIf
@@ -482,7 +478,6 @@ Procedure SplitterProc(hWnd, uMsg, wParam, lParam)
         Next
           
       Case #WM_PAINT
-        ;SplitterGripper   = \ObjectInfo\iSplitterGripper
         BeginPaint_(hWnd, ps)
         SplitterCalc(hWnd, ps\rcPaint)
         SplitterPaint(hWnd, ps\hdc, ps\rcPaint, *ObjectTheme)
@@ -502,7 +497,6 @@ Procedure SplitterProc(hWnd, uMsg, wParam, lParam)
 EndProcedure
 
 Procedure PanelProc(hWnd, uMsg, wParam, lParam)
-  Protected *DrawItem.DRAWITEMSTRUCT, Rect.Rect 
   
   If FindMapElement(ObjectTheme(), Str(hWnd))
     Protected *ObjectTheme.ObjectTheme_INFO = @ObjectTheme()
@@ -510,18 +504,19 @@ Procedure PanelProc(hWnd, uMsg, wParam, lParam)
   Else
     ProcedureReturn DefWindowProc_(hWnd, uMsg, wParam, lParam)
   EndIf
+  Protected *DrawItem.DRAWITEMSTRUCT, Rect.Rect
   
   With *ObjectTheme
     Select uMsg
       Case #WM_NCDESTROY
-        ; Delete map element for all children's gadgets that no longer exist after CloseWindow(). Useful in case of multiple windows
+        ; Delete map element for all children's gadgets that no longer exist
         ForEach ObjectTheme()
           *ObjectTheme = @ObjectTheme()
           If Not IsGadget(\PBGadget)
             If \OldProc
               SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc)
             EndIf
-            If \ObjectInfo\iSplitterGripper : DeleteObject_(\ObjectInfo\iSplitterGripper) : EndIf
+            If \ObjectInfo\hSplitterGripper : DeleteObject_(\ObjectInfo\hSplitterGripper) : EndIf
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
           EndIf
@@ -534,8 +529,6 @@ Procedure PanelProc(hWnd, uMsg, wParam, lParam)
           EndIf
         Next
         
-        ;ProcedureReturn #False
-        
       Case #WM_ENABLE
         InvalidateRect_(hWnd, #Null, #True)
         ProcedureReturn #True
@@ -544,9 +537,8 @@ Procedure PanelProc(hWnd, uMsg, wParam, lParam)
         *DrawItem.DRAWITEMSTRUCT = wParam
         GetClientRect_(hWnd, Rect)
         FillRect_(wParam, @Rect, \ObjectInfo\iBrushBackColor)
-        ;Protected ParentBackColor  = GetParentBackColor(\PBGadget)
         Rect\top = 0 : Rect\bottom = GetGadgetAttribute(\PBGadget, #PB_Panel_TabHeight)
-        FillRect_(wParam, @Rect, \ObjectInfo\iBrushBackColor)  ; ObjectCBrush(Str(ParentBackColor)))
+        FillRect_(wParam, @Rect, \ObjectInfo\iBrushBackColor)
         ProcedureReturn #True
         
     EndSelect
@@ -577,7 +569,6 @@ Procedure ListIconProc(hWnd, uMsg, wParam, lParam)
       DeleteMapElement(ObjectTheme())
       If SavBackColor        : DeleteUnusedBrush(SavBackColor)        : EndIf
       If SavTitleBackColor   : DeleteUnusedBrush(SavTitleBackColor)   : EndIf
-      ;ProcedureReturn #False
         
       Case #WM_NOTIFY
         *pnmHDR = lparam
@@ -597,7 +588,7 @@ Procedure ListIconProc(hWnd, uMsg, wParam, lParam)
               EndIf
               *pnmCDraw\rc\bottom - 1 : *pnmCDraw\rc\right - 1
               SetBkMode_(*pnmCDraw\hdc, #TRANSPARENT)
-              FillRect_(*pnmCDraw\hdc, *pnmCDraw\rc, \ObjectInfo\iBrushTitleBackColor)
+              FillRect_(*pnmCDraw\hdc, *pnmCDraw\rc, \ObjectInfo\hBrushTitleBackColor)
               SetTextColor_(*pnmCDraw\hdc, \ObjectInfo\iTitleFrontColor)
               If *pnmCDraw\rc\right > *pnmCDraw\rc\left
                 DrawText_(*pnmCDraw\hdc, @Text, Len(Text), *pnmCDraw\rc, #DT_CENTER | #DT_VCENTER | #DT_SINGLELINE | #DT_END_ELLIPSIS)
@@ -630,7 +621,6 @@ Procedure CalendarProc(hWnd, uMsg, wParam, lParam)
         EndIf
         FreeMemory(\ObjectInfo)
         DeleteMapElement(ObjectTheme())
-        ;ProcedureReturn #False
         
       Case #WM_ENABLE    
         If wParam = #False
@@ -666,7 +656,6 @@ Procedure EditorProc(hWnd, uMsg, wParam, lParam)
         EndIf
         FreeMemory(\ObjectInfo)
         DeleteMapElement(ObjectTheme())
-        ;ProcedureReturn #False
         
       Case #WM_ENABLE
         If wParam
@@ -709,7 +698,6 @@ Procedure StaticProc(hWnd, uMsg, wParam, lParam)
         FreeMemory(\ObjectInfo)
         DeleteMapElement(ObjectTheme())
         If SavBackColor        : DeleteUnusedBrush(SavBackColor)        : EndIf
-        ;ProcedureReturn #False
         
       Case #WM_ENABLE
         Select \PBGadgetType
@@ -733,7 +721,7 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
   Protected Result = #PB_ProcessPureBasicEvents
   Protected *ObjectTheme.ObjectTheme_INFO
   
-  Protected ParentGadget, Buffer.s, Text.s ;, Color_HightLight, FadeGrayColor, Found, I
+  Protected ParentGadget, Buffer.s, Text.s
   Protected *DrawItem.DRAWITEMSTRUCT, *lvCD.NMLVCUSTOMDRAW 
   
   With *ObjectTheme
@@ -742,14 +730,14 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
         PostEvent(#PB_Event_Gadget, GetDlgCtrlID_(hWnd), 0, #PB_Event_CloseWindow)   ; Required to manage it with #PB_Event_CloseWindow event, if the window is minimized and closed from the taskbar (Right CLick)
         
       Case #WM_NCDESTROY
-        ; Delete map element for all children's gadgets that no longer exist after CloseWindow(). Useful in case of multiple windows
+        ; Delete map element for all children's gadgets that no longer exist after CloseWindow()
         ForEach ObjectTheme()
           *ObjectTheme = @ObjectTheme()
           If Not IsGadget(\PBGadget)
             If \OldProc
               SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc)
             EndIf
-            If \ObjectInfo\iSplitterGripper : DeleteObject_(\ObjectInfo\iSplitterGripper) : EndIf
+            If \ObjectInfo\hSplitterGripper : DeleteObject_(\ObjectInfo\hSplitterGripper) : EndIf
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
           EndIf
@@ -761,7 +749,6 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
             DeleteMapElement(ObjectBrush())
           EndIf
         Next
-        ;ProcedureReturn #False
         
       ; ---------- Static: CheckBoxGadget, FrameGadget, OptionGadget, TextGadget, TrackBarGadget ----------
       Case #WM_CTLCOLORSTATIC
@@ -803,7 +790,7 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
               SetTextColor_(wParam, \ObjectInfo\iFrontColor)
             EndIf
             SetBkMode_(wParam, #TRANSPARENT)
-            ProcedureReturn \ObjectInfo\iBrushEditBoxColor
+            ProcedureReturn \ObjectInfo\hBrushEditBoxColor
           EndIf
         EndIf
         
@@ -821,7 +808,7 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
             
             If *DrawItem\itemID <> -1
               If *DrawItem\itemstate & #ODS_SELECTED
-                FillRect_(*DrawItem\hDC, *DrawItem\rcitem, \ObjectInfo\iBrushHighLightColor)
+                FillRect_(*DrawItem\hDC, *DrawItem\rcitem, \ObjectInfo\hBrushHighLightColor)
               Else
                 FillRect_(*DrawItem\hDC, *DrawItem\rcitem, \ObjectInfo\iBrushBackColor)
               EndIf
@@ -849,10 +836,10 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
           
           If *DrawItem\itemState
             *DrawItem\rcItem\left + 2
-            FillRect_(*DrawItem\hDC, *DrawItem\rcItem, \ObjectInfo\iBrushActiveTabColor)
+            FillRect_(*DrawItem\hDC, *DrawItem\rcItem, \ObjectInfo\hBrushActiveTabColor)
           Else
             *DrawItem\rcItem\top + 2 : *DrawItem\rcItem\bottom + 3   ; Default: \rcItem\bottom + 2 . +3 to decrease the size of the bottom line
-            FillRect_(*DrawItem\hDC, *DrawItem\rcItem, \ObjectInfo\iBrushInactiveTabColor)
+            FillRect_(*DrawItem\hDC, *DrawItem\rcItem, \ObjectInfo\hBrushInactiveTabColor)
           EndIf
           
           SetBkMode_(*DrawItem\hDC, #TRANSPARENT)
@@ -884,7 +871,6 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
         ; ---------- ListIcon and ExplorerList ----------
         *lvCD.NMLVCUSTOMDRAW = lParam
         If *lvCD\nmcd\hdr\code = #NM_CUSTOMDRAW
-          ;Protected Gadget = GetDlgCtrlID_(*lvCD\nmcd\hdr\hWndFrom)
           If IsGadget(*lvCD\nmcd\hdr\idFrom)
             If IsWindowEnabled_(*lvCD\nmcd\hdr\hWndFrom) = #False
               Select GadgetType(*lvCD\nmcd\hdr\idFrom)
@@ -1185,7 +1171,7 @@ Procedure IsBrushUsed(Brush)
     ForEach ObjectTheme()
       If ObjectTheme()\ObjectInfo
         Select Brush
-          Case \iBrushBackColor, \iBrushActiveTabColor, \iBrushInactiveTabColor, \iBrushHighLightColor, \iBrushEditBoxColor, \iBrushTitleBackColor
+          Case \iBrushBackColor, \hBrushActiveTabColor, \hBrushInactiveTabColor, \hBrushHighLightColor, \hBrushEditBoxColor, \hBrushTitleBackColor
             BrushUsed = #True
             Break
         EndSelect
@@ -1209,10 +1195,10 @@ EndProcedure
 
 Macro _SetObjectBrush(Color, BrushColor, SavColor)
   If SavColor <> Color
-    If Not FindMapElement(ObjectBrush(), Str(Color))
-      ObjectBrush(Str(Color)) = CreateSolidBrush_(Color)
+    If FindMapElement(ObjectBrush(), Str(Color))
       BrushColor = ObjectBrush()
     Else
+      ObjectBrush(Str(Color)) = CreateSolidBrush_(Color)
       BrushColor = ObjectBrush()
     EndIf
     
@@ -1232,9 +1218,8 @@ EndMacro
 
 Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
   Protected SavBackColor, ReturnValue = #PB_Default
-  Protected ObjectType.s = Str(*ObjectTheme\PBGadgetType) + "|"
   
-  If Not FindMapElement(ThemeAttribute(), ObjectType + Str(Attribute))
+  If Not FindMapElement(ThemeAttribute(), Str(*ObjectTheme\PBGadgetType) + "|" + Str(Attribute))
     ProcedureReturn ReturnValue
   EndIf
   
@@ -1264,19 +1249,17 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_InactiveTab)
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_EditBoxColor)
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_SplitterBorderColor)
+        _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_UseUxGripper)
         
         Select *ObjectTheme\PBGadgetType
           Case #PB_GadgetType_CheckBox, #PB_GadgetType_ComboBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Panel, #PB_GadgetType_Text, #PB_GadgetType_TrackBar
             _SetObjectBrush(\iBackColor, \iBrushBackColor, SavBackColor)
-            
           Case #PB_GadgetType_ExplorerList, #PB_GadgetType_ListIcon
             _SetObjectBrush(\iBackColor, \iBrushBackColor, SavBackColor)
             SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \iBackColor)
-            
           Case #PB_GadgetType_Calendar, #PB_GadgetType_Container, #PB_GadgetType_Date, #PB_GadgetType_Editor, #PB_GadgetType_HyperLink, #PB_GadgetType_ProgressBar,
                #PB_GadgetType_ExplorerTree, #PB_GadgetType_ListView, #PB_GadgetType_ScrollArea, #PB_GadgetType_Spin, #PB_GadgetType_String, #PB_GadgetType_Tree
             SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \iBackColor)
-            
         EndSelect  
         ReturnValue = #True
         
@@ -1288,8 +1271,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         Else
           \iActiveTabColor = Value
         EndIf
-        
-        _SetObjectBrush(\iActiveTabColor, \iBrushActiveTabColor, SavBackColor)
+        _SetObjectBrush(\iActiveTabColor, \hBrushActiveTabColor, SavBackColor)
         ReturnValue = #True
                 
       ; ---------- InactiveTabColor ----------
@@ -1300,7 +1282,6 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         Else
           \iInactiveTabColor = Value
         EndIf
-        
         _SetObjectBrush(\iInactiveTabColor, \iInactiveTabColor, SavBackColor)
         ReturnValue = #True
         
@@ -1312,8 +1293,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         Else
           \iHighLightColor = Value
         EndIf
-        
-        _SetObjectBrush(\iHighLightColor, \iBrushHighLightColor, SavBackColor)
+        _SetObjectBrush(\iHighLightColor, \hBrushHighLightColor, SavBackColor)
         ReturnValue = #True
         
       ; ---------- EditBoxColor ----------
@@ -1324,8 +1304,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         Else
           \iEditBoxColor = Value
         EndIf
-        
-        _SetObjectBrush(\iEditBoxColor, \iBrushEditBoxColor, SavBackColor)
+        _SetObjectBrush(\iEditBoxColor, \hBrushEditBoxColor, SavBackColor)
         ReturnValue = #True
         
         ; ---------- SplitterBorderColor ----------
@@ -1393,7 +1372,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         EndIf
         Select *ObjectTheme\PBGadgetType
           Case #PB_GadgetType_ExplorerList, #PB_GadgetType_ListIcon
-            _SetObjectBrush(\iTitleBackColor, \iBrushTitleBackColor, SavBackColor)
+            _SetObjectBrush(\iTitleBackColor, \hBrushTitleBackColor, SavBackColor)
           Case #PB_GadgetType_Calendar, #PB_GadgetType_Date
             SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleBackColor, \iTitleBackColor)   ; Display if #PB_Explorer_GridLines used
         EndSelect
@@ -1449,7 +1428,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         EndIf
         If \iUseUxGripper = #False
           Protected SplitterImg
-          If \iSplitterGripper : DeleteObject_(\iSplitterGripper) : EndIf   ; Delete the  Pattern Brush stored in GParentObjectID field
+          If \hSplitterGripper : DeleteObject_(\hSplitterGripper) : EndIf   ; Delete the previous Pattern Brush stored
           If \iSplitterBorder
             SplitterImg = CreateImage(#PB_Any, DesktopScaledX(5), DesktopScaledY(5), 24, \iGripperColor)
           Else
@@ -1459,7 +1438,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
             RoundBox(DesktopScaledX(1), DesktopScaledY(1), DesktopScaledX(3), DesktopScaledY(3), DesktopScaledX(1), DesktopScaledY(1), \iFrontColor)
             StopDrawing()
           EndIf
-          \iSplitterGripper = CreatePatternBrush_(ImageID(SplitterImg))
+          \hSplitterGripper = CreatePatternBrush_(ImageID(SplitterImg))
           FreeImage(SplitterImg)
         EndIf
         ReturnValue = #True 
@@ -1467,10 +1446,6 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
     EndSelect
   EndWith
   
-  ;   If *ObjectTheme\PBGadgetType = #PB_GadgetType_TrackBar And Attribut = #PB_Gadget_BackColor
-  ;     ; Workaround! The TrackBar background color does not refresh and I don't know why, when using : SetObjectThemeAttribute(0, #PB_Gadget_BackColor, $F48E3A) to change the window background color Theme
-  ;     DisableGadget(*ObjectTheme\PBGadget, IsWindowEnabled_(*ObjectTheme\IDGadget)) : DisableGadget(*ObjectTheme\PBGadget, IsWindowEnabled_(*ObjectTheme\IDGadget))
-  ;   EndIf
   If InitLevel
     With *ObjectTheme
       Select \PBGadgetType
@@ -1492,7 +1467,6 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
     EndWith
   EndIf
   
-  ;InvalidateRect_(*ObjectTheme\IDGadget, 0, 1)
   ProcedureReturn ReturnValue
 EndProcedure
 
@@ -1567,8 +1541,7 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
       If \iActiveTabColor = #PB_Default
         \iActiveTabColor = \iBackColor
       EndIf
-      
-      _SetObjectBrush(\iActiveTabColor, \iBrushActiveTabColor, SavBackColor)
+      _SetObjectBrush(\iActiveTabColor, \hBrushActiveTabColor, SavBackColor)
     EndIf
     
     ; ---------- InactiveTabColor ----------
@@ -1578,8 +1551,7 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
       If \iInactiveTabColor = #PB_Default
         If IsDarkColorOT(\iBackColor) : \iInactiveTabColor = AccentColorOT(\iBackColor, 40) : Else : \iInactiveTabColor = AccentColorOT(\iBackColor, -40) : EndIf
       EndIf
-      
-      _SetObjectBrush(\iInactiveTabColor, \iBrushInactiveTabColor, SavBackColor)
+      _SetObjectBrush(\iInactiveTabColor, \hBrushInactiveTabColor, SavBackColor)
     EndIf
     
     ; ---------- HighLightColor ----------
@@ -1589,8 +1561,7 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
       If \iHighLightColor = #PB_Default
         \iHighLightColor = GetSysColor_(#COLOR_HIGHLIGHT)
       EndIf
-      
-      _SetObjectBrush(\iHighLightColor, \iBrushHighLightColor, SavBackColor)
+      _SetObjectBrush(\iHighLightColor, \hBrushHighLightColor, SavBackColor)
     EndIf
     
     ; ---------- EditBoxColor ----------
@@ -1600,8 +1571,7 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
       If \iEditBoxColor = #PB_Default
         If IsDarkColorOT(\iBackColor) : \iEditBoxColor = AccentColorOT(\iBackColor, 15) : Else : \iEditBoxColor = AccentColorOT(\iBackColor, -15) : EndIf
       EndIf
-      
-      _SetObjectBrush(\iEditBoxColor, \iBrushEditBoxColor, SavBackColor)
+      _SetObjectBrush(\iEditBoxColor, \hBrushEditBoxColor, SavBackColor)
     EndIf
     
     ; ---------- SplitterBorderColor ----------
@@ -1662,12 +1632,10 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
       EndIf
       Select *ObjectTheme\PBGadgetType
         Case #PB_GadgetType_ListIcon, #PB_GadgetType_ExplorerList
-          _SetObjectBrush(\iTitleBackColor, \iBrushTitleBackColor, SavBackColor)
+          _SetObjectBrush(\iTitleBackColor, \hBrushTitleBackColor, SavBackColor)
         Case #PB_GadgetType_Calendar, #PB_GadgetType_Date
           SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleBackColor, \iTitleBackColor)   ; Display if #PB_Explorer_GridLines used
       EndSelect
-      
-      SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleBackColor, \iTitleBackColor)   ; Display if #PB_Explorer_GridLines used
     EndIf    
     
     ; ---------- TitleFrontColor ----------
@@ -1711,7 +1679,7 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
       EndIf
       If \iUseUxGripper = #False
         Protected SplitterImg
-        If \iSplitterGripper : DeleteObject_(\iSplitterGripper) : EndIf   ; Delete the  Pattern Brush stored in GParentObjectID field
+        If \hSplitterGripper : DeleteObject_(\hSplitterGripper) : EndIf   ; Delete the previous Pattern Brush stored
         If \iSplitterBorder
           SplitterImg = CreateImage(#PB_Any, DesktopScaledX(5), DesktopScaledY(5), 24, \iGripperColor)
         Else
@@ -1721,7 +1689,7 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
           RoundBox(DesktopScaledX(1), DesktopScaledY(1), DesktopScaledX(3), DesktopScaledY(3), DesktopScaledX(1), DesktopScaledY(1), \iFrontColor)
           StopDrawing()
         EndIf
-        \iSplitterGripper = CreatePatternBrush_(ImageID(SplitterImg))
+        \hSplitterGripper = CreatePatternBrush_(ImageID(SplitterImg))
         FreeImage(SplitterImg)
       EndIf
     EndIf
@@ -1784,7 +1752,6 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
         ;InvalidateRect_(*ObjectTheme\IDGadget, 0, 1)   ; Not required here
         
       Case #PB_GadgetType_Date
-        ;SetWindowTheme_(IDSysDateTimePick32, "", "")    ; Class "SysDateTimePick32"
         ;SetThemeAppProperties_(1)   ; No, otherwise the "DarkMode_Explorer" theme is not displayed for ScrollBars. Otherwise it's not too bad for the Date window size 
         
       Case #PB_GadgetType_ListView
@@ -1823,7 +1790,7 @@ Procedure ButtonThemeProc(hWnd, uMsg, wParam, lParam)
   Else
     ProcedureReturn DefWindowProc_(hWnd, uMsg, wParam, lParam)
   EndIf
-  Protected cX, cY, Margin = 6, Xofset, Yofset, HFlag, VFlag, Text.s, TextLen, TxtHeight, In_Button_Rect, hDC_to_use, Change_Image
+  Protected cX, cY, Margin = 6, Xofset, Yofset, HFlag, VFlag, Text.s, TextLen, TxtHeight, In_Button_Rect, hDC_to_use
   Protected CursorPos.POINT, ps.PAINTSTRUCT, Rect.RECT
   
   Select uMsg
@@ -1984,12 +1951,12 @@ Procedure ButtonThemeProc(hWnd, uMsg, wParam, lParam)
         If (GetWindowLongPtr_(*ObjectTheme\IDGadget, #GWL_STYLE) & (#BS_LEFT | #BS_RIGHT) = (#BS_LEFT | #BS_RIGHT)) : HFlag | #DT_CENTER
         ElseIf (GetWindowLongPtr_(*ObjectTheme\IDGadget, #GWL_STYLE) & #BS_LEFT = #BS_LEFT)                         : HFlag | #DT_LEFT
         ElseIf (GetWindowLongPtr_(*ObjectTheme\IDGadget, #GWL_STYLE) & #BS_RIGHT = #BS_RIGHT)                       : HFlag | #DT_RIGHT
-        Else                                                                                                      : HFlag | #DT_CENTER
+        Else                                                                                                        : HFlag | #DT_CENTER
         EndIf
         If (GetWindowLongPtr_(*ObjectTheme\IDGadget, #GWL_STYLE) & (#BS_TOP | #BS_BOTTOM) = (#BS_TOP | #BS_BOTTOM)) : VFlag | #DT_VCENTER
         ElseIf (GetWindowLongPtr_(*ObjectTheme\IDGadget, #GWL_STYLE) & #BS_TOP = #BS_TOP)                           : VFlag | #DT_TOP
         ElseIf (GetWindowLongPtr_(*ObjectTheme\IDGadget, #GWL_STYLE) & #BS_BOTTOM = #BS_BOTTOM)                     : VFlag | #DT_BOTTOM
-        Else                                                                                                      : VFlag | #DT_VCENTER
+        Else                                                                                                        : VFlag | #DT_VCENTER
         EndIf
         If (GetWindowLongPtr_(*ObjectTheme\IDGadget, #GWL_STYLE) & #BS_MULTILINE = #BS_MULTILINE) 
           VFlag | #DT_WORDBREAK
@@ -2477,7 +2444,6 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
           If \iButtonBackColor = #PB_Default
             \iButtonBackColor = GetSysColor_(#COLOR_WINDOW)
           EndIf
-          ;If IsDarkColorOT(\iButtonBackColor) : \iButtonBackColor = AccentColorOT(\iButtonBackColor, 80) : Else : \iButtonBackColor = AccentColorOT(\iButtonBackColor, -80) : EndIf
           If IsDarkColorOT(\iButtonBackColor) : \iButtonBackColor = AccentColorOT(\iButtonBackColor, 80) : EndIf
         Else
           \iButtonBackColor     = Value
@@ -2604,7 +2570,7 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
     EndSelect
   EndWith
   
-  If InitLevel = #True And Not UpdateButtonTheme(*ObjectTheme)   ; or ChangeButtonTheme(Gadget)
+  If InitLevel = #True And Not UpdateButtonTheme(*ObjectTheme)
     FreeMemory(ObjectTheme()\BtnInfo)
     DeleteMapElement(ObjectTheme())
     ReturnValue = #PB_Default
@@ -2671,7 +2637,6 @@ Procedure AddButtonTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
       If \iButtonBackColor = #PB_Default
         \iButtonBackColor = GetSysColor_(#COLOR_WINDOW)
       EndIf
-      ;If IsDarkColorOT(\iButtonBackColor) : \iButtonBackColor = AccentColorOT(\iButtonBackColor, 80) : Else : \iButtonBackColor = AccentColorOT(\iButtonBackColor, -80) : EndIf
       If IsDarkColorOT(\iButtonBackColor) : \iButtonBackColor = AccentColorOT(\iButtonBackColor, 80) : EndIf  
     EndIf
     
@@ -2894,9 +2859,6 @@ Procedure GetObjectColor(Gadget, Attribute)
       EndWith
       
     Default  
-      ; Case #PB_GadgetType_CheckBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Text, #PB_GadgetType_TrackBar,
-      ;      #PB_GadgetType_Container, #PB_GadgetType_ProgressBar, #PB_GadgetType_ScrollArea, #PB_GadgetType_HyperLink, #PB_GadgetType_Spin, #PB_GadgetType_String,
-      ;      #PB_GadgetType_ExplorerList, #PB_GadgetType_ExplorerTree, #PB_GadgetType_ListIcon, #PB_GadgetType_ListView
       With *ObjectTheme\ObjectInfo
         Select Attribute
           Case #PB_Gadget_BackColor
@@ -3030,7 +2992,7 @@ Procedure FreeObjectTheme()
           ReturnValue = #True
           
         Case #PB_GadgetType_Splitter
-          If \ObjectInfo\iSplitterGripper : DeleteObject_(\ObjectInfo\iSplitterGripper) : EndIf
+          If \ObjectInfo\hSplitterGripper : DeleteObject_(\ObjectInfo\hSplitterGripper) : EndIf
           SetClassLongPtr_(\IDGadget, #GCL_STYLE, GetClassLongPtr_(\IDGadget, #GCL_STYLE) &~ #CS_DBLCLKS)
           SetWindowLongPtr_(\IDGadget, #GWL_STYLE, GetWindowLongPtr_(\IDGadget, #GWL_STYLE) &~ #WS_CLIPCHILDREN)
           SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc)
@@ -3190,7 +3152,7 @@ CompilerIf #PB_Compiler_IsMainFile
       Case #PB_Event_Gadget
         Select EventGadget()
           Case #Checkbox_1
-            ;SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BackColor,  #Cyan)
+            ;SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BackColor, #Cyan)
             ;SetObjectColor(#Combo_1, #PB_Gadget_BackColor,  #Cyan)
             ;SetObjectColor(#Editor_1, #PB_Gadget_BackColor,  #Yellow)
             ;SetObjectColor(#ApplyTheme, #PB_Gadget_BackColor,  #Cyan)
