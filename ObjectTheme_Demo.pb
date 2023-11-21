@@ -204,26 +204,26 @@ Repeat
           If GetGadgetState(#Check_1) = #PB_Checkbox_Checked
             If IsWindow(#Window_1)
               DisableGadget(#Txt_1, #True) : DisableGadget(#Txt_2, #True) : DisableGadget(#Opt_1, #True) : DisableGadget(#Opt_2, #True) : DisableGadget(#Edit_1, #True)
-              DisableGadget(#Date_1, #True) : DisableGadget(#Frame_1, #True) : DisableGadget(#ListIcon_1, #True) : DisableGadget(#Hyper_1, #True)
+              DisableGadget(#Date_1, #True) : DisableGadget(#Frame_1, #True) : DisableGadget(#ListView_1, #True) : DisableGadget(#Hyper_1, #True)
               DisableGadget(#Progres_1, #True) : DisableGadget(#Spin_1, #True) : DisableGadget(#String_1, #True) : DisableGadget(#Splitter_1, #True)
               DisableGadget(#Panel_1, #True) : DisableGadget(#Calend_1, #True) : DisableGadget(#Combo_1, #True) : DisableGadget(#ApplyTheme_1, #True)
             EndIf
             If IsWindow(#Window_2)
-              DisableGadget(#ExpList_1, #True) : DisableGadget(#ExpTree_1, #True) : DisableGadget(#ListView_1, #True) : DisableGadget(#Splitter_2, #True) : DisableGadget(#Combo_2, #True)
-              DisableGadget(#ScrlArea_1, #True) : DisableGadget(#Cont_2, #True) : DisableGadget(#Track_1, #True) : DisableGadget(#Scrlbar_1, #True)
-              DisableGadget(#Tree_1, #True) : DisableGadget(#String_2, #True) : DisableGadget(#Combo_3, #True) : DisableGadget(#ApplyTheme_2, #True)
+              DisableGadget(#ExpList_1, #True) : DisableGadget(#ExpTree_1, #True) :  DisableGadget(#ListIcon_1, #True) : DisableGadget(#Splitter_2, #True)
+              DisableGadget(#Combo_2, #True) : DisableGadget(#ScrlArea_1, #True) : DisableGadget(#Cont_2, #True) : DisableGadget(#Track_1, #True)
+              DisableGadget(#Scrlbar_1, #True) : DisableGadget(#Tree_1, #True) : DisableGadget(#String_2, #True) : DisableGadget(#Combo_3, #True) : DisableGadget(#ApplyTheme_2, #True)
             EndIf
           Else
             If IsWindow(#Window_1)
               DisableGadget(#Txt_1, #False) : DisableGadget(#Txt_2, #False) : DisableGadget(#Opt_1, #False) : DisableGadget(#Opt_2, #False) : DisableGadget(#Edit_1, #False)
-              DisableGadget(#Date_1, #False) : DisableGadget(#Frame_1, #False) : DisableGadget(#ListIcon_1, #False) : DisableGadget(#Hyper_1, #False)
+              DisableGadget(#Date_1, #False) : DisableGadget(#Frame_1, #False) : DisableGadget(#ListView_1, #True) : DisableGadget(#Hyper_1, #False)
               DisableGadget(#Progres_1, #False) : DisableGadget(#Spin_1, #False) : DisableGadget(#String_1, #False) : DisableGadget(#Splitter_1, #False)
               DisableGadget(#Panel_1, #False) : DisableGadget(#Calend_1, #False) : DisableGadget(#Combo_1, #False) : DisableGadget(#ApplyTheme_1, #False)
             EndIf
             If IsWindow(#Window_2)
-              DisableGadget(#ExpList_1, #False) : DisableGadget(#ExpTree_1, #False) : DisableGadget(#ListView_1, #False) : DisableGadget(#Splitter_2, #False) : DisableGadget(#Combo_2, #False)
-              DisableGadget(#ScrlArea_1, #False) : DisableGadget(#Cont_2, #False) : DisableGadget(#Track_1, #False) : DisableGadget(#Scrlbar_1, #False)
-              DisableGadget(#Tree_1, #False) : DisableGadget(#String_2, #False) : DisableGadget(#Combo_3, #False) : DisableGadget(#ApplyTheme_2, #False)
+              DisableGadget(#ExpList_1, #False) : DisableGadget(#ExpTree_1, #False) : DisableGadget(#ListIcon_1, #False) : DisableGadget(#Splitter_2, #False)
+              : DisableGadget(#Combo_2, #False) :DisableGadget(#ScrlArea_1, #False) : DisableGadget(#Cont_2, #False) : DisableGadget(#Track_1, #False)
+              DisableGadget(#Scrlbar_1, #False) : DisableGadget(#Tree_1, #False) : DisableGadget(#String_2, #False) : DisableGadget(#Combo_3, #False) : DisableGadget(#ApplyTheme_2, #False)
             EndIf
           EndIf
           
