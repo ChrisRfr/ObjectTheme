@@ -1,16 +1,17 @@
 ﻿;- Top
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
-;          Title: Demo for Object Theme Library (for Dark or Light Theme)
-;    Description: This library will add and apply a theme color for All Windows and Gadgets.
-;                 And for All possible color attributes (BackColor, FrontColor, TitleBackColor,...) for each of them
-;                 All gadgets will still work in the same way as PureBasic Gadget
-;    Source Name: ObjectTheme_Demo.pb
-;         Author: ChrisR
-;  Creation Date: 2023-11-06
-;        Version: 1.0
-;     PB-Version: 6.0 or other
-;             OS: Windows Only
-;          Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
+;             Title: Demo for Object Theme Library (for Dark or Light Theme)
+;       Description: This library will add and apply a theme color for All Windows and Gadgets.
+;                    And for All possible color attributes (BackColor, FrontColor, TitleBackColor,...) for each of them
+;                    All gadgets will still work in the same way as PureBasic Gadget
+;       Source Name: ObjectTheme_Demo.pb
+;            Author: ChrisR
+;     Creation Date: 2023-11-06
+; modification Date: 2023-11-21
+;           Version: 1.1
+;        PB-Version: 6.0 or other
+;                OS: Windows Only
+;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
 
 EnableExplicit
@@ -193,9 +194,12 @@ Repeat
         Case #Check_1                             
           ; For Testing
           ;SetObjectThemeAttribute(0, #PB_Gadget_BackColor,  #Red)
+          ;SetWindowColor(#Window_1, #Red)
           ;SetObjectTypeColor(#PB_GadgetType_Button, #PB_Gadget_FrontColor, #Red)
           ;SetObjectColor(#Progres_1, #PB_Gadget_BackColor,  #Yellow)
           ;SetObjectColor(#Progres_1, #PB_Gadget_FrontColor, #Red)
+          ;SetGadgetColor(#Progres_1, #PB_Gadget_BackColor,  #Yellow)
+          ;SetGadgetColor(#Progres_1, #PB_Gadget_FrontColor, #Red)
           ; For Testing Disabled Gadgets
           If GetGadgetState(#Check_1) = #PB_Checkbox_Checked
             If IsWindow(#Window_1)

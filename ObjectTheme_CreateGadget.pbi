@@ -444,6 +444,7 @@ Procedure _TreeGadget(Gadget, X, Y, Width, Height, Flags)
 EndProcedure
 
 Procedure _SetGadgetAttribute(Gadget, Attribute, Value)
+  _ProcedureReturnIfOT(Not IsGadget(Gadget))
   
   If MapSize(ThemeAttribute()) > 0
     If GadgetType(Gadget) = #PB_GadgetType_ButtonImage
@@ -479,13 +480,14 @@ EndProcedure
 
 
 Procedure _SetWindowColor(Window, Color)
+  _ProcedureReturnIfOT(Not IsWindow(Window))
   
   If MapSize(ThemeAttribute()) > 0
     If FindMapElement(ObjectTheme(), Str(WindowID(Window)))
       If Color = #PB_Default
         Color = GetSysColor_(#COLOR_WINDOW)
       EndIf
-      ObjectTheme()\ObjectInfo\iBackColor = Color
+      ProcedureReturn SetWindowThemeColor(ObjectTheme(), #PB_Gadget_BackColor, Color)
     EndIf
   EndIf
   
@@ -493,24 +495,16 @@ Procedure _SetWindowColor(Window, Color)
 EndProcedure
 
 Procedure _SetGadgetColor(Gadget, Attribute, Color)
+  _ProcedureReturnIfOT(Not IsGadget(Gadget))
   
-  ; Useful only if called externally, not from ObjectTheme.pbi, the color is already written in this case
   With ObjectTheme()\ObjectInfo
     If FindMapElement(ThemeAttribute(), Str(GadgetType(Gadget)) + "|" + Str(Attribute))
       If FindMapElement(ObjectTheme(), Str(GadgetID(Gadget)))
         Select ObjectTheme()\PBGadgetType
-          Case #PB_Gadget_FrontColor
-            \iFrontColor      = Color
-          Case #PB_Gadget_BackColor
-            \iBackColor       = Color
-          Case #PB_Gadget_LineColor
-            \iLineColor       = Color
-          Case #PB_Gadget_TitleFrontColor
-            \iTitleFrontColor = Color
-          Case #PB_Gadget_TitleBackColor
-            \iTitleBackColor  = Color
-          Case #PB_Gadget_GrayTextColor
-            \iGrayTextColor   = Color
+          Case #PB_GadgetType_Button, #PB_GadgetType_ButtonImage
+            ProcedureReturn SetObjectButtonColor(ObjectTheme(), Attribute, Color)
+          Default
+            ProcedureReturn SetObjectThemeColor(ObjectTheme(), Attribute, Color)
         EndSelect
       EndIf 
     EndIf

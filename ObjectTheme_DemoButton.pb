@@ -1,16 +1,17 @@
 ﻿;- Top
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
-;          Title: Demo Button for Object Theme Library (for Dark or Light Theme)
-;    Description: This library will add and apply a theme color for All Windows and Gadgets.
-;                 And for All possible color attributes (BackColor, FrontColor, TitleBackColor,...) for each of them
-;                 All gadgets will still work in the same way as PureBasic Gadget
-;    Source Name: ObjectTheme_DemoButton.pb
-;         Author: ChrisR
-;  Creation Date: 2023-11-06
-;        Version: 1.0
-;     PB-Version: 6.0 or other
-;             OS: Windows Only
-;          Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
+;             Title: Demo Button for Object Theme Library (for Dark or Light Theme)
+;       Description: This library will add and apply a theme color for All Windows and Gadgets.
+;                    And for All possible color attributes (BackColor, FrontColor, TitleBackColor,...) for each of them
+;                    All gadgets will still work in the same way as PureBasic Gadget
+;       Source Name: ObjectTheme_DemoButton.pb
+;            Author: ChrisR
+;     Creation Date: 2023-11-06
+; modification Date: 2023-11-21
+;           Version: 1.1
+;        PB-Version: 6.0 or other
+;                OS: Windows Only
+;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
 
 ;- ---> Add XIncludeFile "ObjectTheme.pbi"

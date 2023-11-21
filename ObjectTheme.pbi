@@ -1,16 +1,17 @@
 ;- Top
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
-;          Title: Object Theme Library (for Dark or Light Theme)
-;    Description: This library will add and apply a theme color for All Windows and Gadgets.
-;                 And for All possible color attributes (BackColor, FrontColor, TitleBackColor,...) for each of them
-;                 All gadgets will still work in the same way as PureBasic Gadget
-;    Source Name: ObjectTheme.pbi
-;         Author: ChrisR
-;  Creation Date: 2023-11-06
-;        Version: 1.0
-;     PB-Version: 6.0 or other
-;             OS: Windows Only
-;          Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
+;             Title: Object Theme Library (for Dark or Light Theme)
+;       Description: This library will add and apply a theme color for All Windows and Gadgets.
+;                    And for All possible color attributes (BackColor, FrontColor, TitleBackColor,...) for each of them
+;                    All gadgets will still work in the same way as PureBasic Gadget
+;       Source Name: ObjectTheme.pbi
+;            Author: ChrisR
+;     Creation Date: 2023-11-06
+; modification Date: 2023-11-21
+;           Version: 1.1
+;        PB-Version: 6.0 or other
+;                OS: Windows Only
+;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
 ;
 ; Supported Gadget:
@@ -68,6 +69,10 @@
 
 ;EnableExplicit
 
+CompilerIf #PB_Compiler_Debugger = #False
+  #EnableOnError = #True   ; #False | #True. Disable if you are already using OnError
+CompilerEndIf
+
 Enumeration ObjectTheme 0
   #ObjectTheme
   #ObjectTheme_DarkBlue
@@ -86,24 +91,24 @@ EndEnumeration
 ;#PB_Gadget_TitleBackColor
 ;#PB_Gadget_GrayTextColor
 Enumeration #PB_Gadget_GrayTextColor + 1
-  #PB_Gadget_DarkMode
-  #PB_Gadget_ActiveTab
-  #PB_Gadget_InactiveTab
-  #PB_Gadget_HighLightColor
-  #PB_Gadget_EditBoxColor
-  #PB_Gadget_OuterColor
-  #PB_Gadget_CornerColor
-  #PB_Gadget_GrayBackColor
-  #PB_Gadget_EnableShadow
-  #PB_Gadget_ShadowColor
-  #PB_Gadget_BorderColor
-  #PB_Gadget_RoundX
-  #PB_Gadget_RoundY
-  #PB_Gadget_SplitterBorder
-  #PB_Gadget_SplitterBorderColor
-  #PB_Gadget_UseUxGripper          ; #False = Custom, #True = Uxtheme. For Splitter
-  #PB_Gadget_GripperColor
-  #PB_Gadget_LargeGripper
+  #PB_Gadget_DarkMode              ; Enable or disable DarkMode Explorer theme
+  #PB_Gadget_ActiveTab             ; Panel: active tab color
+  #PB_Gadget_InactiveTab           ; Panel: inactive tab color
+  #PB_Gadget_HighLightColor        ; ComboBox: high-light color of the item selected in the drop-down list
+  #PB_Gadget_EditBoxColor          ; ComboBox: editable box color
+  #PB_Gadget_OuterColor            ; Button & ButtonImage: outer gradient color. Gradient from the current background color to the Outer Color
+  #PB_Gadget_CornerColor           ; Button & ButtonImage: color of the 4 corners outside the RoundBox border, usually the window color
+  #PB_Gadget_GrayBackColor         ; Button & ButtonImage: gray background color
+  #PB_Gadget_EnableShadow          ; Button & ButtonImage: enable or disable shadow for texts
+  #PB_Gadget_ShadowColor           ; Button & ButtonImage: Texts shadow color 
+  #PB_Gadget_BorderColor           ; Button & ButtonImage: border color
+  #PB_Gadget_RoundX                ; Button & ButtonImage: Radius of rounded corners of buttons in X direction
+  #PB_Gadget_RoundY                ; Button & ButtonImage: Radius of rounded corners of buttons in Y direction
+  #PB_Gadget_SplitterBorder        ; Splitter: enable or disable border
+  #PB_Gadget_SplitterBorderColor   ; Splitter: border color
+  #PB_Gadget_UseUxGripper          ; Splitter: #False = Custom, #True = Uxtheme. For Splitter
+  #PB_Gadget_GripperColor          ; Splitter: gripper color
+  #PB_Gadget_LargeGripper          ; Splitter: large or small gripper
 EndEnumeration
 
 #PB_Gadget_END = 99
@@ -112,22 +117,22 @@ Structure ObjectBTN_INFO
   sButtonText.s
   bButtonState.b
   bButtonEnable.b
-  iButtonBackColor.i
-  iButtonOuterColor.i
-  iButtonCornerColor.i
-  iGrayBackColor.i
+  lButtonBackColor.l
+  lButtonOuterColor.l
+  lButtonCornerColor.l
+  lGrayBackColor.l
   iActiveFont.i
-  iFrontColor.i
-  iGrayTextColor.i
+  lFrontColor.l
+  lGrayTextColor.l
   bEnableShadow.b
-  iShadowColor.i
-  iBorderColor.i
+  lShadowColor.l
+  lBorderColor.l
   iButtonImage.i
   iButtonImageID.i
   iButtonPressedImage.i
   iButtonPressedImageID.i
-  iRoundX.i
-  iRoundY.i
+  lRoundX.l
+  lRoundY.l
   bMouseOver.b
   bHiLiteTimer.b
   bClickTimer.b
@@ -150,28 +155,28 @@ Structure ObjectBTN_INFO
 EndStructure
 
 Structure ObjectInfo_INFO
-  iBackColor.i
-  iBrushBackColor.i
-  iFrontColor.i
-  iGrayTextColor.i
-  iLineColor.i
-  iTitleBackColor.i
+  lBackColor.l
+  lBrushBackColor.l
+  lFrontColor.l
+  lGrayTextColor.l
+  lLineColor.l
+  lTitleBackColor.l
   hBrushTitleBackColor.i
-  iTitleFrontColor.i
-  iActiveTabColor.i
+  lTitleFrontColor.l
+  lActiveTabColor.l
   hBrushActiveTabColor.i
-  iInactiveTabColor.i
+  lInactiveTabColor.l
   hBrushInactiveTabColor.i
-  iHighLightColor.i
+  lHighLightColor.l
   hBrushHighLightColor.i
-  iEditBoxColor.i
+  lEditBoxColor.l
   hBrushEditBoxColor.i
-  hSplitterGripper.i
-  iSplitterBorder.i
-  iSplitterBorderColor.i
-  iUseUxGripper.i
-  iGripperColor.i
-  iLargeGripper.i
+  hObjSplitterGripper.i
+  bSplitterBorder.b
+  lSplitterBorderColor.l
+  bUseUxGripper.b
+  lGripperColor.l
+  bLargeGripper.b
 EndStructure
 
 Structure ObjectTheme_INFO
@@ -320,10 +325,95 @@ Macro _SetExplorerTheme(_GadgetID_)
   EndIf
 EndMacro
 
-;- IncludeFile CreateGadget DataSection.pbi
-XIncludeFile "ObjectTheme_CreateGadget.pbi"
-XIncludeFile "ObjectTheme_DataSection.pbi"
-
+CompilerIf #PB_Compiler_Debugger = #False
+  CompilerIf #EnableOnError
+    
+    CompilerIf Not #PB_Compiler_LineNumbering
+      If MessageRequester("ObjectTheme OnError warning", "Enable OnError line numbering support in the compiler options." +#CRLF$+ "To get the source file name and error line number." +#CRLF$+#CRLF$+ "Continue?", #PB_MessageRequester_YesNo | #PB_MessageRequester_Warning) = #PB_MessageRequester_No
+        End
+      EndIf
+    CompilerEndIf
+    
+    Declare ErrorHandler()
+    
+    Procedure ErrorHandler()
+      Protected EventID, SystemInfo.SYSTEM_INFO, ErrorMessage.s
+      Protected ErrorHandler_Window, ErrorHandler_ExitBtn, ErrorHandler_clipboardBtn
+      
+      #PROCESSOR_ARCHITECTURE_INTEL = 0
+      #PROCESSOR_ARCHITECTURE_AMD64 = 9   ; AMD or Intel 64bit processor (std defined by AMD)
+      
+      ;Protected FileVersion = GetFileProperty(ProgramFilename(), "FileVersion")   ;"FileVersion","FileDescription","LegalCopyright","InternalName","OriginalFilename","ProductName","ProductVersion","CompanyName","LegalTrademarks","SpecialBuild","PrivateBuild","Comments","Language","Email","Website","Special"
+      ;ErrorMessage + "ObjecTheme Version: " + FileVersion +#CRLF$
+      ErrorMessage + "ObjecTheme" +#CRLF$+#CRLF$
+      
+      Select OSVersion()
+        Case #PB_OS_Windows_8_1            : ErrorMessage + "Windows: 8.1"
+        Case #PB_OS_Windows_8              : ErrorMessage + "Windows: 8"
+        Case #PB_OS_Windows_XP             : ErrorMessage + "Windows: XP"
+        Case #PB_OS_Windows_Vista          : ErrorMessage + "Windows: Vista"
+        Case #PB_OS_Windows_7              : ErrorMessage + "Windows: 7"
+        Case #PB_OS_Windows_2000           : ErrorMessage + "Windows: 2000"
+        Case #PB_OS_Windows_95             : ErrorMessage + "Windows: 95"
+        Case #PB_OS_Windows_98             : ErrorMessage + "Windows: 98"
+        Case #PB_OS_Windows_Future         : ErrorMessage + "Windows: Future"
+        Case #PB_OS_Windows_ME             : ErrorMessage + "Windows: ME"
+        Case #PB_OS_Windows_NT3_51         : ErrorMessage + "Windows: NT3_51"
+        Case #PB_OS_Windows_NT_4           : ErrorMessage + "Windows: NT_4"
+        Case #PB_OS_Windows_Server_2003    : ErrorMessage + "Windows: Server_2003"
+        Case #PB_OS_Windows_Server_2008    : ErrorMessage + "Windows: Server_2008"
+        Case #PB_OS_Windows_Server_2008_R2 : ErrorMessage + "Windows: Server_2008_R2"
+        Case #PB_OS_Windows_Server_2012    : ErrorMessage + "Windows: Server_2012"
+        Case #PB_OS_Windows_Server_2012_R2 : ErrorMessage + "Windows: Server_2012_R2"
+        Case #PB_OS_Windows_10             : ErrorMessage + "Windows: 10"
+        Case #PB_OS_Windows_11             : ErrorMessage + "Windows: 11"
+      EndSelect
+      
+      GetSystemInfo_(SystemInfo)
+      Select SystemInfo\wProcessorArchitecture
+        Case #PROCESSOR_ARCHITECTURE_AMD64 : ErrorMessage + " x64" +#CRLF$
+        Case #PROCESSOR_ARCHITECTURE_INTEL : ErrorMessage + " x86"+#CRLF$
+      EndSelect
+      
+      CompilerIf #PB_Compiler_LineNumbering
+        ErrorMessage + "Source Code File: " + GetFilePart(ErrorFile()) +#CRLF$
+        ErrorMessage + "Source Code Line: " + Str(ErrorLine()) +#CRLF$
+      CompilerEndIf
+      
+      ErrorMessage +#CRLF$+ "Error Message: " + ErrorMessage()  +#CRLF$
+      If ErrorCode() = #PB_OnError_InvalidMemory   
+        ErrorMessage + "Target Address: " + Str(ErrorTargetAddress()) +#CRLF$
+      EndIf
+      
+      ErrorHandler_Window = OpenWindow(#PB_Any, 0, 0, DesktopScaledX(520), DesktopScaledY(230), "ObjectTheme: an Error Occured, Sorry!", #PB_Window_ScreenCentered)
+      If ErrorHandler_Window
+        TextGadget(#PB_Any,   DesktopScaledX(10),  DesktopScaledY(10),  DesktopScaledX(500), DesktopScaledY(17), "Please Send this Information by PM or on ObjectTheme Topic, in Purebasic Forum.")
+        TextGadget(#PB_Any,   DesktopScaledX(10),  DesktopScaledY(27),  DesktopScaledX(500), DesktopScaledY(17), "If You Remember the Last Manipulations Done, Please Pass Them on to Try to Reproduce.")
+        
+        StringGadget(#PB_Any, DesktopScaledX(10),  DesktopScaledY(50),  DesktopScaledX(500), DesktopScaledY(140), ErrorMessage, #ES_MULTILINE|#WS_VSCROLL)
+        
+        ErrorHandler_clipboardBtn = ButtonGadget(#PB_Any, DesktopScaledX(10),  DesktopScaledY(195), DesktopScaledX(120), DesktopScaledY(30), "Copy to Clipboard")
+        ErrorHandler_ExitBtn      = ButtonGadget(#PB_Any, DesktopScaledX(390), DesktopScaledY(195), DesktopScaledX(120), DesktopScaledY(30), "Exit")
+        
+        Repeat
+          Select WaitWindowEvent()
+            Case #PB_Event_CloseWindow
+              Break
+            Case #PB_Event_Gadget
+              Select EventGadget()
+                Case ErrorHandler_ExitBtn
+                  CloseWindow(ErrorHandler_Window)
+                  Break
+                Case  ErrorHandler_clipboardBtn 
+                  SetClipboardText(ErrorMessage)
+              EndSelect
+          EndSelect
+        ForEver
+      EndIf
+      
+    EndProcedure
+  CompilerEndIf
+CompilerEndIf
 ;
 ; -----------------------------------------------------------------------------
 ;- ----- Color & Filter -----
@@ -393,28 +483,28 @@ EndProcedure
 
 Procedure SplitterPaint(hWnd, hdc, *rc.RECT, *ObjectTheme.ObjectTheme_INFO)
   With *ObjectTheme\ObjectInfo
-    If \iSplitterBorder
-      SetDCBrushColor_(hdc, \iSplitterBorderColor)
+    If \bSplitterBorder
+      SetDCBrushColor_(hdc, \lSplitterBorderColor)
     Else
-      SetDCBrushColor_(hdc, \iBackColor)
+      SetDCBrushColor_(hdc, \lBackColor)
     EndIf
     FrameRect_(hdc, *rc, GetStockObject_(#DC_BRUSH))
     InflateRect_(*rc, -1, -1)
-    SetDCBrushColor_(hdc, \iBackColor)
+    SetDCBrushColor_(hdc, \lBackColor)
     FillRect_(hdc, *rc, GetStockObject_(#DC_BRUSH))
     
-    If \iUseUxGripper
+    If \bUseUxGripper
       Protected htheme = OpenThemeData_(hWnd, "Rebar")
       If htheme
         If *rc\right-*rc\left < *rc\bottom-*rc\top
-          If \iLargeGripper
+          If \bLargeGripper
             InflateRect_(*rc, (*rc\bottom-*rc\top-DesktopScaledX(5))/2, -(*rc\bottom-*rc\top-1)/2 +DesktopScaledY(11))
           Else
             InflateRect_(*rc, (*rc\bottom-*rc\top-DesktopScaledX(5))/2, -(*rc\bottom-*rc\top-1)/2 +DesktopScaledY(7))
           EndIf
           DrawThemeBackground_(htheme, hdc, 1, 0, *rc, 0)
         Else
-          If \iLargeGripper
+          If \bLargeGripper
             InflateRect_(*rc, -(*rc\right-*rc\left-1)/2 +DesktopScaledX(11), (*rc\bottom-*rc\top-DesktopScaledY(5))/2)
           Else
             InflateRect_(*rc, -(*rc\right-*rc\left-1)/2 +DesktopScaledX(7), (*rc\bottom-*rc\top-DesktopScaledY(5))/2)
@@ -425,20 +515,20 @@ Procedure SplitterPaint(hWnd, hdc, *rc.RECT, *ObjectTheme.ObjectTheme_INFO)
       EndIf
     Else
       If *rc\right-*rc\left < *rc\bottom-*rc\top
-        If \iLargeGripper
+        If \bLargeGripper
           InflateRect_(*rc, (*rc\right-*rc\left-DesktopScaledX(5))/2, -(*rc\bottom-*rc\top-1)/2 +DesktopScaledY(11))
         Else
           InflateRect_(*rc, (*rc\right-*rc\left-DesktopScaledX(5))/2, -(*rc\bottom-*rc\top-1)/2 +DesktopScaledY(7))
         EndIf
       Else
-        If \iLargeGripper
+        If \bLargeGripper
           InflateRect_(*rc, -(*rc\right-*rc\left-1)/2 +DesktopScaledX(11), (*rc\bottom-*rc\top-DesktopScaledY(5))/2)
         Else
           InflateRect_(*rc, -(*rc\right-*rc\left-1)/2 +DesktopScaledX(7),  (*rc\bottom-*rc\top-DesktopScaledY(5))/2)
         EndIf
       EndIf
       SetBrushOrgEx_(hdc, *rc\left, *rc\top, 0)
-      FillRect_(hdc, *rc, \hSplitterGripper)
+      FillRect_(hdc, *rc, \hObjSplitterGripper)
       SetBrushOrgEx_(hdc, 0, 0, 0)
     EndIf
   EndWith
@@ -464,7 +554,7 @@ Procedure SplitterProc(hWnd, uMsg, wParam, lParam)
             If \OldProc
               SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc)
             EndIf
-            If \ObjectInfo\hSplitterGripper : DeleteObject_(\ObjectInfo\hSplitterGripper) : EndIf
+            If \ObjectInfo\hObjSplitterGripper : DeleteObject_(\ObjectInfo\hObjSplitterGripper) : EndIf
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
           EndIf
@@ -516,7 +606,7 @@ Procedure PanelProc(hWnd, uMsg, wParam, lParam)
             If \OldProc
               SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc)
             EndIf
-            If \ObjectInfo\hSplitterGripper : DeleteObject_(\ObjectInfo\hSplitterGripper) : EndIf
+            If \ObjectInfo\hObjSplitterGripper : DeleteObject_(\ObjectInfo\hObjSplitterGripper) : EndIf
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
           EndIf
@@ -536,9 +626,9 @@ Procedure PanelProc(hWnd, uMsg, wParam, lParam)
       Case #WM_ERASEBKGND
         *DrawItem.DRAWITEMSTRUCT = wParam
         GetClientRect_(hWnd, Rect)
-        FillRect_(wParam, @Rect, \ObjectInfo\iBrushBackColor)
+        FillRect_(wParam, @Rect, \ObjectInfo\lBrushBackColor)
         Rect\top = 0 : Rect\bottom = GetGadgetAttribute(\PBGadget, #PB_Panel_TabHeight)
-        FillRect_(wParam, @Rect, \ObjectInfo\iBrushBackColor)
+        FillRect_(wParam, @Rect, \ObjectInfo\lBrushBackColor)
         ProcedureReturn #True
         
     EndSelect
@@ -560,8 +650,8 @@ Procedure ListIconProc(hWnd, uMsg, wParam, lParam)
   With *ObjectTheme
   Select uMsg
     Case #WM_NCDESTROY
-      Protected SavBackColor = \ObjectInfo\iBackColor
-      Protected SavTitleBackColor = \ObjectInfo\iTitleBackColor
+      Protected SavBackColor = \ObjectInfo\lBackColor
+      Protected SavTitleBackColor = \ObjectInfo\lTitleBackColor
       If \OldProc
         SetWindowLongPtr_(hWnd, #GWLP_WNDPROC, \OldProc)
       EndIf
@@ -589,7 +679,7 @@ Procedure ListIconProc(hWnd, uMsg, wParam, lParam)
               *pnmCDraw\rc\bottom - 1 : *pnmCDraw\rc\right - 1
               SetBkMode_(*pnmCDraw\hdc, #TRANSPARENT)
               FillRect_(*pnmCDraw\hdc, *pnmCDraw\rc, \ObjectInfo\hBrushTitleBackColor)
-              SetTextColor_(*pnmCDraw\hdc, \ObjectInfo\iTitleFrontColor)
+              SetTextColor_(*pnmCDraw\hdc, \ObjectInfo\lTitleFrontColor)
               If *pnmCDraw\rc\right > *pnmCDraw\rc\left
                 DrawText_(*pnmCDraw\hdc, @Text, Len(Text), *pnmCDraw\rc, #DT_CENTER | #DT_VCENTER | #DT_SINGLELINE | #DT_END_ELLIPSIS)
               EndIf
@@ -624,9 +714,9 @@ Procedure CalendarProc(hWnd, uMsg, wParam, lParam)
         
       Case #WM_ENABLE    
         If wParam = #False
-          Protected TextColor = \ObjectInfo\iGrayTextColor
+          Protected TextColor = \ObjectInfo\lGrayTextColor
         Else
-          TextColor = \ObjectInfo\iFrontColor
+          TextColor = \ObjectInfo\lFrontColor
         EndIf
         SendMessage_(hWnd, #MCM_SETCOLOR, #MCSC_TEXT, TextColor)
         SendMessage_(hWnd, #MCM_SETCOLOR, #MCSC_TITLETEXT, TextColor)
@@ -660,17 +750,17 @@ Procedure EditorProc(hWnd, uMsg, wParam, lParam)
       Case #WM_ENABLE
         If wParam
           SetWindowLongPtr_(hWnd, #GWL_EXSTYLE, GetWindowLongPtr_(hWnd, #GWL_EXSTYLE) &~ #WS_EX_TRANSPARENT)
-          SetGadgetColor(\PBGadget, #PB_Gadget_FrontColor, \ObjectInfo\iFrontColor)
+          SetGadgetColor(\PBGadget, #PB_Gadget_FrontColor, \ObjectInfo\lFrontColor)
         Else
           SetWindowLongPtr_(hWnd, #GWL_EXSTYLE, GetWindowLongPtr_(hWnd, #GWL_EXSTYLE) | #WS_EX_TRANSPARENT)
-          SetGadgetColor(\PBGadget, #PB_Gadget_FrontColor, \ObjectInfo\iGrayTextColor)
+          SetGadgetColor(\PBGadget, #PB_Gadget_FrontColor, \ObjectInfo\lGrayTextColor)
         EndIf
         ProcedureReturn #False
         
       Case #WM_ERASEBKGND
         Protected Rect.RECT
         GetClientRect_(hWnd, Rect)
-        FillRect_(wParam, @Rect, \ObjectInfo\iBrushBackColor)
+        FillRect_(wParam, @Rect, \ObjectInfo\lBrushBackColor)
         ProcedureReturn #True
         
     EndSelect
@@ -691,7 +781,7 @@ Procedure StaticProc(hWnd, uMsg, wParam, lParam)
   With *ObjectTheme
     Select uMsg
       Case #WM_NCDESTROY
-        Protected SavBackColor = \ObjectInfo\iBackColor
+        Protected SavBackColor = \ObjectInfo\lBackColor
         If \OldProc
           SetWindowLongPtr_(hWnd, #GWLP_WNDPROC, \OldProc)
         EndIf
@@ -737,7 +827,7 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
             If \OldProc
               SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc)
             EndIf
-            If \ObjectInfo\hSplitterGripper : DeleteObject_(\ObjectInfo\hSplitterGripper) : EndIf
+            If \ObjectInfo\hObjSplitterGripper : DeleteObject_(\ObjectInfo\hObjSplitterGripper) : EndIf
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
           EndIf
@@ -761,12 +851,12 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
         Select *ObjectTheme\PBGadgetType
           Case #PB_GadgetType_CheckBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Text, #PB_GadgetType_TrackBar
             If IsWindowEnabled_(\IDGadget) = #False
-              SetTextColor_(wParam, \ObjectInfo\iGrayTextColor)
+              SetTextColor_(wParam, \ObjectInfo\lGrayTextColor)
             Else
-              SetTextColor_(wParam, \ObjectInfo\iFrontColor)
+              SetTextColor_(wParam, \ObjectInfo\lFrontColor)
             EndIf
             SetBkMode_(wParam, #TRANSPARENT)
-            ProcedureReturn \ObjectInfo\iBrushBackColor
+            ProcedureReturn \ObjectInfo\lBrushBackColor
         EndSelect
         
       ; ----------  BoxGadget ----------
@@ -785,9 +875,9 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
               SendMessage_(lParam, #EM_SETSEL, 0, 0)   ; Deselect the ComboBox editable string if not the active Gadget
             EndIf
             If IsWindowEnabled_(\IDGadget) = #False
-              SetTextColor_(wParam, \ObjectInfo\iGrayTextColor)
+              SetTextColor_(wParam, \ObjectInfo\lGrayTextColor)
             Else
-              SetTextColor_(wParam, \ObjectInfo\iFrontColor)
+              SetTextColor_(wParam, \ObjectInfo\lFrontColor)
             EndIf
             SetBkMode_(wParam, #TRANSPARENT)
             ProcedureReturn \ObjectInfo\hBrushEditBoxColor
@@ -810,14 +900,14 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
               If *DrawItem\itemstate & #ODS_SELECTED
                 FillRect_(*DrawItem\hDC, *DrawItem\rcitem, \ObjectInfo\hBrushHighLightColor)
               Else
-                FillRect_(*DrawItem\hDC, *DrawItem\rcitem, \ObjectInfo\iBrushBackColor)
+                FillRect_(*DrawItem\hDC, *DrawItem\rcitem, \ObjectInfo\lBrushBackColor)
               EndIf
               
               SetBkMode_(*DrawItem\hDC, #TRANSPARENT)
               If IsWindowEnabled_(\IDGadget) = #False
-                SetTextColor_(*DrawItem\hDC, \ObjectInfo\iGrayTextColor)
+                SetTextColor_(*DrawItem\hDC, \ObjectInfo\lGrayTextColor)
               Else
-                SetTextColor_(*DrawItem\hDC, \ObjectInfo\iFrontColor)
+                SetTextColor_(*DrawItem\hDC, \ObjectInfo\lFrontColor)
               EndIf
               Text = GetGadgetItemText(*DrawItem\CtlID, *DrawItem\itemID)
               *DrawItem\rcItem\left + DesktopScaledX(4)
@@ -844,9 +934,9 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
           
           SetBkMode_(*DrawItem\hDC, #TRANSPARENT)
           If IsWindowEnabled_(\IDGadget) = #False
-            SetTextColor_(*DrawItem\hDC, \ObjectInfo\iGrayTextColor)
+            SetTextColor_(*DrawItem\hDC, \ObjectInfo\lGrayTextColor)
           Else
-            SetTextColor_(*DrawItem\hDC, \ObjectInfo\iFrontColor)
+            SetTextColor_(*DrawItem\hDC, \ObjectInfo\lFrontColor)
           EndIf
           Text = GetGadgetItemText(\PBGadget, *DrawItem\itemID)
           *DrawItem\rcItem\left + DesktopScaledX(4)
@@ -883,16 +973,16 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
                   
                   Select *lvCD\nmcd\dwDrawStage
                     Case #CDDS_PREPAINT
-                      FillRect_(*lvCD\nmcd\hDC, *lvCD\nmcd\rc, \ObjectInfo\iBrushBackColor)
+                      FillRect_(*lvCD\nmcd\hDC, *lvCD\nmcd\rc, \ObjectInfo\lBrushBackColor)
                       ProcedureReturn #CDRF_NOTIFYITEMDRAW
                     Case #CDDS_ITEMPREPAINT
                       ;DrawIconEx_(*lvCD\nmcd\hDC, subItemRect\left + 5, (subItemRect\top + subItemRect\bottom - GetSystemMetrics_(#SM_CYSMICON)) / 2, hIcon, 16, 16, 0, 0, #DI_NORMAL)
                       If IsWindowEnabled_(\IDGadget) = #False
-                        *lvCD\clrText   = \ObjectInfo\iGrayTextColor
+                        *lvCD\clrText   = \ObjectInfo\lGrayTextColor
                       Else
-                        *lvCD\clrText   = \ObjectInfo\iFrontColor
+                        *lvCD\clrText   = \ObjectInfo\lFrontColor
                       EndIf
-                      *lvCD\clrTextBk = \ObjectInfo\iBackColor
+                      *lvCD\clrTextBk = \ObjectInfo\lBackColor
                       ProcedureReturn #CDRF_DODEFAULT
                   EndSelect
               EndSelect
@@ -992,7 +1082,7 @@ Procedure LoadThemeAttribute(Theme, WindowColor)
   ThemeAttribute(Str(#ObjectTheme)) = Theme
   For I = 1 To 99
     For J = 1 To 3
-      Read.i Buffer
+      Read.l Buffer
       Select J
         Case 1
           If Buffer = #PB_Gadget_END
@@ -1072,6 +1162,12 @@ Procedure SetWindowThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
     Case #PB_Gadget_BackColor
       SetWindowColor(*ObjectTheme\PBGadget, Value)
       
+      If FindMapElement(ThemeAttribute(), Str(#PB_WindowType) + "|" + Str(#PB_Gadget_DarkMode))
+        If ThemeAttribute() = #PB_Default
+          SetWindowThemeColor(*ObjectTheme, #PB_Gadget_DarkMode, #PB_Default)
+        EndIf
+      EndIf
+      
       _SubSetWindowThemeColor(#PB_GadgetType_Button,       #PB_Gadget_BackColor)
       _SubSetWindowThemeColor(#PB_GadgetType_Button,       #PB_Gadget_OuterColor)
       _SubSetWindowThemeColor(#PB_GadgetType_Button,       #PB_Gadget_CornerColor)
@@ -1144,8 +1240,8 @@ Procedure AddWindowTheme(Window, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
     EndIf
     ObjectType                 = Str(\PBGadgetType) + "|"
     
-    \ObjectInfo\iBackColor   = ThemeAttribute(ObjectType + Str(#PB_Gadget_BackColor))
-    SetWindowColor(Window, \ObjectInfo\iBackColor)
+    \ObjectInfo\lBackColor   = ThemeAttribute(ObjectType + Str(#PB_Gadget_BackColor))
+    SetWindowColor(Window, \ObjectInfo\lBackColor)
     
     If FindMapElement(ThemeAttribute(), Str(#PB_WindowType) + "|" + Str(#PB_Gadget_DarkMode))
       If ThemeAttribute() = #PB_Default
@@ -1171,7 +1267,7 @@ Procedure IsBrushUsed(Brush)
     ForEach ObjectTheme()
       If ObjectTheme()\ObjectInfo
         Select Brush
-          Case \iBrushBackColor, \hBrushActiveTabColor, \hBrushInactiveTabColor, \hBrushHighLightColor, \hBrushEditBoxColor, \hBrushTitleBackColor
+          Case \lBrushBackColor, \hBrushActiveTabColor, \hBrushInactiveTabColor, \hBrushHighLightColor, \hBrushEditBoxColor, \hBrushTitleBackColor
             BrushUsed = #True
             Break
         EndSelect
@@ -1227,19 +1323,19 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
     Select Attribute
       ; ---------- BackColor ----------  
       Case #PB_Gadget_BackColor
-        SavBackColor = \iBackColor
+        SavBackColor = \lBackColor
         If Value = #PB_Default
-          \iBackColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
+          \lBackColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
           Select *ObjectTheme\PBGadgetType
             Case #PB_GadgetType_Editor, #PB_GadgetType_Spin, #PB_GadgetType_String
-              If IsDarkColorOT(\iBackColor) : \iBackColor = AccentColorOT(\iBackColor, 15) : Else : \iBackColor = AccentColorOT(\iBackColor, -15) : EndIf
+              If IsDarkColorOT(\lBackColor) : \lBackColor = AccentColorOT(\lBackColor, 15) : Else : \lBackColor = AccentColorOT(\lBackColor, -15) : EndIf
             Case #PB_GadgetType_ProgressBar
-              If IsDarkColorOT(\iBackColor) : \iBackColor = AccentColorOT(\iBackColor, 40) : Else : \iBackColor = AccentColorOT(\iBackColor, -40) : EndIf
+              If IsDarkColorOT(\lBackColor) : \lBackColor = AccentColorOT(\lBackColor, 40) : Else : \lBackColor = AccentColorOT(\lBackColor, -40) : EndIf
             Case #PB_GadgetType_Splitter
-              If IsDarkColorOT(\iBackColor) : \iBackColor = AccentColorOT(\iBackColor, 30) : Else : \iBackColor = AccentColorOT(\iBackColor, -30) : EndIf 
+              If IsDarkColorOT(\lBackColor) : \lBackColor = AccentColorOT(\lBackColor, 30) : Else : \lBackColor = AccentColorOT(\lBackColor, -30) : EndIf 
           EndSelect
         Else
-          \iBackColor        = Value
+          \lBackColor        = Value
         EndIf
         
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_FrontColor)
@@ -1253,66 +1349,66 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         
         Select *ObjectTheme\PBGadgetType
           Case #PB_GadgetType_CheckBox, #PB_GadgetType_ComboBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Panel, #PB_GadgetType_Text, #PB_GadgetType_TrackBar
-            _SetObjectBrush(\iBackColor, \iBrushBackColor, SavBackColor)
+            _SetObjectBrush(\lBackColor, \lBrushBackColor, SavBackColor)
           Case #PB_GadgetType_ExplorerList, #PB_GadgetType_ListIcon
-            _SetObjectBrush(\iBackColor, \iBrushBackColor, SavBackColor)
-            SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \iBackColor)
+            _SetObjectBrush(\lBackColor, \lBrushBackColor, SavBackColor)
+            SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \lBackColor)
           Case #PB_GadgetType_Calendar, #PB_GadgetType_Container, #PB_GadgetType_Date, #PB_GadgetType_Editor, #PB_GadgetType_HyperLink, #PB_GadgetType_ProgressBar,
                #PB_GadgetType_ExplorerTree, #PB_GadgetType_ListView, #PB_GadgetType_ScrollArea, #PB_GadgetType_Spin, #PB_GadgetType_String, #PB_GadgetType_Tree
-            SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \iBackColor)
+            SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \lBackColor)
         EndSelect  
         ReturnValue = #True
         
       ; ---------- ActiveTabColor ----------
       Case #PB_Gadget_ActiveTab
-        SavBackColor = \iActiveTabColor
+        SavBackColor = \lActiveTabColor
         If Value = #PB_Default
-          \iActiveTabColor = \iBackColor
+          \lActiveTabColor = \lBackColor
         Else
-          \iActiveTabColor = Value
+          \lActiveTabColor = Value
         EndIf
-        _SetObjectBrush(\iActiveTabColor, \hBrushActiveTabColor, SavBackColor)
+        _SetObjectBrush(\lActiveTabColor, \hBrushActiveTabColor, SavBackColor)
         ReturnValue = #True
                 
       ; ---------- InactiveTabColor ----------
       Case #PB_Gadget_InactiveTab
-        SavBackColor = \iInactiveTabColor
+        SavBackColor = \lInactiveTabColor
         If Value = #PB_Default
-          If IsDarkColorOT(\iBackColor) : \iInactiveTabColor = AccentColorOT(\iBackColor, 40) : Else : \iInactiveTabColor = AccentColorOT(\iBackColor, -40) : EndIf
+          If IsDarkColorOT(\lBackColor) : \lInactiveTabColor = AccentColorOT(\lBackColor, 40) : Else : \lInactiveTabColor = AccentColorOT(\lBackColor, -40) : EndIf
         Else
-          \iInactiveTabColor = Value
+          \lInactiveTabColor = Value
         EndIf
-        _SetObjectBrush(\iInactiveTabColor, \iInactiveTabColor, SavBackColor)
+        _SetObjectBrush(\lInactiveTabColor, \lInactiveTabColor, SavBackColor)
         ReturnValue = #True
         
       ; ---------- HighLightColor ----------
       Case #PB_Gadget_HighLightColor
-        SavBackColor = \iHighLightColor
+        SavBackColor = \lHighLightColor
         If Value = #PB_Default
-          \iHighLightColor = GetSysColor_(#COLOR_HIGHLIGHT)
+          \lHighLightColor = GetSysColor_(#COLOR_HIGHLIGHT)
         Else
-          \iHighLightColor = Value
+          \lHighLightColor = Value
         EndIf
-        _SetObjectBrush(\iHighLightColor, \hBrushHighLightColor, SavBackColor)
+        _SetObjectBrush(\lHighLightColor, \hBrushHighLightColor, SavBackColor)
         ReturnValue = #True
         
       ; ---------- EditBoxColor ----------
       Case #PB_Gadget_EditBoxColor
-        SavBackColor = \iEditBoxColor
+        SavBackColor = \lEditBoxColor
         If Value = #PB_Default
-          If IsDarkColorOT(\iBackColor) : \iEditBoxColor = AccentColorOT(\iBackColor, 15) : Else : \iEditBoxColor = AccentColorOT(\iBackColor, -15) : EndIf
+          If IsDarkColorOT(\lBackColor) : \lEditBoxColor = AccentColorOT(\lBackColor, 15) : Else : \lEditBoxColor = AccentColorOT(\lBackColor, -15) : EndIf
         Else
-          \iEditBoxColor = Value
+          \lEditBoxColor = Value
         EndIf
-        _SetObjectBrush(\iEditBoxColor, \hBrushEditBoxColor, SavBackColor)
+        _SetObjectBrush(\lEditBoxColor, \hBrushEditBoxColor, SavBackColor)
         ReturnValue = #True
         
         ; ---------- SplitterBorderColor ----------
       Case #PB_Gadget_SplitterBorderColor
         If Value = #PB_Default
-          If IsDarkColorOT(\iBackColor) : \iSplitterBorderColor = AccentColorOT(\iBackColor, 60) : Else : \iSplitterBorderColor = AccentColorOT(\iBackColor, -60) : EndIf
+          If IsDarkColorOT(\lBackColor) : \lSplitterBorderColor = AccentColorOT(\lBackColor, 60) : Else : \lSplitterBorderColor = AccentColorOT(\lBackColor, -60) : EndIf
         Else
-          \iSplitterBorderColor = Value
+          \lSplitterBorderColor = Value
         EndIf
         ReturnValue = #True
         
@@ -1321,12 +1417,12 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         If Value = #PB_Default
           Select *ObjectTheme\PBGadgetType
             Case #PB_GadgetType_ProgressBar
-              If IsDarkColorOT(\iBackColor) : \iFrontColor = AccentColorOT(\iBackColor, 100) : Else : \iFrontColor = AccentColorOT(\iBackColor, -100) : EndIf
+              If IsDarkColorOT(\lBackColor) : \lFrontColor = AccentColorOT(\lBackColor, 100) : Else : \lFrontColor = AccentColorOT(\lBackColor, -100) : EndIf
             Default
-              If IsDarkColorOT(\iBackColor) : \iFrontColor = #White : Else : \iFrontColor = #Black : EndIf
+              If IsDarkColorOT(\lBackColor) : \lFrontColor = #White : Else : \lFrontColor = #Black : EndIf
           EndSelect
         Else
-          \iFrontColor = Value
+          \lFrontColor = Value
         EndIf
         
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_GrayTextColor)
@@ -1335,27 +1431,27 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
           Case #PB_GadgetType_Calendar, #PB_GadgetType_Date, #PB_GadgetType_Editor, #PB_GadgetType_ExplorerList, #PB_GadgetType_ExplorerTree, 
              #PB_GadgetType_HyperLink, #PB_GadgetType_ListIcon, #PB_GadgetType_ListView, #PB_GadgetType_ProgressBar, #PB_GadgetType_Spin,
              #PB_GadgetType_String, #PB_GadgetType_Tree
-            SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_FrontColor, \iFrontColor)
+            SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_FrontColor, \lFrontColor)
         EndSelect
         ReturnValue = #True
         
       ; ---------- GrayTextColor ----------
       Case #PB_Gadget_GrayTextColor
         If Value = #PB_Default
-          If IsDarkColorOT(\iFrontColor) : \iGrayTextColor = DisabledDarkColorOT(\iFrontColor) : Else : \iGrayTextColor = DisabledLightColorOT(\iFrontColor) : EndIf
+          If IsDarkColorOT(\lFrontColor) : \lGrayTextColor = DisabledDarkColorOT(\lFrontColor) : Else : \lGrayTextColor = DisabledLightColorOT(\lFrontColor) : EndIf
         Else
-          \iGrayTextColor = Value
+          \lGrayTextColor = Value
         EndIf
         ReturnValue = #True
         
       ; ---------- LineColor ----------
       Case #PB_Gadget_LineColor
         If Value = #PB_Default
-          If IsDarkColorOT(\iBackColor) : \iLineColor = #White : Else : \iLineColor = #Black : EndIf
+          If IsDarkColorOT(\lBackColor) : \lLineColor = #White : Else : \lLineColor = #Black : EndIf
         Else
-          \iLineColor = Value
+          \lLineColor = Value
         EndIf
-        SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_LineColor, \iLineColor)   ; Display if #PB_Explorer_GridLines used
+        SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_LineColor, \lLineColor)   ; Display if #PB_Explorer_GridLines used
         ReturnValue = #True
         
       ; ---------- TitleBackColor ----------
@@ -1363,18 +1459,18 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         If Value = #PB_Default
           Select *ObjectTheme\PBGadgetType
             Case #PB_GadgetType_ExplorerList, #PB_GadgetType_ListIcon
-              If IsDarkColorOT(\iBackColor) : \iTitleBackColor = AccentColorOT(\iBackColor, 40) : Else : \iTitleBackColor = AccentColorOT(\iBackColor, -40) : EndIf
+              If IsDarkColorOT(\lBackColor) : \lTitleBackColor = AccentColorOT(\lBackColor, 40) : Else : \lTitleBackColor = AccentColorOT(\lBackColor, -40) : EndIf
             Case #PB_GadgetType_Calendar, #PB_GadgetType_Date
-              \iTitleBackColor = \iBackColor
+              \lTitleBackColor = \lBackColor
           EndSelect
         Else
-          \iTitleBackColor = Value
+          \lTitleBackColor = Value
         EndIf
         Select *ObjectTheme\PBGadgetType
           Case #PB_GadgetType_ExplorerList, #PB_GadgetType_ListIcon
-            _SetObjectBrush(\iTitleBackColor, \hBrushTitleBackColor, SavBackColor)
+            _SetObjectBrush(\lTitleBackColor, \hBrushTitleBackColor, SavBackColor)
           Case #PB_GadgetType_Calendar, #PB_GadgetType_Date
-            SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleBackColor, \iTitleBackColor)   ; Display if #PB_Explorer_GridLines used
+            SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleBackColor, \lTitleBackColor)   ; Display if #PB_Explorer_GridLines used
         EndSelect
         
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_TitleFrontColor)
@@ -1383,38 +1479,38 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
       ; ---------- TitleFrontColor ----------
       Case #PB_Gadget_TitleFrontColor
         If Value = #PB_Default
-          If IsDarkColorOT(\iTitleBackColor) : \iTitleFrontColor = #White : Else : \iTitleFrontColor = #Black : EndIf
+          If IsDarkColorOT(\lTitleBackColor) : \lTitleFrontColor = #White : Else : \lTitleFrontColor = #Black : EndIf
         Else
-          \iTitleFrontColor = Value
+          \lTitleFrontColor = Value
         EndIf
-        SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleFrontColor, \iTitleFrontColor)   ; Display if #PB_Explorer_GridLines used
+        SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleFrontColor, \lTitleFrontColor)   ; Display if #PB_Explorer_GridLines used
         ReturnValue = #True
         
         ; ---------- SplitterBorder ----------
       Case #PB_Gadget_SplitterBorder
         If Value = #PB_Default
-          \iSplitterBorder = #True
+          \bSplitterBorder = #True
         Else
-          \iSplitterBorder = Value
+          \bSplitterBorder = Value
         EndIf
         ReturnValue = #True
         
         ; ---------- LargeGripper ----------
       Case #PB_Gadget_LargeGripper
         If Value = #PB_Default
-          \iLargeGripper = #True
+          \bLargeGripper = #True
         Else
-          \iLargeGripper = Value
+          \bLargeGripper = Value
         EndIf
         ReturnValue = #True
         
         ; ---------- GripperColor ----------
       Case  #PB_Gadget_GripperColor
         If Value = #PB_Default
-          \iGripperColor = #True
-          If IsDarkColorOT(\iBackColor): \iGripperColor = AccentColorOT(\iBackColor, 40) : Else : \iGripperColor = AccentColorOT(\iBackColor, -40) : EndIf
+          \lGripperColor = #True
+          If IsDarkColorOT(\lBackColor): \lGripperColor = AccentColorOT(\lBackColor, 40) : Else : \lGripperColor = AccentColorOT(\lBackColor, -40) : EndIf
         Else
-          \iGripperColor = Value
+          \lGripperColor = Value
         EndIf
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_UseUxGripper)
         ReturnValue = #True
@@ -1422,23 +1518,23 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         ; ---------- UseUxGripper ----------
       Case #PB_Gadget_UseUxGripper
         If Value = #PB_Default
-          \iUseUxGripper = #False
+          \bUseUxGripper = #False
         Else
-          \iUseUxGripper = Value
+          \bUseUxGripper = Value
         EndIf
-        If \iUseUxGripper = #False
+        If \bUseUxGripper = #False
           Protected SplitterImg
-          If \hSplitterGripper : DeleteObject_(\hSplitterGripper) : EndIf   ; Delete the previous Pattern Brush stored
-          If \iSplitterBorder
-            SplitterImg = CreateImage(#PB_Any, DesktopScaledX(5), DesktopScaledY(5), 24, \iGripperColor)
+          If \hObjSplitterGripper : DeleteObject_(\hObjSplitterGripper) : EndIf   ; Delete the previous Pattern Brush stored
+          If \bSplitterBorder
+            SplitterImg = CreateImage(#PB_Any, DesktopScaledX(5), DesktopScaledY(5), 24, \lGripperColor)
           Else
-            SplitterImg = CreateImage(#PB_Any, DesktopScaledX(5), DesktopScaledY(5), 24, \iBackColor)
+            SplitterImg = CreateImage(#PB_Any, DesktopScaledX(5), DesktopScaledY(5), 24, \lBackColor)
           EndIf
           If StartDrawing(ImageOutput(SplitterImg))
-            RoundBox(DesktopScaledX(1), DesktopScaledY(1), DesktopScaledX(3), DesktopScaledY(3), DesktopScaledX(1), DesktopScaledY(1), \iFrontColor)
+            RoundBox(DesktopScaledX(1), DesktopScaledY(1), DesktopScaledX(3), DesktopScaledY(3), DesktopScaledX(1), DesktopScaledY(1), \lFrontColor)
             StopDrawing()
           EndIf
-          \hSplitterGripper = CreatePatternBrush_(ImageID(SplitterImg))
+          \hObjSplitterGripper = CreatePatternBrush_(ImageID(SplitterImg))
           FreeImage(SplitterImg)
         EndIf
         ReturnValue = #True 
@@ -1505,92 +1601,92 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
   With *ObjectTheme\ObjectInfo
     ; ---------- BackColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_BackColor))
-      SavBackColor  = \iBackColor
-      \iBackColor   = ThemeAttribute()
-      If \iBackColor = #PB_Default
-        \iBackColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
+      SavBackColor  = \lBackColor
+      \lBackColor   = ThemeAttribute()
+      If \lBackColor = #PB_Default
+        \lBackColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
         Select *ObjectTheme\PBGadgetType
           Case #PB_GadgetType_Editor, #PB_GadgetType_Spin, #PB_GadgetType_String
-            If IsDarkColorOT(\iBackColor) : \iBackColor = AccentColorOT(\iBackColor, 15) : Else : \iBackColor = AccentColorOT(\iBackColor, -15) : EndIf
+            If IsDarkColorOT(\lBackColor) : \lBackColor = AccentColorOT(\lBackColor, 15) : Else : \lBackColor = AccentColorOT(\lBackColor, -15) : EndIf
           Case #PB_GadgetType_ProgressBar
-            If IsDarkColorOT(\iBackColor) : \iBackColor = AccentColorOT(\iBackColor, 40) : Else : \iBackColor = AccentColorOT(\iBackColor, -40) : EndIf
+            If IsDarkColorOT(\lBackColor) : \lBackColor = AccentColorOT(\lBackColor, 40) : Else : \lBackColor = AccentColorOT(\lBackColor, -40) : EndIf
           Case #PB_GadgetType_Splitter
-            If IsDarkColorOT(\iBackColor) : \iBackColor = AccentColorOT(\iBackColor, 30) : Else : \iBackColor = AccentColorOT(\iBackColor, -30) : EndIf
+            If IsDarkColorOT(\lBackColor) : \lBackColor = AccentColorOT(\lBackColor, 30) : Else : \lBackColor = AccentColorOT(\lBackColor, -30) : EndIf
         EndSelect
       EndIf
       
       ; ----- Brush BackColor -----
       Select *ObjectTheme\PBGadgetType
         Case #PB_GadgetType_CheckBox, #PB_GadgetType_ComboBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Panel, #PB_GadgetType_Text, #PB_GadgetType_TrackBar
-          _SetObjectBrush(\iBackColor, \iBrushBackColor, SavBackColor)
+          _SetObjectBrush(\lBackColor, \lBrushBackColor, SavBackColor)
           
         Case #PB_GadgetType_ExplorerList, #PB_GadgetType_ListIcon
-          _SetObjectBrush(\iBackColor, \iBrushBackColor, SavBackColor)
-          SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \iBackColor)
+          _SetObjectBrush(\lBackColor, \lBrushBackColor, SavBackColor)
+          SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \lBackColor)
           
         Case #PB_GadgetType_Calendar, #PB_GadgetType_Container, #PB_GadgetType_Date, #PB_GadgetType_Editor , #PB_GadgetType_HyperLink, #PB_GadgetType_ProgressBar,
              #PB_GadgetType_ExplorerTree, #PB_GadgetType_ListView, #PB_GadgetType_ScrollArea, #PB_GadgetType_Spin, #PB_GadgetType_String, #PB_GadgetType_Tree
-          SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \iBackColor)
+          SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \lBackColor)
       EndSelect
     EndIf
     
     ; ---------- ActiveTabColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_ActiveTab))
-      SavBackColor  = \iActiveTabColor
-      \iActiveTabColor = ThemeAttribute()
-      If \iActiveTabColor = #PB_Default
-        \iActiveTabColor = \iBackColor
+      SavBackColor  = \lActiveTabColor
+      \lActiveTabColor = ThemeAttribute()
+      If \lActiveTabColor = #PB_Default
+        \lActiveTabColor = \lBackColor
       EndIf
-      _SetObjectBrush(\iActiveTabColor, \hBrushActiveTabColor, SavBackColor)
+      _SetObjectBrush(\lActiveTabColor, \hBrushActiveTabColor, SavBackColor)
     EndIf
     
     ; ---------- InactiveTabColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_InactiveTab))
-      SavBackColor  = \iInactiveTabColor
-      \iInactiveTabColor = ThemeAttribute()
-      If \iInactiveTabColor = #PB_Default
-        If IsDarkColorOT(\iBackColor) : \iInactiveTabColor = AccentColorOT(\iBackColor, 40) : Else : \iInactiveTabColor = AccentColorOT(\iBackColor, -40) : EndIf
+      SavBackColor  = \lInactiveTabColor
+      \lInactiveTabColor = ThemeAttribute()
+      If \lInactiveTabColor = #PB_Default
+        If IsDarkColorOT(\lBackColor) : \lInactiveTabColor = AccentColorOT(\lBackColor, 40) : Else : \lInactiveTabColor = AccentColorOT(\lBackColor, -40) : EndIf
       EndIf
-      _SetObjectBrush(\iInactiveTabColor, \hBrushInactiveTabColor, SavBackColor)
+      _SetObjectBrush(\lInactiveTabColor, \hBrushInactiveTabColor, SavBackColor)
     EndIf
     
     ; ---------- HighLightColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_HighLightColor))
-      SavBackColor  = \iHighLightColor
-      \iHighLightColor = ThemeAttribute()
-      If \iHighLightColor = #PB_Default
-        \iHighLightColor = GetSysColor_(#COLOR_HIGHLIGHT)
+      SavBackColor  = \lHighLightColor
+      \lHighLightColor = ThemeAttribute()
+      If \lHighLightColor = #PB_Default
+        \lHighLightColor = GetSysColor_(#COLOR_HIGHLIGHT)
       EndIf
-      _SetObjectBrush(\iHighLightColor, \hBrushHighLightColor, SavBackColor)
+      _SetObjectBrush(\lHighLightColor, \hBrushHighLightColor, SavBackColor)
     EndIf
     
     ; ---------- EditBoxColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_EditBoxColor))
-      SavBackColor  = \iEditBoxColor
-      \iEditBoxColor = ThemeAttribute()
-      If \iEditBoxColor = #PB_Default
-        If IsDarkColorOT(\iBackColor) : \iEditBoxColor = AccentColorOT(\iBackColor, 15) : Else : \iEditBoxColor = AccentColorOT(\iBackColor, -15) : EndIf
+      SavBackColor  = \lEditBoxColor
+      \lEditBoxColor = ThemeAttribute()
+      If \lEditBoxColor = #PB_Default
+        If IsDarkColorOT(\lBackColor) : \lEditBoxColor = AccentColorOT(\lBackColor, 15) : Else : \lEditBoxColor = AccentColorOT(\lBackColor, -15) : EndIf
       EndIf
-      _SetObjectBrush(\iEditBoxColor, \hBrushEditBoxColor, SavBackColor)
+      _SetObjectBrush(\lEditBoxColor, \hBrushEditBoxColor, SavBackColor)
     EndIf
     
     ; ---------- SplitterBorderColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_SplitterBorderColor))
-      \iSplitterBorderColor = ThemeAttribute()
-      If \iSplitterBorderColor = #PB_Default
-        If IsDarkColorOT(\iBackColor) : \iSplitterBorderColor = AccentColorOT(\iBackColor, 60) : Else : \iSplitterBorderColor = AccentColorOT(\iBackColor, -60) : EndIf
+      \lSplitterBorderColor = ThemeAttribute()
+      If \lSplitterBorderColor = #PB_Default
+        If IsDarkColorOT(\lBackColor) : \lSplitterBorderColor = AccentColorOT(\lBackColor, 60) : Else : \lSplitterBorderColor = AccentColorOT(\lBackColor, -60) : EndIf
       EndIf
     EndIf
     
     ; ---------- FrontColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_FrontColor))
-      \iFrontColor = ThemeAttribute()
-      If \iFrontColor = #PB_Default
+      \lFrontColor = ThemeAttribute()
+      If \lFrontColor = #PB_Default
         Select *ObjectTheme\PBGadgetType
           Case #PB_GadgetType_ProgressBar
-            If IsDarkColorOT(\iBackColor) : \iFrontColor = AccentColorOT(\iBackColor, 100) : Else : \iFrontColor = AccentColorOT(\iBackColor, -100) : EndIf
+            If IsDarkColorOT(\lBackColor) : \lFrontColor = AccentColorOT(\lBackColor, 100) : Else : \lFrontColor = AccentColorOT(\lBackColor, -100) : EndIf
           Default
-            If IsDarkColorOT(\iBackColor) : \iFrontColor = #White : Else : \iFrontColor = #Black : EndIf
+            If IsDarkColorOT(\lBackColor) : \lFrontColor = #White : Else : \lFrontColor = #Black : EndIf
         EndSelect
       EndIf
       
@@ -1598,98 +1694,98 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
         Case #PB_GadgetType_Calendar, #PB_GadgetType_Date, #PB_GadgetType_Editor, #PB_GadgetType_ExplorerList, #PB_GadgetType_ExplorerTree, 
              #PB_GadgetType_HyperLink, #PB_GadgetType_ListIcon, #PB_GadgetType_ListView, #PB_GadgetType_ProgressBar, #PB_GadgetType_Spin,
              #PB_GadgetType_String, #PB_GadgetType_Tree
-          SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_FrontColor, \iFrontColor)
+          SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_FrontColor, \lFrontColor)
       EndSelect
     EndIf
     
     ; ---------- GrayTextColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_GrayTextColor))
-      \iGrayTextColor = ThemeAttribute()
-      If \iGrayTextColor = #PB_Default
-        If IsDarkColorOT(\iFrontColor) :\iGrayTextColor = DisabledDarkColorOT(\iFrontColor) : Else : \iGrayTextColor = DisabledLightColorOT(\iFrontColor) : EndIf
+      \lGrayTextColor = ThemeAttribute()
+      If \lGrayTextColor = #PB_Default
+        If IsDarkColorOT(\lFrontColor) :\lGrayTextColor = DisabledDarkColorOT(\lFrontColor) : Else : \lGrayTextColor = DisabledLightColorOT(\lFrontColor) : EndIf
       EndIf
     EndIf
     
     ; ---------- LineColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_LineColor))
-      \iLineColor = ThemeAttribute()
-      If \iLineColor = #PB_Default
-        If IsDarkColorOT(\iBackColor) : \iLineColor = #White : Else : \iLineColor = #Black : EndIf
+      \lLineColor = ThemeAttribute()
+      If \lLineColor = #PB_Default
+        If IsDarkColorOT(\lBackColor) : \lLineColor = #White : Else : \lLineColor = #Black : EndIf
       EndIf
-      SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_LineColor, \iLineColor)   ; Display if #PB_Explorer_GridLines used
+      SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_LineColor, \lLineColor)   ; Display if #PB_Explorer_GridLines used
     EndIf
     
     ; ---------- TitleBackColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_TitleBackColor))
-      \iTitleBackColor = ThemeAttribute()
-      If \iTitleBackColor = #PB_Default
+      \lTitleBackColor = ThemeAttribute()
+      If \lTitleBackColor = #PB_Default
         Select *ObjectTheme\PBGadgetType
           Case #PB_GadgetType_ListIcon, #PB_GadgetType_ExplorerList
-            If IsDarkColorOT(\iBackColor) : \iTitleBackColor = AccentColorOT(\iBackColor, 40) : Else : \iTitleBackColor = AccentColorOT(\iBackColor, -40) : EndIf
+            If IsDarkColorOT(\lBackColor) : \lTitleBackColor = AccentColorOT(\lBackColor, 40) : Else : \lTitleBackColor = AccentColorOT(\lBackColor, -40) : EndIf
           Case #PB_GadgetType_Calendar, #PB_GadgetType_Date
-            \iTitleBackColor = \iBackColor
+            \lTitleBackColor = \lBackColor
         EndSelect
       EndIf
       Select *ObjectTheme\PBGadgetType
         Case #PB_GadgetType_ListIcon, #PB_GadgetType_ExplorerList
-          _SetObjectBrush(\iTitleBackColor, \hBrushTitleBackColor, SavBackColor)
+          _SetObjectBrush(\lTitleBackColor, \hBrushTitleBackColor, SavBackColor)
         Case #PB_GadgetType_Calendar, #PB_GadgetType_Date
-          SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleBackColor, \iTitleBackColor)   ; Display if #PB_Explorer_GridLines used
+          SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleBackColor, \lTitleBackColor)   ; Display if #PB_Explorer_GridLines used
       EndSelect
     EndIf    
     
     ; ---------- TitleFrontColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_TitleFrontColor))
-      \iTitleFrontColor = ThemeAttribute()
-      If \iTitleFrontColor = #PB_Default
-        If IsDarkColorOT(\iTitleBackColor) : \iTitleFrontColor = #White : Else : \iTitleFrontColor = #Black : EndIf
+      \lTitleFrontColor = ThemeAttribute()
+      If \lTitleFrontColor = #PB_Default
+        If IsDarkColorOT(\lTitleBackColor) : \lTitleFrontColor = #White : Else : \lTitleFrontColor = #Black : EndIf
       EndIf
-      SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleFrontColor, \iTitleFrontColor)   ; Display if #PB_Explorer_GridLines used
+      SetGadgetColor(*ObjectTheme\PBGadget, #PB_Gadget_TitleFrontColor, \lTitleFrontColor)   ; Display if #PB_Explorer_GridLines used
     EndIf 
      
     ; ---------- SplitterBorder ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_SplitterBorder))
-      \iSplitterBorder = ThemeAttribute()
-      If \iSplitterBorder = #PB_Default
-        \iSplitterBorder = #True
+      \bSplitterBorder = ThemeAttribute()
+      If \bSplitterBorder = #PB_Default
+        \bSplitterBorder = #True
       EndIf
     EndIf
 
     ; ---------- LargeGripper ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_LargeGripper))
-      \iLargeGripper = ThemeAttribute()
-      If \iLargeGripper = #PB_Default
-        \iLargeGripper = #True
+      \bLargeGripper = ThemeAttribute()
+      If \bLargeGripper = #PB_Default
+        \bLargeGripper = #True
       EndIf
     EndIf
     
     ; ---------- GripperColor ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_GripperColor))
-      \iGripperColor = ThemeAttribute()
-      If \iGripperColor = #PB_Default
-        If IsDarkColorOT(\iBackColor): \iGripperColor = AccentColorOT(\iBackColor, 40) : Else : \iGripperColor = AccentColorOT(\iBackColor, -40) : EndIf
+      \lGripperColor = ThemeAttribute()
+      If \lGripperColor = #PB_Default
+        If IsDarkColorOT(\lBackColor): \lGripperColor = AccentColorOT(\lBackColor, 40) : Else : \lGripperColor = AccentColorOT(\lBackColor, -40) : EndIf
       EndIf
     EndIf
     
     ; ---------- UseUxGripper ----------
     If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_UseUxGripper))
-      \iUseUxGripper = ThemeAttribute()
-      If \iUseUxGripper = #PB_Default
-        \iUseUxGripper = #False
+      \bUseUxGripper = ThemeAttribute()
+      If \bUseUxGripper = #PB_Default
+        \bUseUxGripper = #False
       EndIf
-      If \iUseUxGripper = #False
+      If \bUseUxGripper = #False
         Protected SplitterImg
-        If \hSplitterGripper : DeleteObject_(\hSplitterGripper) : EndIf   ; Delete the previous Pattern Brush stored
-        If \iSplitterBorder
-          SplitterImg = CreateImage(#PB_Any, DesktopScaledX(5), DesktopScaledY(5), 24, \iGripperColor)
+        If \hObjSplitterGripper : DeleteObject_(\hObjSplitterGripper) : EndIf   ; Delete the previous Pattern Brush stored
+        If \bSplitterBorder
+          SplitterImg = CreateImage(#PB_Any, DesktopScaledX(5), DesktopScaledY(5), 24, \lGripperColor)
         Else
-          SplitterImg = CreateImage(#PB_Any, DesktopScaledX(5), DesktopScaledY(5), 24, \iBackColor)
+          SplitterImg = CreateImage(#PB_Any, DesktopScaledX(5), DesktopScaledY(5), 24, \lBackColor)
         EndIf
         If StartDrawing(ImageOutput(SplitterImg))
-          RoundBox(DesktopScaledX(1), DesktopScaledY(1), DesktopScaledX(3), DesktopScaledY(3), DesktopScaledX(1), DesktopScaledY(1), \iFrontColor)
+          RoundBox(DesktopScaledX(1), DesktopScaledY(1), DesktopScaledX(3), DesktopScaledY(3), DesktopScaledX(1), DesktopScaledY(1), \lFrontColor)
           StopDrawing()
         EndIf
-        \hSplitterGripper = CreatePatternBrush_(ImageID(SplitterImg))
+        \hObjSplitterGripper = CreatePatternBrush_(ImageID(SplitterImg))
         FreeImage(SplitterImg)
       EndIf
     EndIf
@@ -1861,7 +1957,7 @@ Procedure ButtonThemeProc(hWnd, uMsg, wParam, lParam)
       
     Case #WM_WINDOWPOSCHANGED
       DeleteObject_(*ObjectTheme\BtnInfo\hRgn)
-      ;*ObjectTheme\BtnInfo\hRgn  = CreateRoundRectRgn_(0, 0, DesktopScaledX(GadgetWidth(*ObjectTheme\PBGadget)), DesktopScaledY(GadgetHeight(*ObjectTheme\PBGadget)), *ObjectTheme\BtnInfo\iRoundX, *ObjectTheme\BtnInfo\iRoundY)
+      ;*ObjectTheme\BtnInfo\hRgn  = CreateRoundRectRgn_(0, 0, DesktopScaledX(GadgetWidth(*ObjectTheme\PBGadget)), DesktopScaledY(GadgetHeight(*ObjectTheme\PBGadget)), *ObjectTheme\BtnInfo\lRoundX, *ObjectTheme\BtnInfo\lRoundY)
       *ObjectTheme\BtnInfo\hRgn = CreateRectRgn_(0, 0, DesktopScaledX(GadgetWidth(*ObjectTheme\PBGadget)), DesktopScaledY(GadgetHeight(*ObjectTheme\PBGadget)))
       ChangeButtonTheme(*ObjectTheme\PBGadget)   ; Or with UpdateButtonTheme(ObjectTheme())
       
@@ -1934,7 +2030,7 @@ Procedure ButtonThemeProc(hWnd, uMsg, wParam, lParam)
         TextLen = Len(Text)
         SelectObject_(ps\hdc, *ObjectTheme\BtnInfo\iActiveFont)
         SetBkMode_(ps\hdc, #TRANSPARENT)
-        SetTextColor_(ps\hdc, *ObjectTheme\BtnInfo\iFrontColor)
+        SetTextColor_(ps\hdc, *ObjectTheme\BtnInfo\lFrontColor)
         Rect\left       = Xofset + Margin
         Rect\top        = Yofset + Margin
         Rect\right      = cX + Xofset - Margin
@@ -1968,7 +2064,7 @@ Procedure ButtonThemeProc(hWnd, uMsg, wParam, lParam)
         SetBkMode_(ps\hdc, #TRANSPARENT)
         
         If ObjectTheme()\BtnInfo\bEnableShadow
-          SetTextColor_(ps\hdc, *ObjectTheme\BtnInfo\iShadowColor)
+          SetTextColor_(ps\hdc, *ObjectTheme\BtnInfo\lShadowColor)
           Rect\left     = 1 + Xofset + Margin
           Rect\top      = 1 + Yofset + Margin
           Rect\right    = cX + 1 + Xofset - Margin
@@ -1985,9 +2081,9 @@ Procedure ButtonThemeProc(hWnd, uMsg, wParam, lParam)
         EndIf
         
         If *ObjectTheme\BtnInfo\bButtonEnable
-          SetTextColor_(ps\hdc, *ObjectTheme\BtnInfo\iFrontColor)
+          SetTextColor_(ps\hdc, *ObjectTheme\BtnInfo\lFrontColor)
         Else
-          SetTextColor_(ps\hdc, *ObjectTheme\BtnInfo\iGrayTextColor)
+          SetTextColor_(ps\hdc, *ObjectTheme\BtnInfo\lGrayTextColor)
         EndIf
         Rect\left       = Xofset + Margin
         Rect\top        = Yofset + Margin
@@ -2026,7 +2122,7 @@ Procedure ButtonThemeProc(hWnd, uMsg, wParam, lParam)
         TextLen = Len(Text)
         SelectObject_(wParam, *ObjectTheme\BtnInfo\iActiveFont)
         SetBkMode_(wParam, #TRANSPARENT)
-        SetTextColor_(wParam, *ObjectTheme\BtnInfo\iFrontColor)
+        SetTextColor_(wParam, *ObjectTheme\BtnInfo\lFrontColor)
         Rect\left       = Xofset + Margin
         Rect\top        = Yofset + Margin
         Rect\right      = cX + Xofset - Margin
@@ -2060,7 +2156,7 @@ Procedure ButtonThemeProc(hWnd, uMsg, wParam, lParam)
         SetBkMode_(wParam, #TRANSPARENT)
         
         If ObjectTheme()\BtnInfo\bEnableShadow
-          SetTextColor_(wParam, *ObjectTheme\BtnInfo\iShadowColor)
+          SetTextColor_(wParam, *ObjectTheme\BtnInfo\lShadowColor)
           Rect\left     = 1 + Xofset + Margin
           Rect\top      = 1 + Yofset + Margin
           Rect\right    = cX + 1 + Xofset - Margin
@@ -2077,9 +2173,9 @@ Procedure ButtonThemeProc(hWnd, uMsg, wParam, lParam)
         EndIf
         
         If *ObjectTheme\BtnInfo\bButtonEnable
-          SetTextColor_(wParam, *ObjectTheme\BtnInfo\iFrontColor)
+          SetTextColor_(wParam, *ObjectTheme\BtnInfo\lFrontColor)
         Else
-          SetTextColor_(wParam, *ObjectTheme\BtnInfo\iGrayTextColor)
+          SetTextColor_(wParam, *ObjectTheme\BtnInfo\lGrayTextColor)
         EndIf
         Rect\left       = Xofset + Margin
         Rect\top        = Yofset + Margin
@@ -2108,7 +2204,7 @@ Procedure MakeButtonTheme(cX, cY, *ObjectTheme.ObjectTheme_INFO)
   Protected *ThisImage, I
   
   With *ObjectTheme\BtnInfo
-    Protected ButtonBackColor = \iButtonBackColor
+    Protected ButtonBackColor.l = \lButtonBackColor
     
     ; DPIaware Images size. The image size must be greater than 0 To avoid an error when resizing  
     cX = DesktopScaledX(cX) : cY = DesktopScaledY(cY)
@@ -2139,13 +2235,13 @@ Procedure MakeButtonTheme(cX, cY, *ObjectTheme.ObjectTheme_INFO)
           *ThisImage  = \imgHiPressed
         Case 4
           *ThisImage  = \imgDisabled
-          ButtonBackColor = \iGrayBackColor
+          ButtonBackColor = \lGrayBackColor
       EndSelect
       
       If StartDrawing(ImageOutput(*ThisImage))
         
-        Box(0, 0, cX, cY, \iButtonCornerColor)
-        RoundBox(0, 0, cX, cY, \iRoundX, \iRoundY, ButtonBackColor | $80000000)
+        Box(0, 0, cX, cY, \lButtonCornerColor)
+        RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, ButtonBackColor | $80000000)
         DrawingMode(#PB_2DDrawing_Gradient | #PB_2DDrawing_AlphaBlend)
         
         ; Draw an ellipse a little wider than the button and slightly offset upwards, to have a gradient with the background color in the 4 corners and more important at the bottom
@@ -2159,22 +2255,22 @@ Procedure MakeButtonTheme(cX, cY, *ObjectTheme.ObjectTheme_INFO)
           Case 2      ; imgPressed
             GradientColor(0.45, ButtonBackColor | $BE000000)
         EndSelect
-        GradientColor(1.0,  \iButtonOuterColor | $BE000000)
-        RoundBox(0, 0, cX, cY, \iRoundX, \iRoundY)
+        GradientColor(1.0,  \lButtonOuterColor | $BE000000)
+        RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY)
         
         ; Border drawn with button color and an inner 1 px border with background color (full inside or top left or bottom right)
         DrawingMode(#PB_2DDrawing_Outlined)
-        RoundBox(0, 0, cX, cY, \iRoundX, \iRoundY, \iBorderColor)
+        RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lBorderColor)
         Select I
           Case 0, 4     ; imgRegular, imgDisabled
-            RoundBox(1, 1, cX-2, cY-2, \iRoundX, \iRoundY, \iButtonOuterColor)
+            RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lButtonOuterColor)
           Case 1, 3     ; imgHilite, imgHiPressed
-            RoundBox(1, 1, cX-2, cY-2, \iRoundX, \iRoundY, \iBorderColor)
-            RoundBox(2, 2, cX-4, cY-4, \iRoundX, \iRoundY, \iButtonOuterColor)
+            RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lBorderColor)
+            RoundBox(2, 2, cX-4, cY-4, \lRoundX, \lRoundY, \lButtonOuterColor)
           Case 2        ; imgPressed
-            RoundBox(1, 1, cX-2, cY-2, \iRoundX, \iRoundY, \iBorderColor)
-            RoundBox(2, 2, cX-4, cY-4, \iRoundX, \iRoundY, \iBorderColor)
-            RoundBox(3, 3, cX-6, cY-6, \iRoundX, \iRoundY, \iButtonOuterColor)
+            RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lBorderColor)
+            RoundBox(2, 2, cX-4, cY-4, \lRoundX, \lRoundY, \lBorderColor)
+            RoundBox(3, 3, cX-6, cY-6, \lRoundX, \lRoundY, \lButtonOuterColor)
         EndSelect
         
         StopDrawing()
@@ -2194,7 +2290,7 @@ Procedure MakeButtonImageTheme(cX, cY, *ObjectTheme.ObjectTheme_INFO)
   Protected *ThisImage, I
   
   With *ObjectTheme\BtnInfo
-    Protected ButtonBackColor = \iButtonBackColor
+    Protected ButtonBackColor.l = \lButtonBackColor
     
     ; DPIaware Images size. The image size must be greater than 0 To avoid an error when resizing  
     cX = DesktopScaledX(cX) : cY = DesktopScaledY(cY)
@@ -2225,7 +2321,7 @@ Procedure MakeButtonImageTheme(cX, cY, *ObjectTheme.ObjectTheme_INFO)
           *ThisImage  = \imgHiPressed
         Case 4
           *ThisImage  = \imgDisabled
-          ButtonBackColor = \iGrayBackColor
+          ButtonBackColor = \lGrayBackColor
       EndSelect
       
       If StartDrawing(ImageOutput(*ThisImage))
@@ -2261,30 +2357,30 @@ Procedure MakeButtonImageTheme(cX, cY, *ObjectTheme.ObjectTheme_INFO)
             EllipticalGradient(cX / 2, cY * 2 / 5, cX * 3 / 5, cY * 4 / 5)
             GradientColor(0.0, ButtonBackColor | $14000000)
             GradientColor(0.3, ButtonBackColor | $14000000)
-            GradientColor(1.0, \iButtonOuterColor | $14000000)
-            ;GradientColor(1.0, \iButtonCornerColor | $14000000) 
-            RoundBox(0, 0, cX, cY, \iRoundX, \iRoundY)
+            GradientColor(1.0, \lButtonOuterColor | $14000000)
+            ;GradientColor(1.0, \lButtonCornerColor | $14000000) 
+            RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY)
         EndSelect
         
         ; Fill outside RoundBox border, corner with background color
         DrawingMode(#PB_2DDrawing_Outlined)
-        RoundBox(1, 1, cX-2, cY-2, \iRoundX, \iRoundY, $B200FF)
-        FillArea(0, 0, $B200FF, \iButtonOuterColor)
-        RoundBox(1, 1, cX-2, cY-2, \iRoundX, \iRoundY, #Black)
-        FillArea(0, 0, #Black, \iButtonCornerColor)
+        RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, $B200FF)
+        FillArea(0, 0, $B200FF, \lButtonOuterColor)
+        RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, #Black)
+        FillArea(0, 0, #Black, \lButtonCornerColor)
         
         ; Border drawn with button color and an inner 1 px border with background color (full inside or top left or bottom right)
-        RoundBox(0, 0, cX, cY, \iRoundX, \iRoundY, \iBorderColor)
+        RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lBorderColor)
         Select I
           Case 0, 4     ; imgRegular, imgDisabled
-            RoundBox(1, 1, cX-2, cY-2, \iRoundX, \iRoundY, \iButtonOuterColor)
+            RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lButtonOuterColor)
           Case 1, 3     ; imgHilite, imgHiPressed
-            RoundBox(1, 1, cX-2, cY-2, \iRoundX, \iRoundY, \iBorderColor)
-            RoundBox(2, 2, cX-4, cY-4, \iRoundX, \iRoundY, \iButtonOuterColor)
+            RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lBorderColor)
+            RoundBox(2, 2, cX-4, cY-4, \lRoundX, \lRoundY, \lButtonOuterColor)
           Case 2        ; imgPressed
-            RoundBox(1, 1, cX-2, cY-2, \iRoundX, \iRoundY, \iBorderColor)
-            RoundBox(2, 2, cX-4, cY-4, \iRoundX, \iRoundY, \iBorderColor)
-            RoundBox(3, 3, cX-6, cY-6, \iRoundX, \iRoundY, \iButtonOuterColor)
+            RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lBorderColor)
+            RoundBox(2, 2, cX-4, cY-4, \lRoundX, \lRoundY, \lBorderColor)
+            RoundBox(3, 3, cX-6, cY-6, \lRoundX, \lRoundY, \lButtonOuterColor)
         EndSelect
         
         StopDrawing()
@@ -2440,13 +2536,13 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
       ; ---------- BackColor ----------  
       Case #PB_Gadget_BackColor
         If Value = #PB_Default
-          \iButtonBackColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
-          If \iButtonBackColor = #PB_Default
-            \iButtonBackColor = GetSysColor_(#COLOR_WINDOW)
+          \lButtonBackColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
+          If \lButtonBackColor = #PB_Default
+            \lButtonBackColor = GetSysColor_(#COLOR_WINDOW)
           EndIf
-          If IsDarkColorOT(\iButtonBackColor) : \iButtonBackColor = AccentColorOT(\iButtonBackColor, 80) : EndIf
+          If IsDarkColorOT(\lButtonBackColor) : \lButtonBackColor = AccentColorOT(\lButtonBackColor, 80) : EndIf
         Else
-          \iButtonBackColor     = Value
+          \lButtonBackColor     = Value
         EndIf
         
         _SubSetObjectButtonColor(*ObjectTheme\PBGadgetType, #PB_Gadget_OuterColor)
@@ -2459,51 +2555,51 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
       ; ---------- OuterColor ----------
       Case #PB_Gadget_OuterColor
         If Value = #PB_Default
-          \iButtonOuterColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
-          If \iButtonOuterColor = #PB_Default
-            \iButtonOuterColor = GetSysColor_(#COLOR_WINDOW)
+          \lButtonOuterColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
+          If \lButtonOuterColor = #PB_Default
+            \lButtonOuterColor = GetSysColor_(#COLOR_WINDOW)
           EndIf
-          If Not IsDarkColorOT(\iButtonOuterColor) : \iButtonOuterColor = AccentColorOT(\iButtonOuterColor, -80) : EndIf
+          If Not IsDarkColorOT(\lButtonOuterColor) : \lButtonOuterColor = AccentColorOT(\lButtonOuterColor, -80) : EndIf
         Else
-          \iButtonOuterColor     = Value
+          \lButtonOuterColor     = Value
         EndIf
         ReturnValue = #True
         
       ; ---------- CornerColor ----------
       Case #PB_Gadget_CornerColor
         If Value = #PB_Default
-          \iButtonCornerColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
-          If \iButtonCornerColor = #PB_Default
-            \iButtonCornerColor = GetSysColor_(#COLOR_WINDOW)
+          \lButtonCornerColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
+          If \lButtonCornerColor = #PB_Default
+            \lButtonCornerColor = GetSysColor_(#COLOR_WINDOW)
           EndIf
         Else
-          \iButtonCornerColor     = Value
+          \lButtonCornerColor     = Value
         EndIf
         ReturnValue = #True
         
       ; ---------- GrayBackColor ----------
       Case #PB_Gadget_GrayBackColor
         If Value = #PB_Default
-          If IsDarkColorOT(\iButtonBackColor)
-            \iGrayBackColor = DisabledDarkColorOT(\iButtonBackColor)
+          If IsDarkColorOT(\lButtonBackColor)
+            \lGrayBackColor = DisabledDarkColorOT(\lButtonBackColor)
           Else
-            \iGrayBackColor =  DisabledLightColorOT(\iButtonBackColor)
+            \lGrayBackColor =  DisabledLightColorOT(\lButtonBackColor)
           EndIf
         Else
-          \iGrayBackColor    = Value
+          \lGrayBackColor    = Value
         EndIf
         ReturnValue = #True
         
       ; ---------- FrontColor ----------
       Case #PB_Gadget_FrontColor
         If Value = #PB_Default
-          If IsDarkColorOT(\iButtonBackColor)
-            \iFrontColor = #White
+          If IsDarkColorOT(\lButtonBackColor)
+            \lFrontColor = #White
           Else
-            \iFrontColor = #Black
+            \lFrontColor = #Black
           EndIf
         Else
-          \iFrontColor   = Value
+          \lFrontColor   = Value
         EndIf
         
         _SubSetObjectButtonColor(*ObjectTheme\PBGadgetType, #PB_Gadget_GrayTextColor)
@@ -2513,13 +2609,13 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
       ; ---------- GrayTextColor ----------
       Case #PB_Gadget_GrayTextColor
         If Value = #PB_Default
-          If IsDarkColorOT(\iFrontColor)
-            \iGrayTextColor    = DisabledDarkColorOT(\iFrontColor)
+          If IsDarkColorOT(\lFrontColor)
+            \lGrayTextColor    = DisabledDarkColorOT(\lFrontColor)
           Else
-            \iGrayTextColor    = DisabledLightColorOT(\iFrontColor)
+            \lGrayTextColor    = DisabledLightColorOT(\lFrontColor)
           EndIf
         Else
-          \iGrayTextColor      = Value
+          \lGrayTextColor      = Value
         EndIf
         ReturnValue = #True
         
@@ -2532,13 +2628,13 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
       ; ---------- ShadowColor ----------
       Case #PB_Gadget_ShadowColor
         If Value = #PB_Default
-          If IsDarkColorOT(\iFrontColor)
-            \iShadowColor          = #White
+          If IsDarkColorOT(\lFrontColor)
+            \lShadowColor          = #White
           Else
-            \iShadowColor          = #Black
+            \lShadowColor          = #Black
           EndIf
         Else
-          \iShadowColor            = Value
+          \lShadowColor            = Value
         EndIf
         ReturnValue = #True
         
@@ -2546,25 +2642,25 @@ Procedure SetObjectButtonColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, 
       Case #PB_Gadget_BorderColor
         If Value = #PB_Default
           If IsDarkColorOT(ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor)))
-            \iBorderColor = \iButtonBackColor
+            \lBorderColor = \lButtonBackColor
           Else
-            \iBorderColor = \iButtonOuterColor
+            \lBorderColor = \lButtonOuterColor
           EndIf
         Else
-          \iBorderColor            = Value
+          \lBorderColor            = Value
         EndIf
         ReturnValue = #True
         
       ; ---------- RoundX ----------
       Case #PB_Gadget_RoundX
         If Value = #PB_Default : Value = 8 : EndIf
-        \iRoundX                   = Value
+        \lRoundX                   = Value
         ReturnValue = #True
         
       ; ---------- RoundY ----------
       Case #PB_Gadget_RoundY
         If Value = #PB_Default : Value = 8 : EndIf
-        \iRoundY                   = Value
+        \lRoundY                   = Value
         ReturnValue = #True
         
     EndSelect
@@ -2631,63 +2727,63 @@ Procedure AddButtonTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
     \bButtonEnable = IsWindowEnabled_(*ObjectTheme\IDGadget)
     
     ; ---------- BackColor ----------
-    \iButtonBackColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_BackColor)) 
-    If \iButtonBackColor = #PB_Default
-      \iButtonBackColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
-      If \iButtonBackColor = #PB_Default
-        \iButtonBackColor = GetSysColor_(#COLOR_WINDOW)
+    \lButtonBackColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_BackColor)) 
+    If \lButtonBackColor = #PB_Default
+      \lButtonBackColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
+      If \lButtonBackColor = #PB_Default
+        \lButtonBackColor = GetSysColor_(#COLOR_WINDOW)
       EndIf
-      If IsDarkColorOT(\iButtonBackColor) : \iButtonBackColor = AccentColorOT(\iButtonBackColor, 80) : EndIf  
+      If IsDarkColorOT(\lButtonBackColor) : \lButtonBackColor = AccentColorOT(\lButtonBackColor, 80) : EndIf  
     EndIf
     
     ; ---------- OuterColor ----------
-    \iButtonOuterColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_OuterColor))
-    If \iButtonOuterColor = #PB_Default
-      \iButtonOuterColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
-      If \iButtonOuterColor = #PB_Default
-        \iButtonOuterColor = GetSysColor_(#COLOR_WINDOW)
+    \lButtonOuterColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_OuterColor))
+    If \lButtonOuterColor = #PB_Default
+      \lButtonOuterColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
+      If \lButtonOuterColor = #PB_Default
+        \lButtonOuterColor = GetSysColor_(#COLOR_WINDOW)
       EndIf
-      If Not IsDarkColorOT(\iButtonOuterColor) : \iButtonOuterColor = AccentColorOT(\iButtonOuterColor, -80) : EndIf
+      If Not IsDarkColorOT(\lButtonOuterColor) : \lButtonOuterColor = AccentColorOT(\lButtonOuterColor, -80) : EndIf
     EndIf
     
     ; ---------- CornerColor ----------
-    \iButtonCornerColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_CornerColor))
-    If \iButtonCornerColor = #PB_Default
-      \iButtonCornerColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
-      If \iButtonCornerColor = #PB_Default
-        \iButtonCornerColor = GetSysColor_(#COLOR_WINDOW)
+    \lButtonCornerColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_CornerColor))
+    If \lButtonCornerColor = #PB_Default
+      \lButtonCornerColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
+      If \lButtonCornerColor = #PB_Default
+        \lButtonCornerColor = GetSysColor_(#COLOR_WINDOW)
       EndIf
     EndIf
     
     ; ---------- GrayBackColor ----------
-    \iGrayBackColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_GrayBackColor))
-    If \iGrayBackColor = #PB_Default
-      If IsDarkColorOT(\iButtonBackColor)
-        \iGrayBackColor = DisabledDarkColorOT(\iButtonBackColor)
+    \lGrayBackColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_GrayBackColor))
+    If \lGrayBackColor = #PB_Default
+      If IsDarkColorOT(\lButtonBackColor)
+        \lGrayBackColor = DisabledDarkColorOT(\lButtonBackColor)
       Else
-        \iGrayBackColor =  DisabledLightColorOT(\iButtonBackColor)
+        \lGrayBackColor =  DisabledLightColorOT(\lButtonBackColor)
       EndIf
     EndIf
     
     \iActiveFont  = SendMessage_(*ObjectTheme\IDGadget, #WM_GETFONT, 0, 0)
     
     ; ---------- FrontColor ----------
-    \iFrontColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_FrontColor))
-    If \iFrontColor = #PB_Default
-      If IsDarkColorOT(\iButtonBackColor)
-        \iFrontColor = #White
+    \lFrontColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_FrontColor))
+    If \lFrontColor = #PB_Default
+      If IsDarkColorOT(\lButtonBackColor)
+        \lFrontColor = #White
       Else
-        \iFrontColor = #Black
+        \lFrontColor = #Black
       EndIf
     EndIf
     
     ; ---------- GrayTextColor ----------
-    \iGrayTextColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_GrayTextColor))
-    If \iGrayTextColor = #PB_Default
-      If IsDarkColorOT(\iFrontColor)
-        \iGrayTextColor = DisabledDarkColorOT(\iFrontColor)
+    \lGrayTextColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_GrayTextColor))
+    If \lGrayTextColor = #PB_Default
+      If IsDarkColorOT(\lFrontColor)
+        \lGrayTextColor = DisabledDarkColorOT(\lFrontColor)
       Else
-        \iGrayTextColor = DisabledLightColorOT(\iFrontColor)
+        \lGrayTextColor = DisabledLightColorOT(\lFrontColor)
       EndIf
     EndIf
     
@@ -2696,35 +2792,35 @@ Procedure AddButtonTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
     If \bEnableShadow = #PB_Default : \bEnableShadow = 0 : EndIf
     
     ; ---------- ShadowColor ----------
-    \iShadowColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_ShadowColor))
-    If \iShadowColor = #PB_Default
-      If IsDarkColorOT(\iFrontColor)
-        \iShadowColor = #White
+    \lShadowColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_ShadowColor))
+    If \lShadowColor = #PB_Default
+      If IsDarkColorOT(\lFrontColor)
+        \lShadowColor = #White
       Else
-        \iShadowColor = #Black
+        \lShadowColor = #Black
       EndIf
     EndIf
     
     ; ---------- BorderColor ----------
-    \iBorderColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_BorderColor))
-    If \iBorderColor = #PB_Default
+    \lBorderColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_BorderColor))
+    If \lBorderColor = #PB_Default
       If IsDarkColorOT(ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor)))
-        \iBorderColor = \iButtonBackColor
+        \lBorderColor = \lButtonBackColor
       Else
-        \iBorderColor = \iButtonOuterColor
+        \lBorderColor = \lButtonOuterColor
       EndIf
     EndIf
     
     ; ---------- RoundX ----------
-    \iRoundX = ThemeAttribute(ObjectType + Str(#PB_Gadget_RoundX))
-    If \iRoundX = #PB_Default : \iRoundX = 8 : EndIf
+    \lRoundX = ThemeAttribute(ObjectType + Str(#PB_Gadget_RoundX))
+    If \lRoundX = #PB_Default : \lRoundX = 8 : EndIf
     
     ; ---------- RoundY ----------
-    \iRoundY = ThemeAttribute(ObjectType + Str(#PB_Gadget_RoundY))
-    If \iRoundY = #PB_Default : \iRoundY = 8 : EndIf
+    \lRoundY = ThemeAttribute(ObjectType + Str(#PB_Gadget_RoundY))
+    If \lRoundY = #PB_Default : \lRoundY = 8 : EndIf
     
     If \hRgn : DeleteObject_(\hRgn) : EndIf
-    ;\hRgn         = CreateRoundRectRgn_(0, 0, DesktopScaledX(GadgetWidth(Gadget)), DesktopScaledY(GadgetHeight(Gadget)), \iRoundX, \iRoundY)
+    ;\hRgn         = CreateRoundRectRgn_(0, 0, DesktopScaledX(GadgetWidth(Gadget)), DesktopScaledY(GadgetHeight(Gadget)), \lRoundX, \lRoundY)
     \hRgn        = CreateRectRgn_(0, 0, DesktopScaledX(GadgetWidth(Gadget)), DesktopScaledY(GadgetHeight(Gadget)))
     
     ; DesktopScaledX(Y) is done in MakeButtonTheme()
@@ -2785,6 +2881,16 @@ EndProcedure
 
 ;
 ;------------------------------------------------------------------------------
+;- IncludeFile CreateGadget DataSection.pbi
+;    Positioned here after SetWindowColor(), SetGadgetColor() to be done without calling macros and avoid an endless loop 
+; -----------------------------------------------------------------------------
+;
+
+XIncludeFile "ObjectTheme_CreateGadget.pbi"
+XIncludeFile "ObjectTheme_DataSection.pbi"
+
+;
+;------------------------------------------------------------------------------
 ;- ----- Object Theme Public -----
 ;------------------------------------------------------------------------------
 ;
@@ -2834,27 +2940,27 @@ Procedure GetObjectColor(Gadget, Attribute)
       With *ObjectTheme\BtnInfo
         Select Attribute
           Case #PB_Gadget_BackColor
-            ReturnValue = \iButtonBackColor
+            ReturnValue = \lButtonBackColor
           Case #PB_Gadget_OuterColor
-            ReturnValue = \iButtonOuterColor
+            ReturnValue = \lButtonOuterColor
           Case #PB_Gadget_CornerColor
-            ReturnValue = \iButtonCornerColor
+            ReturnValue = \lButtonCornerColor
           Case #PB_Gadget_GrayBackColor
-            ReturnValue = \iGrayBackColor
+            ReturnValue = \lGrayBackColor
           Case #PB_Gadget_FrontColor
-            ReturnValue = \iFrontColor
+            ReturnValue = \lFrontColor
           Case #PB_Gadget_GrayTextColor
-            ReturnValue = \iGrayTextColor
+            ReturnValue = \lGrayTextColor
           Case #PB_Gadget_EnableShadow
             ReturnValue = \bEnableShadow
           Case #PB_Gadget_ShadowColor
-            ReturnValue = \iShadowColor
+            ReturnValue = \lShadowColor
           Case #PB_Gadget_BorderColor
-            ReturnValue = \iBorderColor
+            ReturnValue = \lBorderColor
           Case #PB_Gadget_RoundX
-            ReturnValue = \iRoundX
+            ReturnValue = \lRoundX
           Case #PB_Gadget_RoundY
-            ReturnValue = \iRoundY
+            ReturnValue = \lRoundY
         EndSelect
       EndWith
       
@@ -2862,35 +2968,35 @@ Procedure GetObjectColor(Gadget, Attribute)
       With *ObjectTheme\ObjectInfo
         Select Attribute
           Case #PB_Gadget_BackColor
-            ReturnValue = \iBackColor
+            ReturnValue = \lBackColor
           Case #PB_Gadget_FrontColor
-            ReturnValue = \iFrontColor
+            ReturnValue = \lFrontColor
           Case #PB_Gadget_GrayTextColor
-            ReturnValue = \iGrayTextColor
+            ReturnValue = \lGrayTextColor
           Case #PB_Gadget_LineColor
-            ReturnValue = \iLineColor
+            ReturnValue = \lLineColor
           Case #PB_Gadget_TitleBackColor 
-            ReturnValue = \iTitleBackColor
+            ReturnValue = \lTitleBackColor
           Case #PB_Gadget_TitleFrontColor
-            ReturnValue = \iTitleFrontColor
+            ReturnValue = \lTitleFrontColor
           Case #PB_Gadget_ActiveTab
-            ReturnValue = \iActiveTabColor
+            ReturnValue = \lActiveTabColor
           Case #PB_Gadget_InactiveTab
-            ReturnValue = \iInactiveTabColor
+            ReturnValue = \lInactiveTabColor
           Case #PB_Gadget_HighLightColor
-            ReturnValue = \iHighLightColor
+            ReturnValue = \lHighLightColor
           Case #PB_Gadget_EditBoxColor
-            ReturnValue = \iEditBoxColor
+            ReturnValue = \lEditBoxColor
           Case #PB_Gadget_SplitterBorder
-            ReturnValue = \iSplitterBorder
+            ReturnValue = \bSplitterBorder
           Case #PB_Gadget_SplitterBorderColor
-            ReturnValue = \iSplitterBorderColor
+            ReturnValue = \lSplitterBorderColor
           Case #PB_Gadget_UseUxGripper
-            ReturnValue = \iUseUxGripper
+            ReturnValue = \bUseUxGripper
           Case #PB_Gadget_LargeGripper
-            ReturnValue = \iLargeGripper
+            ReturnValue = \bLargeGripper
           Case #PB_Gadget_GripperColor
-            ReturnValue = \iGripperColor
+            ReturnValue = \lGripperColor
         EndSelect
       EndWith
       
@@ -2992,7 +3098,7 @@ Procedure FreeObjectTheme()
           ReturnValue = #True
           
         Case #PB_GadgetType_Splitter
-          If \ObjectInfo\hSplitterGripper : DeleteObject_(\ObjectInfo\hSplitterGripper) : EndIf
+          If \ObjectInfo\hObjSplitterGripper : DeleteObject_(\ObjectInfo\hObjSplitterGripper) : EndIf
           SetClassLongPtr_(\IDGadget, #GCL_STYLE, GetClassLongPtr_(\IDGadget, #GCL_STYLE) &~ #CS_DBLCLKS)
           SetWindowLongPtr_(\IDGadget, #GWL_STYLE, GetWindowLongPtr_(\IDGadget, #GWL_STYLE) &~ #WS_CLIPCHILDREN)
           SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc)
@@ -3136,7 +3242,11 @@ CompilerIf #PB_Compiler_IsMainFile
       ButtonGadget(#ApplyTheme, 20, 230, 400, 50, "Apply Light Blue Theme")
     EndIf
   EndProcedure
-
+  
+  CompilerIf #PB_Compiler_Debugger = #False
+    CompilerIf #EnableOnError : OnErrorCall(@ErrorHandler()) : CompilerEndIf
+  CompilerEndIf
+  
   Open_Window_0()
   
   ;- ---> Add SetObjectTheme() 
@@ -3152,6 +3262,9 @@ CompilerIf #PB_Compiler_IsMainFile
       Case #PB_Event_Gadget
         Select EventGadget()
           Case #Checkbox_1
+            ; ----- Test OnError (Enable OnError line numbering support in the compiler options) -----
+            Define DivBy0 = 2 : DivBy0 = DivBy0/0
+            ; ----- Test ObjectTheme function -----
             ;SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BackColor, #Cyan)
             ;SetObjectColor(#Combo_1, #PB_Gadget_BackColor,  #Cyan)
             ;SetObjectColor(#Editor_1, #PB_Gadget_BackColor,  #Yellow)
@@ -3177,3 +3290,4 @@ CompilerEndIf
 
 ; IDE Options = PureBasic 6.03 LTS (Windows - x64)
 ; EnableXP
+; EnableOnError
