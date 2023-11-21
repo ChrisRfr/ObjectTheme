@@ -33,7 +33,7 @@
 ; . It uses the same attributes as SetGadgetColor():
 ;     #PB_Gadget_FrontColor, #PB_Gadget_BackColor, #PB_Gadget_LineColor, #PB_Gadget_TitleFrontColor, #PB_Gadget_TitleBackColor, #PB_Gadget_GrayTextColor
 ; . With new attributes:
-;     #PB_Gadget_DarkMode, #PB_Gadget_ActiveTab, #PB_Gadget_InactiveTab, #PB_Gadget_HighLightColor, #PB_Gadget_EditBoxColor, #PB_Gadget_OuterColor,
+;     #PB_Gadget_DarkMode, #PB_Gadget_ActiveTabColor , #PB_Gadget_InactiveTabColor , #PB_Gadget_HighLightColor, #PB_Gadget_EditBoxColor, #PB_Gadget_OuterColor,
 ;     #PB_Gadget_CornerColor, #PB_Gadget_GrayBackColor, #PB_Gadget_EnableShadow, #PB_Gadget_ShadowColor, #PB_Gadget_BorderColor, #PB_Gadget_RoundX,
 ;     #PB_Gadget_RoundY, #PB_Gadget_SplitterBorder, #PB_Gadget_SplitterBorderColor, #PB_Gadget_UseUxGripper, #PB_Gadget_GripperColor, #PB_Gadget_LargeGripper
 ;
@@ -92,8 +92,8 @@ EndEnumeration
 ;#PB_Gadget_GrayTextColor
 Enumeration #PB_Gadget_GrayTextColor + 1
   #PB_Gadget_DarkMode              ; Enable or disable DarkMode Explorer theme
-  #PB_Gadget_ActiveTab             ; Panel: active tab color
-  #PB_Gadget_InactiveTab           ; Panel: inactive tab color
+  #PB_Gadget_ActiveTabColor        ; Panel: active tab color
+  #PB_Gadget_InactiveTabColor      ; Panel: inactive tab color
   #PB_Gadget_HighLightColor        ; ComboBox: high-light color of the item selected in the drop-down list
   #PB_Gadget_EditBoxColor          ; ComboBox: editable box color
   #PB_Gadget_OuterColor            ; Button & ButtonImage: outer gradient color. Gradient from the current background color to the Outer Color
@@ -1341,8 +1341,8 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_FrontColor)
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_LineColor)
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_TitleBackColor)
-        _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_ActiveTab)
-        _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_InactiveTab)
+        _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_ActiveTabColor )
+        _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_InactiveTabColor )
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_EditBoxColor)
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_SplitterBorderColor)
         _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_UseUxGripper)
@@ -1360,7 +1360,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         ReturnValue = #True
         
       ; ---------- ActiveTabColor ----------
-      Case #PB_Gadget_ActiveTab
+      Case #PB_Gadget_ActiveTabColor 
         SavBackColor = \lActiveTabColor
         If Value = #PB_Default
           \lActiveTabColor = \lBackColor
@@ -1371,7 +1371,7 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
         ReturnValue = #True
                 
       ; ---------- InactiveTabColor ----------
-      Case #PB_Gadget_InactiveTab
+      Case #PB_Gadget_InactiveTabColor 
         SavBackColor = \lInactiveTabColor
         If Value = #PB_Default
           If IsDarkColorOT(\lBackColor) : \lInactiveTabColor = AccentColorOT(\lBackColor, 40) : Else : \lInactiveTabColor = AccentColorOT(\lBackColor, -40) : EndIf
@@ -1631,7 +1631,7 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
     EndIf
     
     ; ---------- ActiveTabColor ----------
-    If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_ActiveTab))
+    If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_ActiveTabColor ))
       SavBackColor  = \lActiveTabColor
       \lActiveTabColor = ThemeAttribute()
       If \lActiveTabColor = #PB_Default
@@ -1641,7 +1641,7 @@ Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #F
     EndIf
     
     ; ---------- InactiveTabColor ----------
-    If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_InactiveTab))
+    If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_InactiveTabColor ))
       SavBackColor  = \lInactiveTabColor
       \lInactiveTabColor = ThemeAttribute()
       If \lInactiveTabColor = #PB_Default
@@ -2979,9 +2979,9 @@ Procedure GetObjectColor(Gadget, Attribute)
             ReturnValue = \lTitleBackColor
           Case #PB_Gadget_TitleFrontColor
             ReturnValue = \lTitleFrontColor
-          Case #PB_Gadget_ActiveTab
+          Case #PB_Gadget_ActiveTabColor 
             ReturnValue = \lActiveTabColor
-          Case #PB_Gadget_InactiveTab
+          Case #PB_Gadget_InactiveTabColor 
             ReturnValue = \lInactiveTabColor
           Case #PB_Gadget_HighLightColor
             ReturnValue = \lHighLightColor

@@ -87,8 +87,8 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
-    Data.l #PB_GadgetType_Panel,           #PB_Gadget_ActiveTab,             $603421         ; Active Tab Color: Color | #PB_Default = BackColor
-    Data.l #PB_GadgetType_Panel,           #PB_Gadget_InactiveTab,           #PB_Default     ; Inactive Tab Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_ActiveTabColor,        $603421         ; Active Tab Color: Color | #PB_Default = BackColor
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_InactiveTabColor,      #PB_Default     ; Inactive Tab Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
     
     Data.l #PB_GadgetType_ProgressBar,     #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_ProgressBar,     #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -211,8 +211,8 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
-    Data.l #PB_GadgetType_Panel,           #PB_Gadget_ActiveTab,             $0E1560         ; Active Tab Color: Color | #PB_Default = BackColor
-    Data.l #PB_GadgetType_Panel,           #PB_Gadget_InactiveTab,           #PB_Default     ; Inactive Tab Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_ActiveTabColor,        $0E1560         ; Active Tab Color: Color | #PB_Default = BackColor
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_InactiveTabColor,      #PB_Default     ; Inactive Tab Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
     
     Data.l #PB_GadgetType_ProgressBar,     #PB_Gadget_BackColor,             $2E3150         ; Back Color: Color | #PB_Default = If IsDarkColor BackColor, Accentolor(40) else Accentolor(-40)
     Data.l #PB_GadgetType_ProgressBar,     #PB_Gadget_FrontColor,            $283FB8         ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, Accentolor(100) else Accentolor(-100)
@@ -335,8 +335,8 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
-    Data.l #PB_GadgetType_Panel,           #PB_Gadget_ActiveTab,             $FEA36B         ; Active Tab Color: Color | #PB_Default = BackColor
-    Data.l #PB_GadgetType_Panel,           #PB_Gadget_InactiveTab,           #PB_Default     ; Inactive Tab Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_ActiveTabColor,        $FEA36B         ; Active Tab Color: Color | #PB_Default = BackColor
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_InactiveTabColor,      #PB_Default     ; Inactive Tab Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
     
     Data.l #PB_GadgetType_ProgressBar,     #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor BackColor, Accentolor(40) else Accentolor(-40)
     Data.l #PB_GadgetType_ProgressBar,     #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, Accentolor(100) else Accentolor(-100)
@@ -459,8 +459,8 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
     Data.l #PB_GadgetType_Panel,           #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
-    Data.l #PB_GadgetType_Panel,           #PB_Gadget_ActiveTab,             #PB_Default     ; Active Tab Color: Color | #PB_Default = BackColor
-    Data.l #PB_GadgetType_Panel,           #PB_Gadget_InactiveTab,           #PB_Default     ; Inactive Tab Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_ActiveTabColor,        #PB_Default     ; Active Tab Color: Color | #PB_Default = BackColor
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_InactiveTabColor,      #PB_Default     ; Inactive Tab Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
     
     Data.l #PB_GadgetType_ProgressBar,     #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor BackColor, Accentolor(40) else Accentolor(-40)
     Data.l #PB_GadgetType_ProgressBar,     #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, Accentolor(100) else Accentolor(-100)
