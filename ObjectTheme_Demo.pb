@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme_Demo.pb
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-22
-;           Version: 1.2
+; modification Date: 2023-11-23
+;           Version: 1.3
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -18,6 +18,10 @@ EnableExplicit
 
 ;- ---> Add XIncludeFile "ObjectTheme.pbi"
 XIncludeFile "ObjectTheme.pbi"
+
+;- ---> UseModule ObjectTheme (Mandatory)
+; To call macros directly (e.g. ButtonGadget) without having to change existing code and use ObjectTheme::ButtonGadget
+UseModule ObjectTheme
 
 UsePNGImageDecoder()
 
@@ -76,11 +80,10 @@ LoadImage(#Imag, #PB_Compiler_Home + "examples/sources/Data/world.png")
 Procedure ProgressBarDemo(Gadget)
   If GadgetType(Gadget) <> #PB_GadgetType_ProgressBar : ProcedureReturn : EndIf
   Protected I
-  For I = 0 To 100
+  For I = 0 To 66
     SetGadgetState(Gadget, I)
     Delay(10)
   Next
-  SetGadgetState(Gadget, 66)
 EndProcedure
 
 Procedure Open_Window_1(X = 20, Y = 20, Width = 580, Height = 460)
@@ -175,11 +178,13 @@ EndProcedure
 ; SetGadgetFont(#PB_Default, FontID(#Font))
 
 ;- ---> Add SetObjectTheme()
-; If it is at the beginning before the combobox creation, you don't need to add the 2 constants #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED for ComboBoxGadget(), it's auto done
+; It can be positioned anywhere in the code
+; If it is at the beginning before the combobox creation, you don't need to add the 2 constants #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED for ComboBoxGadget()
 SetObjectTheme(#ObjectTheme_LightBlue)
 
 Open_Window_1()
 Open_Window_2()
+;ProgressBarDemo(#Progres_1)
 
 Repeat
   Select WaitWindowEvent()
@@ -216,7 +221,7 @@ Repeat
           Else
             If IsWindow(#Window_1)
               DisableGadget(#Txt_1, #False) : DisableGadget(#Txt_2, #False) : DisableGadget(#Opt_1, #False) : DisableGadget(#Opt_2, #False) : DisableGadget(#Edit_1, #False)
-              DisableGadget(#Date_1, #False) : DisableGadget(#Frame_1, #False) : DisableGadget(#ListView_1, #True) : DisableGadget(#Hyper_1, #False)
+              DisableGadget(#Date_1, #False) : DisableGadget(#Frame_1, #False) : DisableGadget(#ListView_1, #False) : DisableGadget(#Hyper_1, #False)
               DisableGadget(#Progres_1, #False) : DisableGadget(#Spin_1, #False) : DisableGadget(#String_1, #False) : DisableGadget(#Splitter_1, #False)
               DisableGadget(#Panel_1, #False) : DisableGadget(#Calend_1, #False) : DisableGadget(#Combo_1, #False) : DisableGadget(#ApplyTheme_1, #False)
             EndIf

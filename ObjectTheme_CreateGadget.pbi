@@ -7,8 +7,8 @@
 ;    Source Name: ObjectTheme_CreateGadget.pbi
 ;         Author: ChrisR
 ;  Creation Date: 2023-11-06
-; modification Date: 2023-11-22
-;        Version: 1.2
+; modification Date: 2023-11-23
+;        Version: 1.3
 ;     PB-Version: 6.0 or other
 ;             OS: Windows Only
 ;          Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -16,44 +16,14 @@
 
 CompilerIf Defined(PB_WindowType, #PB_Constant)
   
-Declare _OpenWindow(Window, X, Y, Width, Height, Title$, Flags, ParentID)
-Declare _ButtonGadget(Gadget, X, Y, Width, Height, Text$, Flags)
-Declare _ButtonImageGadget(Gadget, X, Y, Width, Height, IDImage, Flags)
-Declare _CalendarGadget(Gadget, X, Y, Width, Height, Date, Flags)
-Declare _CheckBoxGadget(Gadget, X, Y, Width, Height, Text$, Flags)
-Declare _ComboBoxGadget(Gadget, X, Y, Width, Height, Flags)
-Declare _ContainerGadget(Gadget, X, Y, Width, Height, Flags)
-Declare _DateGadget(Gadget, X, Y, Width, Height, Mask$, Date, Flags)
-Declare _EditorGadget(Gadget, X, Y, Width, Height, Flags)
-Declare _ExplorerListGadget(Gadget, X, Y, Width, Height, Folder$, Flags)
-Declare _ExplorerTreeGadget(Gadget, X, Y, Width, Height, Folder$, Flags)
-Declare _FrameGadget(Gadget, X, Y, Width, Height, Text$, Flags)
-Declare _HyperLinkGadget(Gadget, X, Y, Width, Height, Text$, Color, Flags)
-Declare _ListIconGadget(Gadget, X, Y, Width, Height, Title$, TitleWidth, Flags)
-Declare _ListViewGadget(Gadget, X, Y, Width, Height, Flags)
-Declare _OptionGadget(Gadget, X, Y, Width, Height, Text$)
-Declare _PanelGadget(Gadget, X, Y, Width, Height)
-Declare _ProgressBarGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
-Declare _ScrollBarGadget(Gadget, X, Y, Width, Height, Min, Max, PageLength, Flags)
-Declare _ScrollAreaGadget(Gadget, X, Y, Width, Height, InnerWidth, InnerHeight, ScrollStep, Flags)
-Declare _SpinGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
-Declare _SplitterGadget(Gadget, X, Y, Width, Height, Gadget1, Gadget2, Flags)
-Declare _StringGadget(Gadget, X, Y, Width, Height, Text$, Flags)
-Declare _TextGadget(Gadget, X, Y, Width, Height, Text$, Flags)
-Declare _TrackBarGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
-Declare _TreeGadget(Gadget, X, Y, Width, Height, Flags)
-Declare _SetGadgetAttribute(Gadget, Attribute, Value)
-Declare _SetWindowColor(Window, Color)
-Declare _SetGadgetColor(Gadget, Attribute, Color)
-  
 Procedure _OpenWindow(Window, X, Y, Width, Height, Title$, Flags, ParentID)
   Protected RetVal
   
   If Window = #PB_Any
-    Window = OpenWindow(#PB_Any, X, Y, Width, Height, Title$, Flags, ParentID)
+    Window = _PB(OpenWindow)(#PB_Any, X, Y, Width, Height, Title$, Flags, ParentID)
     RetVal = Window
   Else
-    RetVal = OpenWindow(Window, X, Y, Width, Height, Title$, Flags, ParentID)
+    RetVal = _PB(OpenWindow)(Window, X, Y, Width, Height, Title$, Flags, ParentID)
   EndIf
   
   _AddWindowTheme(Window)
@@ -65,10 +35,10 @@ Procedure _ButtonGadget(Gadget, X, Y, Width, Height, Text$, Flags)
   Protected RetVal
 
   If Gadget = #PB_Any
-    Gadget = ButtonGadget(#PB_Any, X, Y, Width, Height, Text$, Flags)
+    Gadget = _PB(ButtonGadget)(#PB_Any, X, Y, Width, Height, Text$, Flags)
     RetVal = Gadget
   Else
-    RetVal = ButtonGadget(Gadget, X, Y, Width, Height, Text$, Flags)
+    RetVal = _PB(ButtonGadget)(Gadget, X, Y, Width, Height, Text$, Flags)
   EndIf
   
   _AddButtonTheme(Gadget)
@@ -80,10 +50,10 @@ Procedure _ButtonImageGadget(Gadget, X, Y, Width, Height, IDImage, Flags)
   Protected RetVal
 
   If Gadget = #PB_Any
-    Gadget = ButtonImageGadget(#PB_Any, X, Y, Width, Height, IDImage, Flags)
+    Gadget = _PB(ButtonImageGadget)(#PB_Any, X, Y, Width, Height, IDImage, Flags)
     RetVal = Gadget
   Else
-    RetVal = ButtonImageGadget(Gadget, X, Y, Width, Height, IDImage, Flags)
+    RetVal = _PB(ButtonImageGadget)(Gadget, X, Y, Width, Height, IDImage, Flags)
   EndIf
   
   _AddButtonTheme(Gadget)
@@ -95,10 +65,10 @@ Procedure _CalendarGadget(Gadget, X, Y, Width, Height, Date, Flags)
   Protected RetVal
 
   If Gadget = #PB_Any
-    Gadget = CalendarGadget(#PB_Any, X, Y, Width, Height, Date, Flags)
+    Gadget = _PB(CalendarGadget)(#PB_Any, X, Y, Width, Height, Date, Flags)
     RetVal = Gadget
   Else
-    RetVal = CalendarGadget(Gadget, X, Y, Width, Height, Date, Flags)
+    RetVal = _PB(CalendarGadget)(Gadget, X, Y, Width, Height, Date, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -110,10 +80,10 @@ Procedure _CheckBoxGadget(Gadget, X, Y, Width, Height, Text$, Flags)
   Protected RetVal
 
   If Gadget = #PB_Any
-    Gadget = CheckBoxGadget(#PB_Any, X, Y, Width, Height, Text$, Flags)
+    Gadget = _PB(CheckBoxGadget)(#PB_Any, X, Y, Width, Height, Text$, Flags)
     RetVal = Gadget
   Else
-    RetVal = CheckBoxGadget(Gadget, X, Y, Width, Height, Text$, Flags)
+    RetVal = _PB(CheckBoxGadget)(Gadget, X, Y, Width, Height, Text$, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -133,10 +103,10 @@ Procedure _ComboBoxGadget(Gadget, X, Y, Width, Height, Flags)
   EndIf
   
   If Gadget = #PB_Any
-    Gadget = ComboBoxGadget(#PB_Any, X, Y, Width, Height, Flags)
+    Gadget = _PB(ComboBoxGadget)(#PB_Any, X, Y, Width, Height, Flags)
     RetVal = Gadget
   Else
-    RetVal = ComboBoxGadget(Gadget, X, Y, Width, Height, Flags)
+    RetVal = _PB(ComboBoxGadget)(Gadget, X, Y, Width, Height, Flags)
   EndIf
       
   _AddObjectTheme(Gadget)
@@ -148,10 +118,10 @@ Procedure _ContainerGadget(Gadget, X, Y, Width, Height, Flags)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = ContainerGadget(#PB_Any, X, Y, Width, Height, Flags)
+    Gadget = _PB(ContainerGadget)(#PB_Any, X, Y, Width, Height, Flags)
     RetVal = Gadget
   Else
-    RetVal = ContainerGadget(Gadget, X, Y, Width, Height, Flags)
+    RetVal = _PB(ContainerGadget)(Gadget, X, Y, Width, Height, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -163,10 +133,10 @@ Procedure _DateGadget(Gadget, X, Y, Width, Height, Mask$, Date, Flags)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = DateGadget(#PB_Any, X, Y, Width, Height, Mask$, Date, Flags)
+    Gadget = _PB(DateGadget)(#PB_Any, X, Y, Width, Height, Mask$, Date, Flags)
     RetVal = Gadget
   Else
-    RetVal = DateGadget(Gadget, X, Y, Width, Height, Mask$, Date, Flags)
+    RetVal = _PB(DateGadget)(Gadget, X, Y, Width, Height, Mask$, Date, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -178,10 +148,10 @@ Procedure _EditorGadget(Gadget, X, Y, Width, Height, Flags)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = EditorGadget(#PB_Any, X, Y, Width, Height, Flags)
+    Gadget = _PB(EditorGadget)(#PB_Any, X, Y, Width, Height, Flags)
     RetVal = Gadget
   Else
-    RetVal = EditorGadget(Gadget, X, Y, Width, Height, Flags)
+    RetVal = _PB(EditorGadget)(Gadget, X, Y, Width, Height, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -193,10 +163,10 @@ Procedure _ExplorerListGadget(Gadget, X, Y, Width, Height, Folder$, Flags)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = ExplorerListGadget(#PB_Any, X, Y, Width, Height, Folder$, Flags)
+    Gadget = _PB(ExplorerListGadget)(#PB_Any, X, Y, Width, Height, Folder$, Flags)
     RetVal = Gadget
   Else
-    RetVal = ExplorerListGadget(Gadget, X, Y, Width, Height, Folder$, Flags)
+    RetVal = _PB(ExplorerListGadget)(Gadget, X, Y, Width, Height, Folder$, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -208,10 +178,10 @@ Procedure _ExplorerTreeGadget(Gadget, X, Y, Width, Height, Folder$, Flags)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = ExplorerTreeGadget(#PB_Any, X, Y, Width, Height, Folder$, Flags)
+    Gadget = _PB(ExplorerTreeGadget)(#PB_Any, X, Y, Width, Height, Folder$, Flags)
     RetVal = Gadget
   Else
-    RetVal = ExplorerTreeGadget(Gadget, X, Y, Width, Height, Folder$, Flags)
+    RetVal = _PB(ExplorerTreeGadget)(Gadget, X, Y, Width, Height, Folder$, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -223,10 +193,10 @@ Procedure _FrameGadget(Gadget, X, Y, Width, Height, Text$, Flags)
   Protected RetVal
 
   If Gadget = #PB_Any
-    Gadget = FrameGadget(#PB_Any, X, Y, Width, Height, Text$, Flags)
+    Gadget = _PB(FrameGadget)(#PB_Any, X, Y, Width, Height, Text$, Flags)
     RetVal = Gadget
   Else
-    RetVal = FrameGadget(Gadget, X, Y, Width, Height, Text$, Flags)
+    RetVal = _PB(FrameGadget)(Gadget, X, Y, Width, Height, Text$, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -238,10 +208,10 @@ Procedure _HyperLinkGadget(Gadget, X, Y, Width, Height, Text$, Color, Flags)
   Protected RetVal
 
   If Gadget = #PB_Any
-    Gadget = HyperLinkGadget(#PB_Any, X, Y, Width, Height, Text$, Color, Flags)
+    Gadget = _PB(HyperLinkGadget)(#PB_Any, X, Y, Width, Height, Text$, Color, Flags)
     RetVal = Gadget
   Else
-    RetVal = HyperLinkGadget(Gadget, X, Y, Width, Height, Text$, Color, Flags)
+    RetVal = _PB(HyperLinkGadget)(Gadget, X, Y, Width, Height, Text$, Color, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -253,10 +223,10 @@ Procedure _ListIconGadget(Gadget, X, Y, Width, Height, Title$, TitleWidth, Flags
   Protected RetVal
 
   If Gadget = #PB_Any
-    Gadget = ListIconGadget(#PB_Any, X, Y, Width, Height, Title$, TitleWidth, Flags)
+    Gadget = _PB(ListIconGadget)(#PB_Any, X, Y, Width, Height, Title$, TitleWidth, Flags)
     RetVal = Gadget
   Else
-    RetVal = ListIconGadget(Gadget, X, Y, Width, Height, Title$, TitleWidth, Flags)
+    RetVal = _PB(ListIconGadget)(Gadget, X, Y, Width, Height, Title$, TitleWidth, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -268,10 +238,10 @@ Procedure _ListViewGadget(Gadget, X, Y, Width, Height, Flags)
   Protected RetVal
 
   If Gadget = #PB_Any
-    Gadget = ListViewGadget(#PB_Any, X, Y, Width, Height, Flags)
+    Gadget = _PB(ListViewGadget)(#PB_Any, X, Y, Width, Height, Flags)
     RetVal = Gadget
   Else
-    RetVal = ListViewGadget(Gadget, X, Y, Width, Height, Flags)
+    RetVal = _PB(ListViewGadget)(Gadget, X, Y, Width, Height, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -283,10 +253,10 @@ Procedure _OptionGadget(Gadget, X, Y, Width, Height, Text$)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = OptionGadget(#PB_Any, X, Y, Width, Height, Text$)
+    Gadget = _PB(OptionGadget)(#PB_Any, X, Y, Width, Height, Text$)
     RetVal = Gadget
   Else
-    RetVal = OptionGadget(Gadget, X, Y, Width, Height, Text$)
+    RetVal = _PB(OptionGadget)(Gadget, X, Y, Width, Height, Text$)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -298,10 +268,10 @@ Procedure _PanelGadget(Gadget, X, Y, Width, Height)
   Protected RetVal
 
   If Gadget = #PB_Any
-    Gadget = PanelGadget(#PB_Any, X, Y, Width, Height)
+    Gadget = _PB(PanelGadget)(#PB_Any, X, Y, Width, Height)
     RetVal = Gadget
   Else
-    RetVal = PanelGadget(Gadget, X, Y, Width, Height)
+    RetVal = _PB(PanelGadget)(Gadget, X, Y, Width, Height)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -313,10 +283,10 @@ Procedure _ProgressBarGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flag
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = ProgressBarGadget(#PB_Any, X, Y, Width, Height, Minimum, Maximum, Flags)
+    Gadget = _PB(ProgressBarGadget)(#PB_Any, X, Y, Width, Height, Minimum, Maximum, Flags)
     RetVal = Gadget
   Else
-    RetVal = ProgressBarGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
+    RetVal = _PB(ProgressBarGadget)(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -328,10 +298,10 @@ Procedure _ScrollBarGadget(Gadget, X, Y, Width, Height, Min, Max, PageLength, Fl
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = ScrollBarGadget(#PB_Any, X, Y, Width, Height, Min, Max, PageLength, Flags)
+    Gadget = _PB(ScrollBarGadget)(#PB_Any, X, Y, Width, Height, Min, Max, PageLength, Flags)
     RetVal = Gadget
   Else
-    RetVal = ScrollBarGadget(Gadget, X, Y, Width, Height, Min, Max, PageLength, Flags)
+    RetVal = _PB(ScrollBarGadget)(Gadget, X, Y, Width, Height, Min, Max, PageLength, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -343,10 +313,10 @@ Procedure _ScrollAreaGadget(Gadget, X, Y, Width, Height, InnerWidth, InnerHeight
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = ScrollAreaGadget(#PB_Any, X, Y, Width, Height, InnerWidth, InnerHeight, ScrollStep, Flags)
+    Gadget = _PB(ScrollAreaGadget)(#PB_Any, X, Y, Width, Height, InnerWidth, InnerHeight, ScrollStep, Flags)
     RetVal = Gadget
   Else
-    RetVal = ScrollAreaGadget(Gadget, X, Y, Width, Height, InnerWidth, InnerHeight, ScrollStep, Flags)
+    RetVal = _PB(ScrollAreaGadget)(Gadget, X, Y, Width, Height, InnerWidth, InnerHeight, ScrollStep, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -358,10 +328,10 @@ Procedure _SpinGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = SpinGadget(#PB_Any, X, Y, Width, Height, Minimum, Maximum, Flags)
+    Gadget = _PB(SpinGadget)(#PB_Any, X, Y, Width, Height, Minimum, Maximum, Flags)
     RetVal = Gadget
   Else
-    RetVal = SpinGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
+    RetVal = _PB(SpinGadget)(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -373,10 +343,10 @@ Procedure _SplitterGadget(Gadget, X, Y, Width, Height, Gadget1, Gadget2, Flags)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = SplitterGadget(#PB_Any, X, Y, Width, Height, Gadget1, Gadget2, Flags)
+    Gadget = _PB(SplitterGadget)(#PB_Any, X, Y, Width, Height, Gadget1, Gadget2, Flags)
     RetVal = Gadget
   Else
-    RetVal = SplitterGadget(Gadget, X, Y, Width, Height, Gadget1, Gadget2, Flags)
+    RetVal = _PB(SplitterGadget)(Gadget, X, Y, Width, Height, Gadget1, Gadget2, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -388,10 +358,10 @@ Procedure _StringGadget(Gadget, X, Y, Width, Height, Text$, Flags)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = StringGadget(#PB_Any, X, Y, Width, Height, Text$, Flags)
+    Gadget = _PB(StringGadget)(#PB_Any, X, Y, Width, Height, Text$, Flags)
     RetVal = Gadget
   Else
-    RetVal = StringGadget(Gadget, X, Y, Width, Height, Text$, Flags)
+    RetVal = _PB(StringGadget)(Gadget, X, Y, Width, Height, Text$, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -403,10 +373,10 @@ Procedure _TextGadget(Gadget, X, Y, Width, Height, Text$, Flags)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = TextGadget(#PB_Any, X, Y, Width, Height, Text$, Flags)
+    Gadget = _PB(TextGadget)(#PB_Any, X, Y, Width, Height, Text$, Flags)
     RetVal = Gadget
   Else
-    RetVal = TextGadget(Gadget, X, Y, Width, Height, Text$, Flags)
+    RetVal = _PB(TextGadget)(Gadget, X, Y, Width, Height, Text$, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -418,10 +388,10 @@ Procedure _TrackBarGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
     Protected RetVal
 
   If Gadget = #PB_Any
-    Gadget = TrackBarGadget(#PB_Any, X, Y, Width, Height, Minimum, Maximum, Flags)
+    Gadget = _PB(TrackBarGadget)(#PB_Any, X, Y, Width, Height, Minimum, Maximum, Flags)
     RetVal = Gadget
   Else
-    RetVal = TrackBarGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
+    RetVal = _PB(TrackBarGadget)(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -433,10 +403,10 @@ Procedure _TreeGadget(Gadget, X, Y, Width, Height, Flags)
   Protected RetVal
   
   If Gadget = #PB_Any
-    Gadget = TreeGadget(#PB_Any, X, Y, Width, Height, Flags)
+    Gadget = _PB(TreeGadget)(#PB_Any, X, Y, Width, Height, Flags)
     RetVal = Gadget
   Else
-    RetVal = TreeGadget(Gadget, X, Y, Width, Height, Flags)
+    RetVal = _PB(TreeGadget)(Gadget, X, Y, Width, Height, Flags)
   EndIf
   
   _AddObjectTheme(Gadget)
@@ -445,7 +415,7 @@ Procedure _TreeGadget(Gadget, X, Y, Width, Height, Flags)
 EndProcedure
 
 Procedure _SetGadgetAttribute(Gadget, Attribute, Value)
-  _ProcedureReturnIfOT(Not IsGadget(Gadget))
+  _ProcedureReturnIf(Not IsGadget(Gadget))
   
   If MapSize(ThemeAttribute()) > 0
     If GadgetType(Gadget) = #PB_GadgetType_ButtonImage
@@ -454,7 +424,7 @@ Procedure _SetGadgetAttribute(Gadget, Attribute, Value)
           Case #PB_Button_Image
             ObjectTheme()\BtnInfo\iButtonImageID = Value
             If Value
-              ObjectTheme()\BtnInfo\iButtonImage = ImagePBOT(Value)
+              ObjectTheme()\BtnInfo\iButtonImage = ImagePB(Value)
             Else
               ObjectTheme()\BtnInfo\iButtonImage = 0
             EndIf
@@ -466,7 +436,7 @@ Procedure _SetGadgetAttribute(Gadget, Attribute, Value)
           Case #PB_Button_PressedImage
             ObjectTheme()\BtnInfo\iButtonPressedImageID = Value
             If Value
-              ObjectTheme()\BtnInfo\iButtonPressedImage = ImagePBOT(Value)
+              ObjectTheme()\BtnInfo\iButtonPressedImage = ImagePB(Value)
             Else
               ObjectTheme()\BtnInfo\iButtonPressedImage = 0
             EndIf
@@ -476,12 +446,12 @@ Procedure _SetGadgetAttribute(Gadget, Attribute, Value)
     EndIf
   EndIf
   
-  SetGadgetAttribute(Gadget, Attribute, Value)
+  _PB(SetGadgetAttribute)(Gadget, Attribute, Value)
 EndProcedure
 
 
 Procedure _SetWindowColor(Window, Color)
-  _ProcedureReturnIfOT(Not IsWindow(Window))
+  _ProcedureReturnIf(Not IsWindow(Window))
   
   If MapSize(ThemeAttribute()) > 0
     If FindMapElement(ObjectTheme(), Str(WindowID(Window)))
@@ -492,11 +462,11 @@ Procedure _SetWindowColor(Window, Color)
     EndIf
   EndIf
   
-  SetWindowColor(Window, Color)
+  _PB(SetWindowColor)(Window, Color)
 EndProcedure
 
 Procedure _SetGadgetColor(Gadget, Attribute, Color)
-  _ProcedureReturnIfOT(Not IsGadget(Gadget))
+  _ProcedureReturnIf(Not IsGadget(Gadget))
   
   With ObjectTheme()\ObjectInfo
     If FindMapElement(ThemeAttribute(), Str(GadgetType(Gadget)) + "|" + Str(Attribute))
@@ -511,126 +481,8 @@ Procedure _SetGadgetColor(Gadget, Attribute, Color)
     EndIf
   EndWith
   
-  SetGadgetColor(Gadget, Attribute, Color)
+  _PB(SetGadgetColor)(Gadget, Attribute, Color)
 EndProcedure
-
-;-> Macros for Procedures associates
-; Macro for Create Gadget written after Create Gadget Procedures, not to be extended at compile time (1 pass)
-Macro OpenWindow(Window, X, Y, Width, Height, Title, Flags = #PB_Window_SystemMenu, ParentID = 0)
-  _OpenWindow(Window, X, Y, Width, Height, Title, Flags, ParentID)
-EndMacro
-
-Macro ButtonGadget(Gadget, X, Y, Width, Height, Text, Flags = 0)
-  _ButtonGadget(Gadget, X, Y, Width, Height, Text, Flags)
-EndMacro
-
-Macro ButtonImageGadget(Gadget, X, Y, Width, Height, IDImage, Flags = 0)
-  _ButtonImageGadget(Gadget, X, Y, Width, Height, IDImage, Flags)
-EndMacro
-
-Macro CheckBoxGadget(Gadget, X, Y, Width, Height, Text, Flags = 0)
-  _CheckBoxGadget(Gadget, X, Y, Width, Height, Text, Flags)
-EndMacro
-
-Macro CalendarGadget(Gadget, X, Y, Width, Height, Date = 0, Flags = 0)
-  _CalendarGadget(Gadget, X, Y, Width, Height, Date, Flags)
-EndMacro
-
-Macro ContainerGadget(Gadget, X, Y, Width, Height, Flags = 0)
-  _ContainerGadget(Gadget, X, Y, Width, Height, Flags)
-EndMacro
-
-Macro ComboBoxGadget(Gadget, X, Y, Width, Height, Flags = 0)
-  _ComboBoxGadget(Gadget, X, Y, Width, Height, Flags)
-EndMacro
-
-Macro DateGadget(Gadget, X, Y, Width, Height, Mask = "", Date = 0, Flags = 0)
-  _DateGadget(Gadget, X, Y, Width, Height, Mask, Date, Flags)
-EndMacro
-
-Macro EditorGadget(Gadget, X, Y, Width, Height, Flags = 0)
-  _EditorGadget(Gadget, X, Y, Width, Height, Flags)
-EndMacro
-
-Macro ExplorerListGadget(Gadget, X, Y, Width, Height, Folder, Flags = 0)
-  _ExplorerListGadget(Gadget, X, Y, Width, Height, Folder, Flags)
-EndMacro
-
-Macro ExplorerTreeGadget(Gadget, X, Y, Width, Height, Folder, Flags = 0)
-  _ExplorerTreeGadget(Gadget, X, Y, Width, Height, Folder, Flags)
-EndMacro
-
-Macro FrameGadget(Gadget, X, Y, Width, Height, Text, Flags = 0)
-  _FrameGadget(Gadget, X, Y, Width, Height, Text, Flags)
-EndMacro
-
-Macro HyperLinkGadget(Gadget, X, Y, Width, Height, Text, Color, Flags = 0)
-  _HyperLinkGadget(Gadget, X, Y, Width, Height, Text, Color, Flags)
-EndMacro
-
-Macro ListIconGadget(Gadget, X, Y, Width, Height, Title, TitleWidth, Flags = 0)
-  _ListIconGadget(Gadget, X, Y, Width, Height, Title, TitleWidth, Flags)
-EndMacro
-
-Macro ListViewGadget(Gadget, X, Y, Width, Height, Flags = 0)
-  _ListViewGadget(Gadget, X, Y, Width, Height, Flags)
-EndMacro
-
-Macro OptionGadget(Gadget, X, Y, Width, Height, Text)
-  _OptionGadget(Gadget, X, Y, Width, Height, Text)
-EndMacro
-
-Macro PanelGadget(Gadget, X, Y, Width, Height)
-  _PanelGadget(Gadget, X, Y, Width, Height)
-EndMacro
-
-Macro ProgressBarGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags = 0)
-  _ProgressBarGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
-EndMacro
-
-Macro ScrollBarGadget(Gadget, X, Y, Width, Height, Min, Max, PageLength, Flags = 0)
-  _ScrollBarGadget(Gadget, X, Y, Width, Height, Min, Max, PageLength, Flags)
-EndMacro
-
-Macro ScrollAreaGadget(Gadget, X, Y, Width, Height, InnerWidth, InnerHeight, ScrollStep = 10, Flags = 0)
-  _ScrollAreaGadget(Gadget, X, Y, Width, Height, InnerWidth, InnerHeight, ScrollStep, Flags)
-EndMacro
-
-Macro SpinGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags = 0)
-  _SpinGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
-EndMacro
-
-Macro SplitterGadget(Gadget, X, Y, Width, Height, Gadget1, Gadget2, Flags = 0)
-  _SplitterGadget(Gadget, X, Y, Width, Height, Gadget1, Gadget2, Flags)
-EndMacro
-
-Macro StringGadget(Gadget, X, Y, Width, Height, Text, Flags = 0)
-  _StringGadget(Gadget, X, Y, Width, Height, Text, Flags)
-EndMacro
-
-Macro TextGadget(Gadget, X, Y, Width, Height, Text, Flags = 0)
-  _TextGadget(Gadget, X, Y, Width, Height, Text, Flags)
-EndMacro
-
-Macro TrackBarGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags = 0)
-  _TrackBarGadget(Gadget, X, Y, Width, Height, Minimum, Maximum, Flags)
-EndMacro
-
-Macro TreeGadget(Gadget, X, Y, Width, Height, Flags = 0)
-  _TreeGadget(Gadget, X, Y, Width, Height, Flags)
-EndMacro
-
-Macro SetGadgetAttribute(Gadget, Attribute, Value)
-  _SetGadgetAttribute(Gadget, Attribute, Value)
-EndMacro
-
-Macro SetWindowColor(Window, Color)
-  _SetWindowColor(Window, Color)
-EndMacro
-
-Macro SetGadgetColor(Gadget, Attribute, Color)
-  _SetGadgetColor(Gadget, Attribute, Color)
-EndMacro
 
 CompilerEndIf
 

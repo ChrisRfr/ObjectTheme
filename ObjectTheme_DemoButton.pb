@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme_DemoButton.pb
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-22
-;           Version: 1.2
+; modification Date: 2023-11-23
+;           Version: 1.3
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -16,6 +16,10 @@
 
 ;- ---> Add XIncludeFile "ObjectTheme.pbi"
 XIncludeFile "ObjectTheme.pbi"
+
+;- ---> UseModule ObjectTheme (Mandatory)
+; To call macros directly (e.g. ButtonGadget) without having to change existing code and use ObjectTheme::ButtonGadget
+UseModule ObjectTheme
 
 Procedure Blue2RedColor(image)
   If StartDrawing( ImageOutput(image))
@@ -59,7 +63,8 @@ CopyImage(0, 1)
 Blue2RedColor(1)
 LoadImage(2, #PB_Compiler_Home + "Examples/Sources/Data/Background.bmp")
 
-; ---> Add SetObjectTheme() it can be positioned anywhere in the code
+; ---> Add SetObjectTheme()
+; It can be positioned anywhere in the code
 ; If it is at the beginning before the combobox creation, you don't need to add the 2 constants #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED for ComboBoxGadget()
 ;SetObjectTheme(#ObjectTheme_DarkBlue)
 
@@ -84,8 +89,10 @@ If OpenWindow(0, 0, 0, 600, 340, "Button Demo ObjectTheme", #PB_Window_SystemMen
   SetGadgetState(6, #True)
   ButtonImageGadget(7, 320, 260, 240, 60, ImageID(0))
   DisableGadget(7, #True)
-
- ;- ---> Add SetObjectTheme()
+  
+  ;- ---> Add SetObjectTheme()
+  ; It can be positioned anywhere in the code
+  ; If it is at the beginning before the combobox creation, you don't need to add the 2 constants #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED for ComboBoxGadget()
   SetObjectTheme(#ObjectTheme_DarkBlue)
   
   BindEvent(#PB_Event_SizeWindow, @Resize_Window(), 0)
