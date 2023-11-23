@@ -8,7 +8,7 @@ All gadgets will still work in the same way as PureBasic Gadget<br>
      
 **How tu use:**<br>
    Add: XIncludeFile "ObjectTheme.pbi"<br>
-   Add: UseModule ObjectTheme (Mandatory)<br>
+   Add: UseModule ObjectTheme (Mandatory if you use the module version)<br>
    And apply a theme with the function:<br>
       - - SetObjectTheme(#ObjectTheme [, WindowColor])<br>
          - - - With #ObjectTheme = #ObjectTheme_DarkBlue, #ObjectTheme_DarkRed, #ObjectTheme_LightBlue or #ObjectTheme_Auto<br>
@@ -48,7 +48,7 @@ SetObjectTheme(#SetObjectTheme(#ObjectTheme_Auto, #Black)):<br>
 
 ## Usage:
 Add: XIncludeFile "ObjectTheme.pbi"<br>
-Add: UseModule ObjectTheme (Mandatory)<br>
+Add: UseModule ObjectTheme (Mandatory if you use the module version)<br>
  - **SetObjectTheme(#ObjectTheme [, WindowColor])**<br>
 Apply or change a Theme. Optional WindowColor, the new color to use for the window background<br>
 >  -- Ex: SetObjectTheme(#ObjectTheme_DarkBlue)<br>
