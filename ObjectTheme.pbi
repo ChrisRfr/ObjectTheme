@@ -20,6 +20,7 @@
 ; 
 ; (*) How tu use: 
 ;     Add: XIncludeFile "ObjectTheme.pbi"
+;     Add: UseModule ObjectTheme (Mandatory)
 ;     And apply a theme with the function:
 ;         - SetObjectTheme(#ObjectTheme [, WindowColor]) - With #ObjectTheme = #ObjectTheme_DarkBlue, #ObjectTheme_LightBlue or #ObjectTheme_Auto
 ;   Easy ;) That's all :) 
