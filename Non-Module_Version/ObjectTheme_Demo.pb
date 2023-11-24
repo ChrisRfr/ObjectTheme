@@ -78,7 +78,7 @@ Procedure ProgressBarDemo(Gadget)
   Protected I
   For I = 0 To 66
     SetGadgetState(Gadget, I)
-    Delay(10)
+    Delay(5)
   Next
 EndProcedure
 
@@ -256,3 +256,4 @@ ForEver
 ; IDE Options = PureBasic 6.03 LTS (Windows - x64)
 ; EnableXP
 ; DPIAware
+; EnableOnError
