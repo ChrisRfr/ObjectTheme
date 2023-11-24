@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-23
-;           Version: 1.3
+; modification Date: 2023-11-24
+;           Version: 1.31
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -244,6 +244,12 @@ Global NewMap ObjectTheme.ObjectTheme_INFO()
 Global NewMap ObjectBrush()
 Global Tooltip
 
+  ;
+  ; -----------------------------------------------------------------------------
+  ;- ----- Internal Macros -----
+  ; -----------------------------------------------------------------------------
+  ;
+  
 Macro _ProcedureReturnIfOT(Cond, ReturnValue = #False)
   If Cond
     ProcedureReturn ReturnValue
@@ -326,6 +332,11 @@ Macro _SetExplorerTheme(_GadgetID_)
   EndIf
 EndMacro
 
+  ;
+  ; -----------------------------------------------------------------------------
+  ;- ----- ErrorHandler -----
+  ; -----------------------------------------------------------------------------
+  ;
 CompilerIf #PB_Compiler_Debugger = #False
   CompilerIf #EnableOnError
     
@@ -835,7 +846,11 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
             EndIf
             
             If \PBGadget <> GetActiveGadget()
-              SendMessage_(lParam, #EM_SETSEL, -1, 0)   ; Deselect the ComboBox editable string if not the active Gadget
+              Protected low, high
+              SendMessage_(lParam, #EM_GETSEL, @low, @high)
+              If low <> high
+                SendMessage_(lParam, #EM_SETSEL, -1, 0)   ; Deselect the ComboBox editable string if not the active Gadget
+              EndIf
             EndIf
             If IsWindowEnabled_(\IDGadget) = #False
               SetTextColor_(wParam, \ObjectInfo\lGrayTextColor)
@@ -1401,12 +1416,6 @@ Procedure SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, I
       ; ---------- GrayTextColor ----------
       Case #PB_Gadget_GrayTextColor
         If Value = #PB_Default
-          ; Select *ObjectTheme\PBGadgetType
-          ;   Case #PB_GadgetType_CheckBox, #PB_GadgetType_Option, #PB_GadgetType_TrackBar
-          ;     ;\lGrayTextColor = #White Or \lGrayTextColor = $808080 Or ;If IsDarkColorOT(\lFrontColor) : \lGrayTextColor = #Black : Else : \lGrayTextColor = #White : EndIf
-          ;   Default
-          ;     If IsDarkColorOT(\lFrontColor) : \lGrayTextColor = DisabledDarkColorOT(\lFrontColor) : Else : \lGrayTextColor = DisabledLightColorOT(\lFrontColor) : EndIf
-          ; EndSelect
           If IsDarkColorOT(\lFrontColor) : \lGrayTextColor = DisabledDarkColorOT(\lFrontColor) : Else : \lGrayTextColor = DisabledLightColorOT(\lFrontColor) : EndIf
         Else
           \lGrayTextColor = Value

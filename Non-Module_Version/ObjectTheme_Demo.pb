@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme_Demo.pb
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-23
-;           Version: 1.3
+; modification Date: 2023-11-24
+;           Version: 1.31
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -180,7 +180,7 @@ SetObjectTheme(#ObjectTheme_LightBlue)
 
 Open_Window_1()
 Open_Window_2()
-;ProgressBarDemo(#Progres_1)
+CreateThread(@ProgressBarDemo(), #Progres_1)
 
 Repeat
   Select WaitWindowEvent()
@@ -233,17 +233,21 @@ Repeat
             Case "Apply Dark Blue Theme"
               SetGadgetText(#ApplyTheme_1, "Apply Dark Red Theme")
               SetObjectTheme(#ObjectTheme_DarkBlue)
+              CreateThread(@ProgressBarDemo(), #Progres_1)
             Case "Apply Light Blue Theme"
               SetGadgetText(#ApplyTheme_1, "Apply Dark Blue Theme")
               SetObjectTheme(#ObjectTheme_LightBlue)
+              CreateThread(@ProgressBarDemo(), #Progres_1)
             Case "Apply Dark Red Theme"
               SetGadgetText(#ApplyTheme_1, "Apply Light Blue Theme")
               SetObjectTheme(#ObjectTheme_DarkRed)
+              CreateThread(@ProgressBarDemo(), #Progres_1)
           EndSelect
           
         Case #ApplyTheme_2
           Define Color = ColorRequester(GetWindowColor(#Window_2))
           SetObjectTheme(#ObjectTheme_Auto, Color)
+          CreateThread(@ProgressBarDemo(), #Progres_1)
           
       EndSelect
   EndSelect

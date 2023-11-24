@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-23
-;           Version: 1.3
+; modification Date: 2023-11-24
+;           Version: 1.31
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -1028,7 +1028,11 @@ Module ObjectTheme
               EndIf
               
               If \PBGadget <> GetActiveGadget()
-                SendMessage_(lParam, #EM_SETSEL, -1, 0)   ; Deselect the ComboBox editable string if not the active Gadget
+                Protected low, high
+                SendMessage_(lParam, #EM_GETSEL, @low, @high)
+                If low <> high
+                  SendMessage_(lParam, #EM_SETSEL, -1, 0)   ; Deselect the ComboBox editable string if not the active Gadget
+                EndIf
               EndIf
               If IsWindowEnabled_(\IDGadget) = #False
                 SetTextColor_(wParam, \ObjectInfo\lGrayTextColor)
@@ -1594,12 +1598,6 @@ Module ObjectTheme
           ; ---------- GrayTextColor ----------
         Case #PB_Gadget_GrayTextColor
           If Value = #PB_Default
-            ; Select *ObjectTheme\PBGadgetType
-            ;   Case #PB_GadgetType_CheckBox, #PB_GadgetType_Option, #PB_GadgetType_TrackBar
-            ;     ;\lGrayTextColor = #White Or \lGrayTextColor = $808080 Or ;If IsDarkColor(\lFrontColor) : \lGrayTextColor = #Black : Else : \lGrayTextColor = #White : EndIf
-            ;   Default
-            ;     If IsDarkColor(\lFrontColor) : \lGrayTextColor = DisabledDarkColor(\lFrontColor) : Else : \lGrayTextColor = DisabledLightColor(\lFrontColor) : EndIf
-            ; EndSelect
             If IsDarkColor(\lFrontColor) : \lGrayTextColor = DisabledDarkColor(\lFrontColor) : Else : \lGrayTextColor = DisabledLightColor(\lFrontColor) : EndIf
           Else
             \lGrayTextColor = Value
