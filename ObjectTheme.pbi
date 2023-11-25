@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-24
-;           Version: 1.31
+; modification Date: 2023-11-25
+;           Version: 1.4
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -24,7 +24,7 @@
 ;     And apply a theme with the function:
 ;         - SetObjectTheme(#ObjectTheme [, WindowColor]) - With #ObjectTheme = #ObjectTheme_DarkBlue, #ObjectTheme_LightBlue or #ObjectTheme_Auto
 ;   Easy ;) That's all :) 
-
+;
 ;   Note that you can SetObjectTheme(Theme [, WindowColor]) anywhere you like in your source, before or after creating the Window, Gadget's
 ;   But note the special case for the ComboBox Gadget: 
 ;         Either you call the SetObjectTheme() function at the beginning of the program before creating the Windows and ComboBoxes
@@ -347,6 +347,7 @@ Module ObjectTheme
   Structure ObjectInfo_INFO
     lBackColor.l
     lBrushBackColor.l
+    lGrayBackColor.l
     lFrontColor.l
     lGrayTextColor.l
     lLineColor.l
@@ -391,7 +392,7 @@ Module ObjectTheme
   Declare PanelProc(hWnd, uMsg, wParam, lParam)
   Declare ListIconProc(hWnd, uMsg, wParam, lParam)
   Declare CalendarProc(hWnd, uMsg, wParam, lParam)
-  Declare EditorProc(hWnd, uMsg, wParam, lParam)
+  Declare EditProc(hWnd, uMsg, wParam, lParam)
   Declare WinCallback(hWnd, uMsg, wParam, lParam)
   
   Declare ToolTipHandle() 
@@ -565,7 +566,7 @@ Module ObjectTheme
         GetSystemInfo_(SystemInfo)
         Select SystemInfo\wProcessorArchitecture
           Case #PROCESSOR_ARCHITECTURE_AMD64 : ErrorMessage + " x64" +#CRLF$
-          Case #PROCESSOR_ARCHITECTURE_INTEL : ErrorMessage + " x86"+#CRLF$
+          Case #PROCESSOR_ARCHITECTURE_INTEL : ErrorMessage + " x86" +#CRLF$
         EndSelect
         
         CompilerIf #PB_Compiler_LineNumbering
@@ -923,7 +924,7 @@ Module ObjectTheme
     ProcedureReturn CallWindowProc_(OldProc, hWnd, uMsg, wParam, lParam)
   EndProcedure
   
-  Procedure EditorProc(hWnd, uMsg, wParam, lParam)
+  Procedure EditProc(hWnd, uMsg, wParam, lParam)
     
     If FindMapElement(ObjectTheme(), Str(hWnd))
       Protected *ObjectTheme.ObjectTheme_INFO = @ObjectTheme()
@@ -943,10 +944,10 @@ Module ObjectTheme
           
         Case #WM_ENABLE
           If wParam
-            SetWindowLongPtr_(hWnd, #GWL_EXSTYLE, GetWindowLongPtr_(hWnd, #GWL_EXSTYLE) &~ #WS_EX_TRANSPARENT)
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_BackColor, \ObjectInfo\lBackColor)
             _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_FrontColor, \ObjectInfo\lFrontColor)
           Else
-            SetWindowLongPtr_(hWnd, #GWL_EXSTYLE, GetWindowLongPtr_(hWnd, #GWL_EXSTYLE) | #WS_EX_TRANSPARENT)
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_BackColor, \ObjectInfo\lGrayBackColor)
             _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_FrontColor, \ObjectInfo\lGrayTextColor)
           EndIf
           ProcedureReturn #False
@@ -1498,6 +1499,7 @@ Module ObjectTheme
             \lBackColor        = Value
           EndIf
           
+          _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_GrayBackColor)
           _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_FrontColor)
           _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_LineColor)
           _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_TitleBackColor)
@@ -1517,6 +1519,15 @@ Module ObjectTheme
                  #PB_GadgetType_ExplorerTree, #PB_GadgetType_ListView, #PB_GadgetType_ScrollArea, #PB_GadgetType_Spin, #PB_GadgetType_String, #PB_GadgetType_Tree
               _PB(SetGadgetColor)(*ObjectTheme\PBGadget, #PB_Gadget_BackColor, \lBackColor)
           EndSelect  
+          ReturnValue = #True
+          
+          ; ---------- GrayBackColor ----------
+        Case #PB_Gadget_GrayBackColor
+          If Value = #PB_Default
+            If IsDarkColor(\lBackColor) : \lGrayBackColor = DisabledDarkColor(\lBackColor) : Else : \lGrayBackColor = DisabledLightColor(\lBackColor) : EndIf
+          Else
+            \lGrayBackColor = Value
+          EndIf
           ReturnValue = #True
           
           ; ---------- ActiveTabColor ----------
@@ -1711,7 +1722,7 @@ Module ObjectTheme
             SetWindowTheme_(\IDGadget, "", "")
           Case #PB_GadgetType_ComboBox
             InvalidateRect_(\IDGadget, 0, 1)
-          Case #PB_GadgetType_Editor
+          Case #PB_GadgetType_Editor, #PB_GadgetType_Spin, #PB_GadgetType_String
             SendMessage_(\IDGadget, #WM_ENABLE, IsWindowEnabled_(\IDGadget), 0)
           Case  #PB_GadgetType_Splitter
             RedrawWindow_(\IDGadget, #Null, #Null, #RDW_INVALIDATE | #RDW_ERASE | #RDW_UPDATENOW)
@@ -1786,6 +1797,14 @@ Module ObjectTheme
         EndSelect
       EndIf
       
+      ; ---------- GrayBackColor ----------
+      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_GrayBackColor))
+        \lGrayBackColor = ThemeAttribute()
+        If \lGrayBackColor = #PB_Default
+          If IsDarkColor(\lBackColor) : \lGrayBackColor = DisabledDarkColor(\lBackColor) : Else : \lGrayBackColor = DisabledLightColor(\lBackColor) : EndIf
+        EndIf
+      EndIf
+      
       ; ---------- ActiveTabColor ----------
       If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_ActiveTabColor ))
         SavBackColor  = \lActiveTabColor
@@ -1858,12 +1877,6 @@ Module ObjectTheme
       If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_GrayTextColor))
         \lGrayTextColor = ThemeAttribute()
         If \lGrayTextColor = #PB_Default
-          ; Select *ObjectTheme\PBGadgetType
-          ;   Case #PB_GadgetType_CheckBox, #PB_GadgetType_Option, #PB_GadgetType_TrackBar
-          ;     ;\lGrayTextColor = #White Or \lGrayTextColor = $808080 Or ;If IsDarkColor(\lFrontColor) : \lGrayTextColor = #Black : Else : \lGrayTextColor = #White : EndIf
-          ;   Default
-          ;     If IsDarkColor(\lFrontColor) : \lGrayTextColor = DisabledDarkColor(\lFrontColor) : Else : \lGrayTextColor = DisabledLightColor(\lFrontColor) : EndIf
-          ; EndSelect
           If IsDarkColor(\lFrontColor) : \lGrayTextColor = DisabledDarkColor(\lFrontColor) : Else : \lGrayTextColor = DisabledLightColor(\lFrontColor) : EndIf
         EndIf
       EndIf
@@ -1978,10 +1991,10 @@ Module ObjectTheme
           EndIf
           SetWindowTheme_(\IDGadget, "", "")
           
-        Case #PB_GadgetType_Editor
+        Case #PB_GadgetType_Editor, #PB_GadgetType_Spin, #PB_GadgetType_String
           If Not UpdateTheme
             \OldProc = GetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC)
-            SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, @EditorProc())
+            SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, @EditProc())
           EndIf
           SendMessage_(\IDGadget, #WM_ENABLE, IsWindowEnabled_(\IDGadget), 0)
           
@@ -3223,14 +3236,14 @@ Module ObjectTheme
       ForEach ObjectTheme()
         Select ObjectTheme()\PBGadgetType
           Case #PB_GadgetType_CheckBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Text, #PB_GadgetType_TrackBar,
-               #PB_GadgetType_Calendar, #PB_GadgetType_Editor, #PB_GadgetType_ExplorerList, #PB_GadgetType_ListIcon
+               #PB_GadgetType_Calendar, #PB_GadgetType_ExplorerList, #PB_GadgetType_ListIcon
             If \OldProc : SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc) : EndIf          
             SetWindowTheme_(\IDGadget, 0, 0)
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
             ReturnValue = #True
             
-          Case #PB_GadgetType_Panel  
+          Case #PB_GadgetType_Panel, #PB_GadgetType_Editor, #PB_GadgetType_Spin, #PB_GadgetType_String  
             SetWindowLongPtr_(\IDGadget, #GWL_STYLE, GetWindowLongPtr_(\IDGadget, #GWL_STYLE) &~ #TCS_OWNERDRAWFIXED)
             If \OldProc : SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc) : EndIf   
             FreeMemory(\ObjectInfo)

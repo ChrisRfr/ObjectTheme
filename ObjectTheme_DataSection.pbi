@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme_CreatzeGadget.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-24
-;           Version: 1.31
+; modification Date: 2023-11-25
+;           Version: 1.4
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -52,7 +52,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Date,            #PB_Gadget_TitleFrontColor,       #PB_Default     ; Title Front Color: Color | #PB_Default = If IsDarkColor TitleBackColor, #White else #Black
     
     Data.l #PB_GadgetType_Editor,          #PB_Gadget_BackColor,             $382521         ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_Editor,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Blackault
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -96,7 +98,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_ScrollArea,      #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     
     Data.l #PB_GadgetType_Spin,            #PB_Gadget_BackColor,             $382521         ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_Spin,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_BackColor,             $603421         ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(30) else Accentolor(-30)
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_FrontColor,            $6EFD0D         ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -107,7 +111,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_LargeGripper,          #True           ; Large Splitter Gripper: 0 | 1 | #PB_Default = 1
     
     Data.l #PB_GadgetType_String,          #PB_Gadget_BackColor,             $382521         ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) Else Accentolor(-15)
+    Data.l #PB_GadgetType_String,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_String,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_String,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_Text,            #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Text,            #PB_Gadget_FrontColor,            #White          ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -176,7 +182,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Date,            #PB_Gadget_TitleFrontColor,       #PB_Default     ; Title Front Color: Color | #PB_Default = If IsDarkColor TitleBackColor, #White else #Black
     
     Data.l #PB_GadgetType_Editor,          #PB_Gadget_BackColor,             $080C3A         ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_Editor,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Blackault
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -220,7 +228,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_ScrollArea,      #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     
     Data.l #PB_GadgetType_Spin,            #PB_Gadget_BackColor,             $080C3A         ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_Spin,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_BackColor,             $0E1560         ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(30) else Accentolor(-30)
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_FrontColor,            $0DFD6E         ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -231,7 +241,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_LargeGripper,          #True           ; Large Splitter Gripper: 0 | 1 | #PB_Default = 1
     
     Data.l #PB_GadgetType_String,          #PB_Gadget_BackColor,             $080C3A         ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) Else Accentolor(-15)
+    Data.l #PB_GadgetType_String,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_String,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_String,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_Text,            #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Text,            #PB_Gadget_FrontColor,            #White          ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -300,7 +312,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Date,            #PB_Gadget_TitleFrontColor,       #PB_Default     ; Title Front Color: Color | #PB_Default = If IsDarkColor TitleBackColor, #White else #Black
     
     Data.l #PB_GadgetType_Editor,          #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_Editor,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -344,7 +358,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_ScrollArea,      #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     
     Data.l #PB_GadgetType_Spin,            #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_Spin,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_BackColor,             $FEA36B         ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_FrontColor,            $73B24C         ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -355,7 +371,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_LargeGripper,          #True           ; Large Splitter Gripper: 0 | 1 | #PB_Default = 1
     
     Data.l #PB_GadgetType_String,          #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_String,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_String,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_String,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_Text,            #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Text,            #PB_Gadget_FrontColor,            #Black          ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -424,7 +442,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Date,            #PB_Gadget_TitleFrontColor,       #PB_Default     ; Title Front Color: Color | #PB_Default = If IsDarkColor TitleBackColor, #White else #Black
     
     Data.l #PB_GadgetType_Editor,          #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_Editor,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -468,7 +488,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_ScrollArea,      #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     
     Data.l #PB_GadgetType_Spin,            #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_Spin,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(30) else Accentolor(-30)
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -479,7 +501,9 @@ CompilerIf Defined(PB_WindowType, #PB_Constant)
     Data.l #PB_GadgetType_Splitter,        #PB_Gadget_LargeGripper,          #True           ; Large Splitter Gripper: 0 | 1 | #PB_Default = 1
     
     Data.l #PB_GadgetType_String,          #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_String,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
     Data.l #PB_GadgetType_String,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_String,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
     
     Data.l #PB_GadgetType_Text,            #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Text,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black

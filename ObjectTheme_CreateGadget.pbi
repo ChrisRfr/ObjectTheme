@@ -7,8 +7,8 @@
 ;    Source Name: ObjectTheme_CreateGadget.pbi
 ;         Author: ChrisR
 ;  Creation Date: 2023-11-06
-; modification Date: 2023-11-24
-;        Version: 1.31
+; modification Date: 2023-11-25
+;        Version: 1.4
 ;     PB-Version: 6.0 or other
 ;             OS: Windows Only
 ;          Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
