@@ -2,7 +2,7 @@
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/donate/?cmd=_s-xclick&hosted_button_id=9WZ5EDAMPH6SE)
 
-This library will add and apply a theme color for All Windows and Gadgets<br> 
+This library will add and apply a theme color for All Windows and Gadgets<br>
 And for All possible color attributes (BackColor, FrontColor, TitleBackColor,...) for each of them<br>
 All gadgets will still work in the same way as PureBasic Gadget<br>
      
