@@ -3116,7 +3116,7 @@ Procedure GetObjectTheme()
 EndProcedure
 
 Procedure SetObjectTheme(Theme, WindowColor = #PB_Default)
-  Protected Window, Object, IsJellyButton, ReturnValue, ObjectID, Buffer.s = Space(64) 
+  Protected Window, Object, ReturnValue, ObjectID, Buffer.s = Space(64) 
   
   If Theme = #PB_Default 
     If MapSize(ThemeAttribute()) = 0
@@ -3172,13 +3172,13 @@ Procedure SetObjectTheme(Theme, WindowColor = #PB_Default)
         _AddObjectTheme(Object)
         
       Case #PB_GadgetType_Button, #PB_GadgetType_ButtonImage
-        IsJellyButton = #False
         CompilerIf Defined(Is_JellyButton, #PB_Procedure)
-          IsJellyButton = Is_JellyButton(Object)
-        CompilerEndIf
-        If IsJellyButton = #False
-          _AddButtonTheme(Object)
-        EndIf
+          If Not Is_JellyButton(Object)
+            _AddButtonTheme(Object)
+          EndIf
+	CompilerElse
+	  _AddButtonTheme(Object)
+	CompilerEndIf
         
     EndSelect
   Wend

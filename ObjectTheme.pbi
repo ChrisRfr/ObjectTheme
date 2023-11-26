@@ -122,6 +122,7 @@ DeclareModule ObjectTheme
     #PB_Gadget_LargeGripper          ; Splitter: large or small gripper
   EndEnumeration
   
+  Declare RegisterJelly(*IsJellyButton)
   CompilerIf #PB_Compiler_Debugger = #False
     CompilerIf #EnableOnError
       Declare ErrorHandler()
@@ -290,6 +291,11 @@ DeclareModule ObjectTheme
   EndMacro
   
 EndDeclareModule
+
+; Pass Is_JellyButton address to ObjectTheme module. Here if "JellyButtons.pbi" is included before "ObjectTheme.pbi"else it is done in JellyButton
+CompilerIf Defined(Is_JellyButton, #PB_Procedure)
+  ObjectTheme::RegisterJelly(@Is_JellyButton())
+CompilerEndIf
 
 ;
 ;------------------------------------------------------------------------------
@@ -514,6 +520,14 @@ Module ObjectTheme
       SetWindowTheme(_GadgetID_, "Explorer")
     EndIf
   EndMacro
+  
+  ;- Register Is_JellyButton()
+  Prototype Is_JellyButton(Object)
+  Global Is_JellyButton.Is_JellyButton
+  
+  Procedure RegisterJelly(*IsJellyButton)
+    Is_JellyButton = *IsJellyButton
+  EndProcedure
   
   ;
   ; -----------------------------------------------------------------------------
@@ -3295,7 +3309,7 @@ Module ObjectTheme
   EndProcedure
   
   Procedure SetObjectTheme(Theme, WindowColor = #PB_Default)
-    Protected Window, Object, IsJellyButton, ReturnValue, ObjectID, Buffer.s = Space(64) 
+    Protected Window, Object, ReturnValue, ObjectID, Buffer.s = Space(64) 
     
     If Theme = #PB_Default 
       If MapSize(ThemeAttribute()) = 0
@@ -3351,11 +3365,11 @@ Module ObjectTheme
           _AddObjectTheme(Object)
           
         Case #PB_GadgetType_Button, #PB_GadgetType_ButtonImage
-          IsJellyButton = #False
-          CompilerIf Defined(Is_JellyButton, #PB_Procedure)
-            IsJellyButton = Is_JellyButton(Object)
-          CompilerEndIf
-          If IsJellyButton = #False
+          If Is_JellyButton
+            If Not Is_JellyButton(Object)
+              _AddButtonTheme(Object)
+            EndIf
+          Else
             _AddButtonTheme(Object)
           EndIf
           
