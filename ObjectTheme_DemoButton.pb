@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme_DemoButton.pb
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-25
-;           Version: 1.4
+; modification Date: 2023-11-29
+;           Version: 1.5
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -111,8 +111,8 @@ If OpenWindow(0, 0, 0, 600, 340, "Button Demo ObjectTheme", #PB_Window_SystemMen
           Case 0   ; Apply Dark or Light Blue theme
             Select GetObjectTheme()
               Case #ObjectTheme_DarkBlue
-                SetGadgetText(0, "Apply Dark Blue Theme")
-                SetObjectTheme(#ObjectTheme_LightBlue)
+                SetGadgetText(0, "Apply Light Blue Theme")
+                SetObjectTheme(#ObjectTheme_DarkRed)
                 ; ---------------------------------------------------------------------------------------------------
                 ;   Comment/Uncomment for Testing: SetObjectThemeAttribute, SetObjectColor, FreeObjectTheme,...
                 ; ---------------------------------------------------------------------------------------------------
@@ -121,8 +121,11 @@ If OpenWindow(0, 0, 0, 600, 340, "Button Demo ObjectTheme", #PB_Window_SystemMen
                 ;SetObjectTypeColor(#PB_GadgetType_Button, #PB_Gadget_FrontColor, #Red)
                 ;FreeObjectTheme()
               Case #ObjectTheme_LightBlue
-                SetGadgetText(0, "Apply Light Blue tTheme")
+                SetGadgetText(0, "Apply Dark Red Theme")
                 SetObjectTheme(#ObjectTheme_DarkBlue)
+              Case #ObjectTheme_DarkRed
+                SetGadgetText(0, "Apply Dark Blue Theme")
+                SetObjectTheme(#ObjectTheme_LightBlue)
             EndSelect
             
           Case 1, 5   ; Change Text Button Color in Red or with the Text color from the theme attribute. And Change RoundXY

@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme_Demo.pb
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-25
-;           Version: 1.4
+; modification Date: 2023-11-29
+;           Version: 1.5
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -72,15 +72,6 @@ Enumeration Image
 EndEnumeration
 
 LoadImage(#Imag, #PB_Compiler_Home + "examples/sources/Data/world.png")
-
-Procedure ProgressBarDemo(Gadget)
-  If GadgetType(Gadget) <> #PB_GadgetType_ProgressBar : ProcedureReturn : EndIf
-  Protected I
-  For I = 0 To 66
-    SetGadgetState(Gadget, I)
-    Delay(5)
-  Next
-EndProcedure
 
 Procedure Open_Window_1(X = 20, Y = 20, Width = 580, Height = 460)
   Protected I
@@ -180,7 +171,6 @@ SetObjectTheme(#ObjectTheme_LightBlue)
 
 Open_Window_1()
 Open_Window_2()
-CreateThread(@ProgressBarDemo(), #Progres_1)
 
 Repeat
   Select WaitWindowEvent()
@@ -233,21 +223,17 @@ Repeat
             Case "Apply Dark Blue Theme"
               SetGadgetText(#ApplyTheme_1, "Apply Dark Red Theme")
               SetObjectTheme(#ObjectTheme_DarkBlue)
-              CreateThread(@ProgressBarDemo(), #Progres_1)
             Case "Apply Light Blue Theme"
               SetGadgetText(#ApplyTheme_1, "Apply Dark Blue Theme")
               SetObjectTheme(#ObjectTheme_LightBlue)
-              CreateThread(@ProgressBarDemo(), #Progres_1)
             Case "Apply Dark Red Theme"
               SetGadgetText(#ApplyTheme_1, "Apply Light Blue Theme")
               SetObjectTheme(#ObjectTheme_DarkRed)
-              CreateThread(@ProgressBarDemo(), #Progres_1)
           EndSelect
           
         Case #ApplyTheme_2
           Define Color = ColorRequester(GetWindowColor(#Window_2))
           SetObjectTheme(#ObjectTheme_Auto, Color)
-          CreateThread(@ProgressBarDemo(), #Progres_1)
           
       EndSelect
   EndSelect
