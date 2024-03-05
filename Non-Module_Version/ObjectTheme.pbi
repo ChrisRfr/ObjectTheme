@@ -201,7 +201,7 @@ EndStructure
 
 Declare IsDarkColorOT(Color)
 Declare AccentColorOT(Color, AddColorValue)
-Declare ScaleGrayCallbackOT(x, y, SourceColor, TargetColor)
+Declare.l ScaleGrayCallbackOT(x, y, SourceColor.l, TargetColor.l)
 Declare DisabledDarkColorOT(Color)
 Declare DisabledLightColorOT(Color)
 
@@ -487,7 +487,7 @@ Procedure AccentColorOT(Color, AddColorValue)
   ProcedureReturn RGB(R, G, B)
 EndProcedure
 
-Procedure ScaleGrayCallbackOT(x, y, SourceColor, TargetColor)
+Procedure.l ScaleGrayCallbackOT(x, y, SourceColor.l, TargetColor.l)
   Protected light
   light = ((Red(TargetColor) * 30 + Green(TargetColor) * 59 + Blue(TargetColor) * 11) / 100)
   ProcedureReturn RGBA(light, light, light, 255)
@@ -4478,7 +4478,6 @@ CompilerIf #PB_Compiler_IsMainFile
   
 CompilerEndIf
 
-; IDE Options = PureBasic 6.03 LTS (Windows - x64)
-; Folding = -----------------------
+; IDE Options = PureBasic 6.04 LTS (Windows - x64)
 ; EnableXP
 ; EnableOnError
