@@ -390,7 +390,7 @@ Module ObjectTheme
   
   Declare IsDarkColor(Color)
   Declare AccentColor(Color, AddColorValue)
-  Declare ScaleGrayCallback(x, y, SourceColor, TargetColor)
+  Declare.l ScaleGrayCallback(x, y, SourceColor.l, TargetColor.l)
   Declare DisabledDarkColor(Color)
   Declare DisabledLightColor(Color)
   
@@ -646,7 +646,7 @@ Module ObjectTheme
     ProcedureReturn RGB(R, G, B)
   EndProcedure
   
-  Procedure ScaleGrayCallback(x, y, SourceColor, TargetColor)
+  Procedure.l ScaleGrayCallback(x, y, SourceColor.l, TargetColor.l)
     Protected light
     light = ((Red(TargetColor) * 30 + Green(TargetColor) * 59 + Blue(TargetColor) * 11) / 100)
     ProcedureReturn RGBA(light, light, light, 255)
@@ -4524,6 +4524,6 @@ CompilerIf #PB_Compiler_IsMainFile
   
 CompilerEndIf
 
-; IDE Options = PureBasic 6.03 LTS (Windows - x64)
+; IDE Options = PureBasic 6.04 LTS (Windows - x64)
 ; EnableXP
 ; EnableOnError
