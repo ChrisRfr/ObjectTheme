@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-29
-;           Version: 1.5
+; modification Date: 2024-03-22
+;           Version: 1.5.2
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -83,6 +83,10 @@ DeclareModule ObjectTheme
   CompilerIf #PB_Compiler_Debugger = #False
     #EnableOnError = #False   ; #False | #True. Disable if you are already using OnError
   CompilerEndIf
+  
+  #DateGadgetTheme = 2   ; 0 = PB Default, DateGadget is not processed in ObjectTheme
+                         ; 1 = Use SetThemeAppProperties_(#STAP_ALLOW_NONCLIENT) the Date DropDown size is right, but the "DarkMode_Explorer" theme is not displayed for ScrollBars
+                         ; 2 = Use SetWindowTheme_(WinIDSysMonthCal32, "", "") the Date DropDown size isn't right: https://www.purebasic.fr/english/viewtopic.php?p=519438
   
   Enumeration ObjectTheme 0
     #ObjectTheme
@@ -309,6 +313,10 @@ Module ObjectTheme
   EnableExplicit
     
   #PB_Gadget_END = 99
+  
+  #STAP_ALLOW_NONCLIENT = 1
+  #STAP_ALLOW_CONTROLS = 2
+  #STAP_ALLOW_WEBCONTENT = 4
   
   Structure ObjectBTN_INFO
     sButtonText.s
@@ -643,13 +651,13 @@ Module ObjectTheme
     R = Red(Color)   + AddColorValue : If R > 255 : R = 255 : EndIf : If R < 0 : R = 0 : EndIf
     G = Green(Color) + AddColorValue : If G > 255 : G = 255 : EndIf : If G < 0 : G = 0 : EndIf
     B = Blue(Color)  + AddColorValue : If B > 255 : B = 255 : EndIf : If B < 0 : B = 0 : EndIf
-    ProcedureReturn RGB(R, G, B)
+    ProcedureReturn RGBA(R, G, B, Alpha(Color))
   EndProcedure
   
-  Procedure.l ScaleGrayCallback(x, y, SourceColor.l, TargetColor.l)
+  Procedure.l ScaleGrayCallback (x, y, SourceColor.l, TargetColor.l)
     Protected light
     light = ((Red(TargetColor) * 30 + Green(TargetColor) * 59 + Blue(TargetColor) * 11) / 100)
-    ProcedureReturn RGBA(light, light, light, 255)
+    ProcedureReturn RGBA(light, light, light, Alpha(TargetColor))
   EndProcedure
   
   Procedure DisabledDarkColor(Color)
@@ -1123,17 +1131,19 @@ Module ObjectTheme
           EndIf
           
         Case #WM_NOTIFY   
-          ; ----------  DateGadget or use SetThemeAppProperties_(1) in AddObjectTheme ----------
-          Protected *NMDATETIMECHANGE.NMDATETIMECHANGE = lParam
-          If *NMDATETIMECHANGE\nmhdr\code = #DTN_DROPDOWN
-            If FindMapElement(ObjectTheme(), Str(*NMDATETIMECHANGE\nmhdr\hwndfrom))
-              If ObjectTheme()\PBGadgetType = #PB_GadgetType_Date
-                Protected WinIDSysMonthCal32 = FindWindowEx_(FindWindow_("DropDown", 0), #Null, "SysMonthCal32", #Null)
-                SetWindowTheme_(WinIDSysMonthCal32, "", "")          ; The size isn't good: https://www.purebasic.fr/english/viewtopic.php?p=519438
-                ShowWindow_(WinIDSysMonthCal32, #SW_SHOWMAXIMIZED)   ; A little better but not perfect
+          ; ----------  DateGadget or use SetThemeAppProperties_(#STAP_ALLOW_NONCLIENT) in AddObjectTheme ----------
+          CompilerIf #DateGadgetTheme = 2
+            Protected *NMDATETIMECHANGE.NMDATETIMECHANGE = lParam
+            If *NMDATETIMECHANGE\nmhdr\code = #DTN_DROPDOWN
+              If FindMapElement(ObjectTheme(), Str(*NMDATETIMECHANGE\nmhdr\hwndfrom))
+                If ObjectTheme()\PBGadgetType = #PB_GadgetType_Date
+                  Protected WinIDSysMonthCal32 = FindWindowEx_(FindWindow_("DropDown", 0), #Null, "SysMonthCal32", #Null)
+                  SetWindowTheme_(WinIDSysMonthCal32, "", "")          ; the Date DropDown size isn't right: https://www.purebasic.fr/english/viewtopic.php?p=519438
+                  ShowWindow_(WinIDSysMonthCal32, #SW_SHOWMAXIMIZED)   ; A little better but not perfect
+                EndIf
               EndIf
             EndIf
-          EndIf
+          CompilerEndIf
           
           ; ---------- ListIcon and ExplorerList ----------
           *lvCD.NMLVCUSTOMDRAW = lParam
@@ -1429,7 +1439,13 @@ Module ObjectTheme
       If \ObjectInfo\lBackColor = #PB_Default
         \ObjectInfo\lBackColor = GetSysColor_(#COLOR_WINDOW)
       EndIf
-      _PB(SetWindowColor)(Window, \ObjectInfo\lBackColor)
+      CompilerIf Defined(IceDesign, #PB_Module)
+        If Window <> IceDesign::#WindowImage
+          _PB(SetWindowColor)(Window, \ObjectInfo\lBackColor)
+        EndIf
+      CompilerElse
+        _PB(SetWindowColor)(Window, \ObjectInfo\lBackColor)
+      CompilerEndIf
       
       If FindMapElement(ThemeAttribute(), Str(#PB_WindowType) + "|" + Str(#PB_Gadget_DarkMode))
         If ThemeAttribute() = #PB_Default
@@ -1751,7 +1767,7 @@ Module ObjectTheme
           Case #PB_GadgetType_Calendar
             SetWindowTheme_(\IDGadget, "", "")
           Case #PB_GadgetType_ComboBox
-            InvalidateRect_(\IDGadget, 0, 1)
+            InvalidateRect_(\IDGadget, #Null, #True)
           Case #PB_GadgetType_Editor, #PB_GadgetType_Spin, #PB_GadgetType_String
             SendMessage_(\IDGadget, #WM_ENABLE, IsWindowEnabled_(\IDGadget), 0)
           Case  #PB_GadgetType_Splitter
@@ -2045,11 +2061,18 @@ Module ObjectTheme
           EndIf
           
         Case #PB_GadgetType_ComboBox
-          ;InvalidateRect_(*ObjectTheme\IDGadget, 0, 1)   ; Not required here
+          ;InvalidateRect_(*ObjectTheme\IDGadget, #Null, #True)   ; Not required here
+          CompilerIf Defined(IceDesign, #PB_Module)
+            SendMessage_(\IDGadget, #CB_SETITEMHEIGHT, 0, IceDesign::DPIrate*18)
+          CompilerElse
+            SendMessage_(\IDGadget, #CB_SETITEMHEIGHT, 0, DesktopScaledX(18))
+          CompilerEndIf
           
         Case #PB_GadgetType_Date
-          ;SetThemeAppProperties_(1)   ; No, otherwise the "DarkMode_Explorer" theme is not displayed for ScrollBars. Otherwise it's not too bad for the Date window size 
-          
+          CompilerIf #DateGadgetTheme = 1
+            SetThemeAppProperties_(#STAP_ALLOW_NONCLIENT)   ; the Date DropDown size is right, but the "DarkMode_Explorer" theme is not displayed for ScrollBars
+          CompilerEndIf
+        
         Case #PB_GadgetType_ListView
           SetWindowLongPtr_(\IDGadget, #GWL_EXSTYLE, GetWindowLongPtr_(\IDGadget, #GWL_EXSTYLE) &~ #WS_EX_CLIENTEDGE)
           SetWindowLongPtr_(\IDGadget, #GWL_STYLE, GetWindowLongPtr_(\IDGadget, #GWL_STYLE) | #WS_BORDER)
@@ -2102,7 +2125,7 @@ Module ObjectTheme
                 KillTimer_(hWnd, 124)
                 \BtnInfo\bClickTimer = #False
                 \BtnInfo\bHiLiteTimer = #False
-                InvalidateRect_(hWnd, 0, 1)
+                InvalidateRect_(hWnd, #Null, #True)
               EndIf
             Case 123
               GetCursorPos_(@CursorPos)
@@ -2118,7 +2141,7 @@ Module ObjectTheme
                 KillTimer_(hWnd, 123)
                 \BtnInfo\bMouseOver = #False
                 \BtnInfo\bHiLiteTimer = #False
-                InvalidateRect_(hWnd, 0, 1)
+                InvalidateRect_(hWnd, #Null, #True)
               Else
                 Delay(1)
               EndIf
@@ -2138,7 +2161,7 @@ Module ObjectTheme
             \BtnInfo\bMouseOver = #True
             \BtnInfo\bHiLiteTimer = #True
             SetTimer_(hWnd, 123, 50, #Null)
-            InvalidateRect_(hWnd, 0, 1)
+            InvalidateRect_(hWnd, #Null, #True)
           EndIf
           
         Case #WM_LBUTTONDOWN
@@ -2148,12 +2171,12 @@ Module ObjectTheme
             If (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_PUSHLIKE = #BS_PUSHLIKE)
               \BtnInfo\bButtonState  = \BtnInfo\bButtonState ! 1
             EndIf
-            InvalidateRect_(hWnd, 0, 1)
+            InvalidateRect_(hWnd, #Null, #True)
           EndIf
           
         Case #WM_ENABLE
           \BtnInfo\bButtonEnable = wParam
-          InvalidateRect_(hWnd, 0, 1)
+          InvalidateRect_(hWnd, #Null, #True)
           ProcedureReturn 0
           
         Case #WM_WINDOWPOSCHANGED
@@ -2165,13 +2188,13 @@ Module ObjectTheme
         Case #WM_SETTEXT
           \BtnInfo\sButtonText = PeekS(lParam)
           DefWindowProc_(hWnd, uMsg, wParam, lParam)
-          InvalidateRect_(hWnd, 0, 0)
+          RedrawWindow_(hWnd, #Null, #Null, #RDW_INVALIDATE | #RDW_ERASE | #RDW_UPDATENOW)
           ProcedureReturn 1
           
         Case #BM_SETCHECK
           If (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_PUSHLIKE = #BS_PUSHLIKE)
             \BtnInfo\bButtonState = wParam
-            InvalidateRect_(hWnd, 0, 0)
+            RedrawWindow_(hWnd, #Null, #Null, #RDW_INVALIDATE | #RDW_ERASE | #RDW_UPDATENOW)
           EndIf
           
         Case #BM_GETCHECK
@@ -2179,7 +2202,7 @@ Module ObjectTheme
           
         Case #WM_SETFONT
           \BtnInfo\iActiveFont = wParam
-          InvalidateRect_(hWnd, 0, 0)
+          RedrawWindow_(hWnd, #Null, #Null, #RDW_INVALIDATE | #RDW_ERASE | #RDW_UPDATENOW)
           
         Case #WM_PAINT
           cX                = DesktopScaledX(GadgetWidth(\PBGadget))
@@ -2506,11 +2529,11 @@ Module ObjectTheme
       If \imgHiPressed And IsImage(\imgHiPressed) : FreeImage(\imgHiPressed) : EndIf
       If \imgDisabled  And IsImage(\imgDisabled)  : FreeImage(\imgDisabled)  : EndIf
       
-      \imgRegular   = CreateImage(#PB_Any, cX, cY, 32)
-      \imgHilite    = CreateImage(#PB_Any, cX, cY, 32)
-      \imgPressed   = CreateImage(#PB_Any, cX, cY, 32)
-      \imgHiPressed = CreateImage(#PB_Any, cX, cY, 32)
-      \imgDisabled  = CreateImage(#PB_Any, cX, cY, 32)
+      \imgRegular   = CreateImage(#PB_Any, cX, cY, 32, $80E1E1E1)
+      \imgHilite    = CreateImage(#PB_Any, cX, cY, 32, $80FBF1E5)
+      \imgPressed   = CreateImage(#PB_Any, cX, cY, 32, $80E1E1E1)
+      \imgHiPressed = CreateImage(#PB_Any, cX, cY, 32, $80FBF1E5)
+      \imgDisabled  = CreateImage(#PB_Any, cX, cY, 32, $80CCCCCC)
       
       For I = 0 To 4
         Select I
@@ -2528,23 +2551,24 @@ Module ObjectTheme
         EndSelect
         
         If StartDrawing(ImageOutput(*ThisImage))
+          DrawingMode(#PB_2DDrawing_AlphaBlend)
           
           Select I
             Case 0, 1
               If \iButtonImageID And IsImage(\iButtonImage)
-                DrawImage(\iButtonImageID, 0, 0, cX, cY)
+                DrawAlphaImage(\iButtonImageID, 0, 0)
               Else
                 Box(0, 0, cX, cY, GetSysColor_(#COLOR_3DFACE))
               EndIf
             Case 2, 3
               If \iButtonPressedImageID And IsImage(\iButtonPressedImage)
-                DrawImage(\iButtonPressedImageID, 0, 0, cX, cY)
+                DrawAlphaImage(\iButtonPressedImageID, 0, 0)
               Else
                 Box(0, 0, cX, cY, GetSysColor_(#COLOR_3DFACE))  
               EndIf
             Case 4
               If \iButtonImageID And IsImage(\iButtonImage)
-                DrawImage(\iButtonImageID, 0, 0, cX, cY)
+                DrawAlphaImage(\iButtonImageID, 0, 0)
               Else
                 Box(0, 0, cX, cY, GetSysColor_(#COLOR_3DFACE))
               EndIf
@@ -2553,16 +2577,10 @@ Module ObjectTheme
               Box(0, 0, cX, cY)
           EndSelect
           
-          ; Draw a transparent ellipse a little wider than the button and slightly offset upwards, to have a gradient with the background color in the 4 corners and more important at the bottom
           Select I
             Case 1, 3     ; imgHilite, imgHiPressed
-              DrawingMode(#PB_2DDrawing_Gradient | #PB_2DDrawing_AlphaBlend)
-              EllipticalGradient(cX / 2, cY * 2 / 5, cX * 3 / 5, cY * 4 / 5)
-              GradientColor(0.0, ButtonBackColor | $14000000)
-              GradientColor(0.3, ButtonBackColor | $14000000)
-              GradientColor(1.0, \lButtonOuterColor | $14000000)
-              ;GradientColor(1.0, \lButtonCornerColor | $14000000) 
-              RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY)
+              DrawingMode(#PB_2DDrawing_AlphaBlend)
+              RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, $14FBF1E5)
           EndSelect
           
           ; Fill outside RoundBox border, corner with background color
@@ -2618,7 +2636,7 @@ Module ObjectTheme
       SelectObject_(\hDcHiPressed, ImageID(\imgHiPressed))
       SelectObject_(\hDcDisabled,  ImageID(\imgDisabled))
     EndWith
-    InvalidateRect_(*ObjectTheme\IDGadget, 0, 0)
+    InvalidateRect_(*ObjectTheme\IDGadget, #Null, #False)
     ReturnValue = #True
     
     ProcedureReturn ReturnValue
@@ -2671,7 +2689,7 @@ Module ObjectTheme
       \hObjDisabled  = SelectObject_(\hDcDisabled,   ImageID(\imgDisabled))
       
       ReleaseDC_(#Null, hGenDC)
-      InvalidateRect_(*ObjectTheme\IDGadget, 0, 0)
+      InvalidateRect_(*ObjectTheme\IDGadget, #Null, #False)
       ReturnValue = #True
     EndWith
     
@@ -2715,7 +2733,7 @@ Module ObjectTheme
     If IsGadget(Gadget)
       SetGadgetText(Gadget, SavText)
       SetGadgetState(Gadget, SavState)
-      InvalidateRect_(GadgetID(Gadget), 0, 0)
+      InvalidateRect_(GadgetID(Gadget), #Null, #False)
     EndIf
     ReturnValue = #True
     
@@ -2916,7 +2934,7 @@ Module ObjectTheme
         \IDParent              = GetParent_(\IDGadget)
         \PBGadgetType          = GadgetType(Gadget)
         \BtnInfo               = AllocateMemory(SizeOf(ObjectBTN_INFO))
-        \OldProc            = GetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC)
+        \OldProc               = GetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC)
         \BtnInfo\sButtonText   = GetGadgetText(Gadget)
       EndWith
     EndIf
@@ -3090,7 +3108,7 @@ Module ObjectTheme
       \hObjDisabled  = SelectObject_(\hDcDisabled,  ImageID(\imgDisabled))
       
       ReleaseDC_(#Null, hGenDC)
-      InvalidateRect_(ObjectTheme()\IDGadget, 0, 0)
+      InvalidateRect_(ObjectTheme()\IDGadget, #Null, #False)
       
       If Not UpdateTheme
         SetWindowLongPtr_(*ObjectTheme\IDGadget, #GWL_STYLE, GetWindowLongPtr_(*ObjectTheme\IDGadget, #GWL_STYLE) | #BS_OWNERDRAW)
@@ -4523,7 +4541,3 @@ CompilerIf #PB_Compiler_IsMainFile
   ForEver
   
 CompilerEndIf
-
-; IDE Options = PureBasic 6.04 LTS (Windows - x64)
-; EnableXP
-; EnableOnError
