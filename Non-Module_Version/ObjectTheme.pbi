@@ -7,9 +7,9 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2024-03-22
-;           Version: 1.5.2
-;        PB-Version: 6.0 or other
+; modification Date: 2024-05-02
+;           Version: 1.5.3
+;        PB-Version: 5.73 - 6.10 x64/x86
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
@@ -833,7 +833,7 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
   Protected Result = #PB_ProcessPureBasicEvents
   Protected *ObjectTheme.ObjectTheme_INFO
   
-  Protected ParentGadget, Buffer.s, Text.s
+  Protected ParentGadget, Buffer.s, Text.s, Found
   Protected *DrawItem.DRAWITEMSTRUCT, *lvCD.NMLVCUSTOMDRAW 
   
   With *ObjectTheme
@@ -881,33 +881,43 @@ Procedure WinCallback(hWnd, uMsg, wParam, lParam)
             ProcedureReturn \ObjectInfo\lBrushBackColor
         EndSelect
         
-      ; ----------  BoxGadget ----------
+      ; ----------  Edit ComboBoxGadget ----------
       Case #WM_CTLCOLOREDIT
-        ParentGadget = GetParent_(lParam)
-        Buffer = Space(64)
-        If GetClassName_(ParentGadget, @Buffer, 64)
-          If Buffer = "ComboBox"
-            If FindMapElement(ObjectTheme(), Str(ParentGadget))
-              *ObjectTheme = @ObjectTheme()
-            Else
-              ProcedureReturn Result
-            EndIf
-            
-            If \PBGadget <> GetActiveGadget()
-              Protected low, high
-              SendMessage_(lParam, #EM_GETSEL, @low, @high)
-              If low <> high
-                SendMessage_(lParam, #EM_SETSEL, -1, 0)   ; Deselect the ComboBox editable string if not the active Gadget
+        If FindMapElement(ObjectTheme(), Str(lparam))
+          *ObjectTheme = @ObjectTheme()
+          If \PBGadgetType = #PB_GadgetType_ComboBox
+            Found = #True
+          EndIf
+        Else  
+          ParentGadget = GetParent_(lParam)
+          Buffer = Space(64)
+          If GetClassName_(ParentGadget, @Buffer, 64)
+            If Buffer = "ComboBox"
+              If FindMapElement(ObjectTheme(), Str(ParentGadget))
+                *ObjectTheme = @ObjectTheme()
+                Found = #True
               EndIf
             EndIf
-            If IsWindowEnabled_(\IDGadget) = #False
-              SetTextColor_(wParam, \ObjectInfo\lGrayTextColor)
-            Else
-              SetTextColor_(wParam, \ObjectInfo\lFrontColor)
-            EndIf
-            SetBkMode_(wParam, #TRANSPARENT)
-            ProcedureReturn \ObjectInfo\hBrushEditBoxColor
           EndIf
+        EndIf
+        
+        If Found 
+          If \PBGadget <> GetActiveGadget()
+            Protected low, high
+            SendMessage_(lParam, #EM_GETSEL, @low, @high)
+            If low <> high
+              SendMessage_(lParam, #EM_SETSEL, -1, 0)   ; Deselect the ComboBox editable string if not the active Gadget
+            EndIf
+          EndIf
+          If IsWindowEnabled_(\IDGadget) = #False
+            SetTextColor_(wParam, \ObjectInfo\lGrayTextColor)
+          Else
+            SetTextColor_(wParam, \ObjectInfo\lFrontColor)
+          EndIf
+          SetBkMode_(wParam, #TRANSPARENT)
+          ProcedureReturn \ObjectInfo\hBrushEditBoxColor
+        Else
+          ProcedureReturn Result
         EndIf
         
       Case #WM_DRAWITEM   ; For ComboBoxGadget and PanelGadget
