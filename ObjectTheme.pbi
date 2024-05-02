@@ -8,7 +8,7 @@
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
 ; modification Date: 2024-05-02
-;           Version: 1.5.3
+;           Version: 1.5.4
 ;        PB-Version: 5.73 - 6.10 x64/x86
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -503,17 +503,19 @@ Module ObjectTheme
   Macro _ToolTipHandle()
     Tooltip = ToolTipHandle()
     If Tooltip
-      SetWindowTheme_(Tooltip, @"", @"")
-      ;SendMessage_(Tooltip, #TTM_SETDELAYTIME, #TTDT_INITIAL, 250) : SendMessage_(Tooltip, #TTM_SETDELAYTIME,#TTDT_AUTOPOP, 5000) : SendMessage_(Tooltip, #TTM_SETDELAYTIME,#TTDT_RESHOW, 250)
       Protected TmpBackColor = GetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BackColor)
-      SendMessage_(Tooltip, #TTM_SETTIPBKCOLOR, TmpBackColor, 0)
-      If IsDarkColor(TmpBackColor)
-        SendMessage_(Tooltip, #TTM_SETTIPTEXTCOLOR, #White, 0)
-      Else
-        SendMessage_(Tooltip, #TTM_SETTIPTEXTCOLOR, #Black, 0)
+      If TmpBackColor <> #PB_Default
+        SetWindowTheme_(Tooltip, @"", @"")
+        ;SendMessage_(Tooltip, #TTM_SETDELAYTIME, #TTDT_INITIAL, 250) : SendMessage_(Tooltip, #TTM_SETDELAYTIME,#TTDT_AUTOPOP, 5000) : SendMessage_(Tooltip, #TTM_SETDELAYTIME,#TTDT_RESHOW, 250)
+        SendMessage_(Tooltip, #TTM_SETTIPBKCOLOR, TmpBackColor, 0)
+        If IsDarkColor(TmpBackColor)
+          SendMessage_(Tooltip, #TTM_SETTIPTEXTCOLOR, #White, 0)
+        Else
+          SendMessage_(Tooltip, #TTM_SETTIPTEXTCOLOR, #Black, 0)
+        EndIf
+        SendMessage_(Tooltip, #WM_SETFONT, 0, 0)
+        SendMessage_(Tooltip, #TTM_SETMAXTIPWIDTH, 0, 460)
       EndIf
-      SendMessage_(Tooltip, #WM_SETFONT, 0, 0)
-      SendMessage_(Tooltip, #TTM_SETMAXTIPWIDTH, 0, 460)
     EndIf
   EndMacro
   
