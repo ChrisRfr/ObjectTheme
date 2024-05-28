@@ -3755,7 +3755,7 @@ Module ObjectTheme
     Data.l #PB_GadgetType_Tree,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
     Data.l #PB_GadgetType_Tree,            #PB_Gadget_LineColor,             #PB_Default     ; Line Color: Color | #PB_Default = If IsDarkColor BackColor White else Black
     
-    Data.l #PB_GadgetType_Button,          #PB_Gadget_BackColor,             $FD6E0D         ; Border Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_BackColor,             $FD6E0D         ; Background Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_Button,          #PB_Gadget_OuterColor,            $292521         ; Outer Color: Color | #PB_Default = Window BackColor. If not IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_Button,          #PB_Gadget_CornerColor,           #PB_Default     ; Corner Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Button,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled Button BackColor
@@ -3768,7 +3768,7 @@ Module ObjectTheme
     Data.l #PB_GadgetType_Button,          #PB_Gadget_RoundX,                8               ; The radius of the RoundBox corners in the x direction
     Data.l #PB_GadgetType_Button,          #PB_Gadget_RoundY,                8               ; The radius of the RoundBox corners in the y direction
     
-    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_BackColor,             $FD6E0D         ; Border Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_BackColor,             $FD6E0D         ; Background Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_OuterColor,            $292521         ; Outer Color: Color | #PB_Default = Window BackColor. If not IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_CornerColor,           #PB_Default     ; Corner Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled Button BackColor
@@ -3887,7 +3887,7 @@ Module ObjectTheme
     Data.l #PB_GadgetType_Tree,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
     Data.l #PB_GadgetType_Tree,            #PB_Gadget_LineColor,             #PB_Default     ; Line Color: Color | #PB_Default = If IsDarkColor BackColor White else Black
     
-    Data.l #PB_GadgetType_Button,          #PB_Gadget_BackColor,             $2D47CB         ; Border Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_BackColor,             $2D47CB         ; Background Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_Button,          #PB_Gadget_OuterColor,            $060928         ; Outer Color: Color | #PB_Default = Window BackColor. If not IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_Button,          #PB_Gadget_CornerColor,           #PB_Default     ; Corner Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Button,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled Button BackColor
@@ -3900,7 +3900,7 @@ Module ObjectTheme
     Data.l #PB_GadgetType_Button,          #PB_Gadget_RoundX,                8               ; The radius of the RoundBox corners in the x direction
     Data.l #PB_GadgetType_Button,          #PB_Gadget_RoundY,                8               ; The radius of the RoundBox corners in the y direction
     
-    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_BackColor,             $2D47CB         ; Border Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_BackColor,             $2D47CB         ; Background Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_OuterColor,            $060928         ; Outer Color: Color | #PB_Default = Window BackColor. If not IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_CornerColor,           #PB_Default     ; Corner Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled Button BackColor
@@ -4019,7 +4019,7 @@ Module ObjectTheme
     Data.l #PB_GadgetType_Tree,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
     Data.l #PB_GadgetType_Tree,            #PB_Gadget_LineColor,             #PB_Default     ; Line Color: Color | #PB_Default = If IsDarkColor BackColor White else Black
     
-    Data.l #PB_GadgetType_Button,          #PB_Gadget_BackColor,             $FFD8CA         ; Border Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_BackColor,             $FFD8CA         ; Background Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_Button,          #PB_Gadget_OuterColor,            $FD6E0D         ; Outer Color: Color | #PB_Default = Window BackColor. If not IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_Button,          #PB_Gadget_CornerColor,           #PB_Default     ; Corner Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Button,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled Button BackColor
@@ -4032,7 +4032,7 @@ Module ObjectTheme
     Data.l #PB_GadgetType_Button,          #PB_Gadget_RoundX,                8               ; The radius of the RoundBox corners in the x direction
     Data.l #PB_GadgetType_Button,          #PB_Gadget_RoundY,                8               ; The radius of the RoundBox corners in the y direction
     
-    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_BackColor,             $FFD8CA         ; Border Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80  
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_BackColor,             $FFD8CA         ; Background Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80  
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_OuterColor,            $FD6E0D         ; Outer Color: Color | #PB_Default = Window BackColor. If not IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_CornerColor,           #PB_Default     ; Corner Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled Button BackColor
@@ -4151,7 +4151,7 @@ Module ObjectTheme
     Data.l #PB_GadgetType_Tree,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
     Data.l #PB_GadgetType_Tree,            #PB_Gadget_LineColor,             #PB_Default     ; Line Color: Color | #PB_Default = If IsDarkColor BackColor White else Black
     
-    Data.l #PB_GadgetType_Button,          #PB_Gadget_BackColor,             #PB_Default     ; Border Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_BackColor,             #PB_Default     ; Background Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_Button,          #PB_Gadget_OuterColor,            #PB_Default     ; Outer Color: Color | #PB_Default = Window BackColor. If not IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_Button,          #PB_Gadget_CornerColor,           #PB_Default     ; Corner Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Button,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled Button BackColor
@@ -4164,7 +4164,7 @@ Module ObjectTheme
     Data.l #PB_GadgetType_Button,          #PB_Gadget_RoundX,                #PB_Default     ; The radius of the RoundBox corners in the x direction
     Data.l #PB_GadgetType_Button,          #PB_Gadget_RoundY,                #PB_Default     ; The radius of the RoundBox corners in the y direction
     
-    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_BackColor,             #PB_Default     ; Border Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_BackColor,             #PB_Default     ; Background Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_OuterColor,            #PB_Default     ; Outer Color: Color | #PB_Default = Window BackColor. If not IsDarkColor AccentColor 80
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_CornerColor,           #PB_Default     ; Corner Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled Button BackColor
