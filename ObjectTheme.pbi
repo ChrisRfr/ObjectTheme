@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2024-05-02
-;           Version: 1.5.4
+; modification Date: 2024-05-28
+;           Version: 1.5.5
 ;        PB-Version: 5.73 - 6.10 x64/x86
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -452,6 +452,22 @@ Module ObjectTheme
   Macro _ProcedureReturnIf(Cond, ReturnValue = #False)
     If Cond
       ProcedureReturn ReturnValue
+    EndIf
+  EndMacro
+  
+  Macro _RoundBox(X, Y, Width, Height, RoundX, RoundY, Color = #PB_Default)
+    If RoundX + RoundY
+      If Color = #PB_Default
+        RoundBox(X, Y, Width, Height, RoundX, RoundY)
+      Else
+        RoundBox(X, Y, Width, Height, RoundX, RoundY, Color)
+      EndIf
+    Else
+      If Color = #PB_Default
+        Box(X, Y, Width, Height)
+      Else
+        Box(X, Y, Width, Height, Color)
+      EndIf
     EndIf
   EndMacro
   
@@ -1506,7 +1522,7 @@ Module ObjectTheme
   EndProcedure
   
   Macro _SetObjectBrush(Color, BrushColor, SavColor)
-    If SavColor <> Color
+    If SavColor <> Color Or Color = 0
       If FindMapElement(ObjectBrush(), Str(Color))
         BrushColor = ObjectBrush()
       Else
@@ -2479,7 +2495,7 @@ Module ObjectTheme
         If StartDrawing(ImageOutput(*ThisImage))
           
           Box(0, 0, cX, cY, \lButtonCornerColor)
-          RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, ButtonBackColor | $80000000)
+          _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, ButtonBackColor | $80000000)
           DrawingMode(#PB_2DDrawing_Gradient | #PB_2DDrawing_AlphaBlend)
           
           ; Draw an ellipse a little wider than the button and slightly offset upwards, to have a gradient with the background color in the 4 corners and more important at the bottom
@@ -2494,21 +2510,21 @@ Module ObjectTheme
               GradientColor(0.45, ButtonBackColor | $BE000000)
           EndSelect
           GradientColor(1.0,  \lButtonOuterColor | $BE000000)
-          RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY)
+          _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY)
           
           ; Border drawn with button color and an inner 1 px border with background color (full inside or top left or bottom right)
           DrawingMode(#PB_2DDrawing_Outlined)
           Select I
             Case 0, 4     ; imgRegular, imgDisabled
-              RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lBorderColor)
-              RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lButtonOuterColor)
+              _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lBorderColor)
+              _RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lButtonOuterColor)
             Case 1, 2     ; imgHilite, imgPressed
-              RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lHighLightBorder)
-              RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lButtonOuterColor)
+              _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lHighLightBorder)
+              _RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lButtonOuterColor)
             Case 3     ; imgHiPressed
-              RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lHighLightBorder)
-              RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lBorderColor)
-              RoundBox(2, 2, cX-4, cY-4, \lRoundX, \lRoundY, \lButtonOuterColor)
+              _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lHighLightBorder)
+              _RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lBorderColor)
+              _RoundBox(2, 2, cX-4, cY-4, \lRoundX, \lRoundY, \lButtonOuterColor)
           EndSelect
           
           StopDrawing()
@@ -2563,24 +2579,42 @@ Module ObjectTheme
         EndSelect
         
         If StartDrawing(ImageOutput(*ThisImage))
-          DrawingMode(#PB_2DDrawing_AlphaBlend)
           
+          Box(0, 0, cX, cY, \lButtonCornerColor)
+          _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, ButtonBackColor | $80000000)
+          DrawingMode(#PB_2DDrawing_Gradient | #PB_2DDrawing_AlphaBlend)
+          
+          ; Draw an ellipse a little wider than the button and slightly offset upwards, to have a gradient with the background color in the 4 corners and more important at the bottom
+          EllipticalGradient(cX / 2, cY * 2 / 5, cX * 3 / 5, cY * 4 / 5)
+          GradientColor(0.0, ButtonBackColor | $BE000000)
+          Select I
+            Case 0, 4   ; imgRegular, imgDisabled
+              GradientColor(0.15, ButtonBackColor | $BE000000)
+            Case 1, 3   ; imgHilite, imgHiPressed
+              GradientColor(0.3,  ButtonBackColor | $BE000000)
+            Case 2      ; imgPressed
+              GradientColor(0.45, ButtonBackColor | $BE000000)
+          EndSelect
+          GradientColor(1.0,  \lButtonOuterColor | $BE000000)
+          _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY)
+          
+          DrawingMode(#PB_2DDrawing_AlphaBlend)
           Select I
             Case 0, 1
               If \iButtonImageID And IsImage(\iButtonImage)
-                DrawAlphaImage(\iButtonImageID, 0, 0)
+                DrawAlphaImage(\iButtonImageID, (cX - ImageWidth(\iButtonImage))/2, (cY - ImageHeight(\iButtonImage))/2)
               Else
                 Box(0, 0, cX, cY, GetSysColor_(#COLOR_3DFACE))
               EndIf
             Case 2, 3
               If \iButtonPressedImageID And IsImage(\iButtonPressedImage)
-                DrawAlphaImage(\iButtonPressedImageID, 0, 0)
+                DrawAlphaImage(\iButtonPressedImageID, (cX - ImageWidth(\iButtonPressedImage))/2, (cY - ImageHeight(\iButtonPressedImage))/2)
               Else
                 Box(0, 0, cX, cY, GetSysColor_(#COLOR_3DFACE))  
               EndIf
             Case 4
               If \iButtonImageID And IsImage(\iButtonImage)
-                DrawAlphaImage(\iButtonImageID, 0, 0)
+                DrawAlphaImage(\iButtonImageID, (cX - ImageWidth(\iButtonImage))/2, (cY - ImageHeight(\iButtonImage))/2)
               Else
                 Box(0, 0, cX, cY, GetSysColor_(#COLOR_3DFACE))
               EndIf
@@ -2592,28 +2626,28 @@ Module ObjectTheme
           Select I
             Case 1, 3     ; imgHilite, imgHiPressed
               DrawingMode(#PB_2DDrawing_AlphaBlend)
-              RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, $14FBF1E5)
+              _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, $14FBF1E5)
           EndSelect
           
           ; Fill outside RoundBox border, corner with background color
           DrawingMode(#PB_2DDrawing_Outlined)
-          RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, $B200FF)
+          _RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, $B200FF)
           FillArea(0, 0, $B200FF, \lButtonOuterColor)
-          RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, #Black)
+          _RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, #Black)
           FillArea(0, 0, #Black, \lButtonCornerColor)
           
           ; Border drawn with button color and an inner 1 px border with background color (full inside or top left or bottom right)
           Select I
             Case 0, 4     ; imgRegular, imgDisabled
-              RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lBorderColor)
-              RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lButtonOuterColor)
+              _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lBorderColor)
+              _RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lButtonOuterColor)
             Case 1, 2     ; imgHilite, imgPressed
-              RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lHighLightBorder)
-              RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lButtonOuterColor)
+              _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lHighLightBorder)
+              _RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lButtonOuterColor)
             Case 3     ; imgHiPressed
-              RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lHighLightBorder)
-              RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lBorderColor)
-              RoundBox(2, 2, cX-4, cY-4, \lRoundX, \lRoundY, \lButtonOuterColor)
+              _RoundBox(0, 0, cX, cY, \lRoundX, \lRoundY, \lHighLightBorder)
+              _RoundBox(1, 1, cX-2, cY-2, \lRoundX, \lRoundY, \lBorderColor)
+              _RoundBox(2, 2, cX-4, cY-4, \lRoundX, \lRoundY, \lButtonOuterColor)
           EndSelect
           
           StopDrawing()
