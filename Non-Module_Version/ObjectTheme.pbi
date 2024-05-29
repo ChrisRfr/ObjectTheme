@@ -3473,7 +3473,7 @@ Procedure _SetGadgetColor(Gadget, Attribute, Color)
       If FindMapElement(ObjectTheme(), Str(GadgetID(Gadget)))
         Select ObjectTheme()\PBGadgetType
           Case #PB_GadgetType_Button, #PB_GadgetType_ButtonImage
-            ProcedureReturn SetObjectButtonColor(ObjectTheme(), Attribute, Color)
+            ProcedureReturn SetButtonThemeColor(ObjectTheme(), Attribute, Color)
           Default
             ProcedureReturn SetObjectThemeColor(ObjectTheme(), Attribute, Color)
         EndSelect
