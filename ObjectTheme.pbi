@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2024-05-28
-;           Version: 1.5.5
+; modification Date: 2024-06-11
+;           Version: 1.5.6
 ;        PB-Version: 5.73 - 6.10 x64/x86
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -318,6 +318,13 @@ Module ObjectTheme
   #STAP_ALLOW_CONTROLS = 2
   #STAP_ALLOW_WEBCONTENT = 4
   
+  Enumeration DWMWindowAttribute
+    #DWMWA_USE_IMMERSIVE_DARK_MODE = 20
+    #DWMWA_BORDER_COLOR = 34
+    #DWMWA_CAPTION_COLOR = 35
+    #DWMWA_TEXT_COLOR = 36
+  EndEnumeration
+  
   Structure ObjectBTN_INFO
     sButtonText.s
     bButtonState.b
@@ -395,6 +402,9 @@ Module ObjectTheme
     *ObjectInfo.ObjectInfo_INFO
     *OldProc
   EndStructure
+  
+  ; https://docs.microsoft.com/en-us/windows/win32/api/dwmapi/nf-dwmapi-dwmsetwindowattribute
+  PrototypeC DwmSetWindowAttribute(hwnd, dwAttribute.l, *pvAttribute, cbAttribute.l)
   
   Declare IsDarkColor(Color)
   Declare AccentColor(Color, AddColorValue)
@@ -672,7 +682,7 @@ Module ObjectTheme
     ProcedureReturn RGBA(R, G, B, Alpha(Color))
   EndProcedure
   
-  Procedure.l ScaleGrayCallback (x, y, SourceColor.l, TargetColor.l)
+  Procedure.l ScaleGrayCallback(x, y, SourceColor.l, TargetColor.l)
     Protected light
     light = ((Red(TargetColor) * 30 + Green(TargetColor) * 59 + Blue(TargetColor) * 11) / 100)
     ProcedureReturn RGBA(light, light, light, Alpha(TargetColor))
@@ -1376,6 +1386,7 @@ Module ObjectTheme
   
   Procedure SetWindowThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
     Protected ReturnValue = #PB_Default
+    Protected DwmSetWindowAttribute.DwmSetWindowAttribute
     
     Select Attribute
       Case #PB_Gadget_BackColor
@@ -1384,6 +1395,21 @@ Module ObjectTheme
         EndIf
         *ObjectTheme\ObjectInfo\lBackColor = Value
         _PB(SetWindowColor)(*ObjectTheme\PBGadget, Value)
+        If OSVersion() >= #PB_OS_Windows_11
+          If OpenLibrary(0, "dwmapi")
+            Protected.l TextColor, BackColor = \ObjectInfo\lBackColor
+            DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
+            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_CAPTION_COLOR, @BackColor, SizeOf(BackColor))
+            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_BORDER_COLOR,  @BackColor, SizeOf(BackColor))
+            If IsDarkColor(BackColor)
+              TextColor = #White
+            Else
+              TextColor = #Black
+            EndIf
+            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_TEXT_COLOR, @TextColor, SizeOf(TextColor))
+            CloseLibrary(0)
+          EndIf
+        EndIf       
         
         If FindMapElement(ThemeAttribute(), Str(#PB_WindowType) + "|" + Str(#PB_Gadget_DarkMode))
           If ThemeAttribute() = #PB_Default
@@ -1439,6 +1465,15 @@ Module ObjectTheme
           EndSelect
         Next
         PopMapPosition(ObjectTheme())
+        
+        If OSVersion() >= #PB_OS_Windows_10
+          If OpenLibrary(0, "dwmapi")
+            DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
+            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_USE_IMMERSIVE_DARK_MODE, @Value, SizeOf(Value))
+            CloseLibrary(0)
+          EndIf
+        EndIf
+        
         ReturnValue = #True
         
     EndSelect
@@ -1450,8 +1485,9 @@ Module ObjectTheme
   EndProcedure
   
   Procedure AddWindowTheme(Window, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
-    _ProcedureReturnIf(Not IsWindow(Window)) 
+    _ProcedureReturnIf(Not IsWindow(Window))
     Protected ObjectType.s, ReturnValue
+    Protected DwmSetWindowAttribute.DwmSetWindowAttribute
     
     With *ObjectTheme
       If Not UpdateTheme
@@ -1474,10 +1510,34 @@ Module ObjectTheme
       CompilerElse
         _PB(SetWindowColor)(Window, \ObjectInfo\lBackColor)
       CompilerEndIf
+      If OSVersion() >= #PB_OS_Windows_11
+        If OpenLibrary(0, "dwmapi")
+          Protected.l TextColor, BackColor = \ObjectInfo\lBackColor
+          DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
+          DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_CAPTION_COLOR, @BackColor, SizeOf(BackColor))
+          DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_BORDER_COLOR,  @BackColor, SizeOf(BackColor))
+          If IsDarkColor(BackColor)
+            TextColor = #White
+          Else
+            TextColor = #Black
+          EndIf
+          DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_TEXT_COLOR, @TextColor, SizeOf(TextColor))
+          CloseLibrary(0)
+        EndIf
+      EndIf
       
       If FindMapElement(ThemeAttribute(), Str(#PB_WindowType) + "|" + Str(#PB_Gadget_DarkMode))
         If ThemeAttribute() = #PB_Default
           SetWindowThemeColor(*ObjectTheme, #PB_Gadget_DarkMode, #PB_Default)
+        Else  
+          If OSVersion() >= #PB_OS_Windows_10
+            If OpenLibrary(0, "dwmapi")
+              Protected DarkMode = ThemeAttribute()
+              DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
+              DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_USE_IMMERSIVE_DARK_MODE, @DarkMode, SizeOf(DarkMode))
+              CloseLibrary(0)
+            EndIf
+          EndIf
         EndIf
       EndIf
     EndWith
@@ -4587,3 +4647,4 @@ CompilerIf #PB_Compiler_IsMainFile
   ForEver
   
 CompilerEndIf
+
