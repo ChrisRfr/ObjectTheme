@@ -1397,7 +1397,7 @@ Module ObjectTheme
         _PB(SetWindowColor)(*ObjectTheme\PBGadget, Value)
         If OSVersion() >= #PB_OS_Windows_11
           If OpenLibrary(0, "dwmapi")
-            Protected.l TextColor, BackColor = \ObjectInfo\lBackColor
+            Protected.l TextColor, BackColor = *ObjectTheme\ObjectInfo\lBackColor
             DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
             DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_CAPTION_COLOR, @BackColor, SizeOf(BackColor))
             DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_BORDER_COLOR,  @BackColor, SizeOf(BackColor))
