@@ -1470,6 +1470,12 @@ Module ObjectTheme
           If OpenLibrary(0, "dwmapi")
             DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
             DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_USE_IMMERSIVE_DARK_MODE, @Value, SizeOf(Value))
+            Protected ActiveWindow = GetActiveWindow()
+            ; To display the title bar with a light or dark theme for other non-active windows
+            If ActiveWindow <> *ObjectTheme\PBGadget
+              SetActiveWindow(*ObjectTheme\PBGadget)
+              SetActiveWindow(ActiveWindow)
+             EndIf 
             CloseLibrary(0)
           EndIf
         EndIf
@@ -1637,8 +1643,8 @@ Module ObjectTheme
           _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_FrontColor)
           _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_LineColor)
           _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_TitleBackColor)
-          _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_ActiveTabColor )
-          _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_InactiveTabColor )
+          _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_ActiveTabColor)
+          _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_InactiveTabColor)
           _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_EditBoxColor)
           _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_SplitterBorderColor)
           _SubSetObjectThemeColor(*ObjectTheme\PBGadgetType, #PB_Gadget_UseUxGripper)
@@ -1943,7 +1949,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- ActiveTabColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_ActiveTabColor ))
+      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_ActiveTabColor))
         SavBackColor  = \lActiveTabColor
         \lActiveTabColor = ThemeAttribute()
         If \lActiveTabColor = #PB_Default
@@ -1953,7 +1959,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- InactiveTabColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_InactiveTabColor ))
+      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_InactiveTabColor))
         SavBackColor  = \lInactiveTabColor
         \lInactiveTabColor = ThemeAttribute()
         If \lInactiveTabColor = #PB_Default
