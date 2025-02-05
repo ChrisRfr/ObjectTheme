@@ -32,19 +32,27 @@ SetObjectTheme(#SetObjectTheme(#ObjectTheme_Auto, #Black)):<br>
 <br>
 <br>
 **Supported Gadget**<br>
-   Window, Button, ButtonImage, Calendar, CheckBox, ComboBox, Container, Date, Editor, ExplorerList, ExplorerTree, Frame, HyperLink, ListIcon, ListView, Option, Panel, ProgressBar, ScrollArea, ScrollBar, Spin, Splitter, String, Text, TrackBar, Tree<br>   
+   Window, Button, ButtonImage, Calendar, CheckBox, ComboBox, Container, Date, Editor, ExplorerList, ExplorerTree, Frame, HyperLink, ListIcon, ListView, Option, Panel, ProgressBar, ScrollArea, ScrollBar, Spin, Splitter, String, Text, TrackBar, Tree<br><br>   
   
 **Note that** you can SetObjectTheme(Theme [, WindowColor]) anywhere you like in your source, before or after creating the window, gadget's<br>
    **But note** the special case for the ComboBox Gadget:<br> 
          - Either you call the SetObjectTheme() function at the beginning of the program before creating the Windows and ComboBoxes<br>
          - Or add the flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED to the ComboBoxes (but Not for the ComboBox_Image) so that the drop-down List is painted<br>
 
- See ObjectTheme_DataSection.pbi for the theme color attribute for each GadgetType<br>
+**Note** to appli a Theme above a **window background image**, applied with SetClassLongPtr_(WindowID, #GCL_HBRBACKGROUND, BrushBackground)<br>
+         - Use: SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True) after SetObjectTheme()<br>
+         - Or enable (#True) the #PB_Gadget_BrushBackground constant in DataSection<br>
+Static Gadgets will use a null brush to have a transparent background color and to see the image behind<br><br>
+
+See ObjectTheme_DataSection for the theme color attribute for each GadgetType<br>
 - It uses the same attributes as SetGadgetColor()<br>
 #PB_Gadget_FrontColor, #PB_Gadget_BackColor, #PB_Gadget_LineColor, #PB_Gadget_TitleFrontColor, #PB_Gadget_TitleBackColor, #PB_Gadget_GrayTextColor<br>
 
 - With new attributes<br>
-#PB_Gadget_DarkMode, #PB_Gadget_ActiveTab, #PB_Gadget_InactiveTab, #PB_Gadget_HighLightColor, #PB_Gadget_EditBoxColor, #PB_Gadget_OuterColor, #PB_Gadget_CornerColor, #PB_Gadget_GrayBackColor, #PB_Gadget_EnableShadow, #PB_Gadget_ShadowColor, #PB_Gadget_BorderColor, #PB_Gadget_RoundX, #PB_Gadget_RoundY, #PB_Gadget_SplitterBorder, #PB_Gadget_SplitterBorderColor, #PB_Gadget_UseUxGripper, #PB_Gadget_GripperColor, #PB_Gadget_LargeGripper<br>
+#PB_Gadget_DarkMode, #PB_Gadget_BrushBackground, #PB_Gadget_ActiveTabColor , #PB_Gadget_InactiveTabColor , #PB_Gadget_HighLightColor, #PB_Gadget_EditBoxColor,
+#PB_Gadget_OuterColor, #PB_Gadget_CornerColor, #PB_Gadget_GrayBackColor, #PB_Gadget_EnableShadow, #PB_Gadget_ShadowColor, #PB_Gadget_BorderColor, #PB_Gadget_RoundX,
+#PB_Gadget_RoundY, #PB_Gadget_SplitterBorder, #PB_Gadget_SplitterBorderColor, #PB_Gadget_UseUxGripper, #PB_Gadget_GripperColor, #PB_Gadget_LargeGripper<br>
+
 
 ## Usage:
 Add: XIncludeFile "ObjectTheme.pbi"<br>
