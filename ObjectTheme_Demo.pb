@@ -239,7 +239,7 @@ Repeat
         Case #ApplyTheme_2
           Define Color = ColorRequester(GetWindowColor(#Window_2))
           SetObjectTheme(#ObjectTheme_Auto, Color)
-          If GetGadgetState(#Check_1)
+          If IsGadget(#Check_1) And GetGadgetState(#Check_1)
             SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True)
           Else
             SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #False)
