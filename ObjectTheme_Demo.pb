@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme_Demo.pb
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2023-11-29
-;           Version: 1.5
+; modification Date: 2025-01-09
+;           Version: 1.6
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -23,6 +23,7 @@ XIncludeFile "ObjectTheme.pbi"
 ; To call macros directly (e.g. ButtonGadget) without having to change existing code and use ObjectTheme::ButtonGadget
 UseModule ObjectTheme
 
+UseJPEGImageDecoder()
 UsePNGImageDecoder()
 
 Enumeration Window
@@ -73,21 +74,31 @@ LoadFont(#Font, "Consolas", 9)
 
 Enumeration Image
   #Imag
+  #Imag_Wood
+  #Imag_clouds
 EndEnumeration
 
+LoadImage(#Imag_Wood,   #PB_Compiler_Home + "Examples\3D\Data\Textures\Wood.jpg")
+LoadImage(#Imag_clouds, #PB_Compiler_Home + "Examples\3D\Data\Textures\clouds.jpg")
 LoadImage(#Imag, #PB_Compiler_Home + "examples/sources/Data/world.png")
 
 Procedure Open_Window_1(X = 20, Y = 20, Width = 580, Height = 460)
-  Protected I
+  Protected I, BrushBackground
   If OpenWindow(#Window_1, X, Y, Width, Height, "Demo ObjectTheme Window_1", #PB_Window_MinimizeGadget | #PB_Window_SystemMenu)
     
+    ResizeImage(#Imag_Wood, DesktopScaledX(Width), DesktopScaledY(Height))
+    BrushBackground = CreatePatternBrush_(ImageID(#Imag_Wood))
+    If BrushBackground
+      SetClassLongPtr_(WindowID(#Window_1), #GCL_HBRBACKGROUND, BrushBackground)
+      InvalidateRect_(WindowID(#Window_1), #Null, #True)
+    EndIf
     ButtonGadget(#ApplyTheme_1, 20, 390, 540, 50, "Apply Dark Blue Theme", #PB_Button_Default)
     
     ContainerGadget(#Cont_1, 20, 20, 320, 70, #PB_Container_Flat)
     TextGadget(#Txt_2, 5, 5, 150, 20, "Container")
-    CheckBoxGadget(#Check_1, 20, 20, 130, 30, "Disable Gadgets")
-    OptionGadget(#Opt_1, 170, 10, 130, 24, "Option_1")
-    OptionGadget(#Opt_2, 170, 35, 130, 24, "Option_2")
+    CheckBoxGadget(#Check_1, 20, 20, 160, 30, "Add Image Background")
+    OptionGadget(#Opt_1, 180, 10, 120, 24, "Option_1")
+    OptionGadget(#Opt_2, 180, 35, 120, 24, "Option_2")
     SetGadgetState(#Opt_1, #True)
     CloseGadgetList()   ; #Cont_1
     
@@ -124,8 +135,14 @@ Procedure Open_Window_1(X = 20, Y = 20, Width = 580, Height = 460)
 EndProcedure
 
 Procedure Open_Window_2(X = 620, Y = 20, Width = 420, Height = 460)
-  Protected I
+  Protected I, BrushBackground
   If OpenWindow(#Window_2, X, Y, Width, Height, "Demo ObjectTheme Window_2", #PB_Window_MinimizeGadget | #PB_Window_SystemMenu)
+    ResizeImage(#Imag_clouds, DesktopScaledX(Width), DesktopScaledY(Height))
+    BrushBackground = CreatePatternBrush_(ImageID(#Imag_clouds))
+    If BrushBackground
+      SetClassLongPtr_(WindowID(#Window_2), #GCL_HBRBACKGROUND, BrushBackground)
+      InvalidateRect_(WindowID(#Window_1), #Null, #True)
+    EndIf
     
     ButtonGadget(#ApplyTheme_2, 20, 390, 380, 50, "Apply Auto Theme With Selected Color", #PB_Button_Default)
     
@@ -187,6 +204,11 @@ Repeat
     Case #PB_Event_Gadget
       Select EventGadget()
         Case #Check_1                             
+          If GetGadgetState(#Check_1)
+            SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True)
+          Else
+            SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #False)
+          EndIf
           ; For Testing
           ;SetObjectThemeAttribute(0, #PB_Gadget_BackColor,  #Red)
           ;SetWindowColor(#Window_1, #Red)
@@ -195,32 +217,6 @@ Repeat
           ;SetObjectColor(#Progres_1, #PB_Gadget_FrontColor, #Red)
           ;SetGadgetColor(#Progres_1, #PB_Gadget_BackColor,  #Yellow)
           ;SetGadgetColor(#Progres_1, #PB_Gadget_FrontColor, #Red)
-          ; For Testing Disabled Gadgets
-          If GetGadgetState(#Check_1) = #PB_Checkbox_Checked
-            If IsWindow(#Window_1)
-              DisableGadget(#Txt_1, #True) : DisableGadget(#Txt_2, #True) : DisableGadget(#Opt_1, #True) : DisableGadget(#Opt_2, #True) : DisableGadget(#Edit_1, #True)
-              DisableGadget(#Date_1, #True) : DisableGadget(#Frame_1, #True) : DisableGadget(#ListView_1, #True) : DisableGadget(#Hyper_1, #True)
-              DisableGadget(#Progres_1, #True) : DisableGadget(#Spin_1, #True) : DisableGadget(#String_1, #True) : DisableGadget(#Splitter_1, #True)
-              DisableGadget(#Panel_1, #True) : DisableGadget(#Calend_1, #True) : DisableGadget(#Combo_1, #True) : DisableGadget(#ApplyTheme_1, #True)
-            EndIf
-            If IsWindow(#Window_2)
-              DisableGadget(#ExpList_1, #True) : DisableGadget(#ExpTree_1, #True) :  DisableGadget(#ListIcon_1, #True) : DisableGadget(#Splitter_2, #True)
-              DisableGadget(#Combo_2, #True) : DisableGadget(#ScrlArea_1, #True) : DisableGadget(#Cont_2, #True) : DisableGadget(#Track_1, #True)
-              DisableGadget(#Scrlbar_1, #True) : DisableGadget(#Tree_1, #True) : DisableGadget(#String_2, #True) : DisableGadget(#Combo_3, #True) : DisableGadget(#ApplyTheme_2, #True)
-            EndIf
-          Else
-            If IsWindow(#Window_1)
-              DisableGadget(#Txt_1, #False) : DisableGadget(#Txt_2, #False) : DisableGadget(#Opt_1, #False) : DisableGadget(#Opt_2, #False) : DisableGadget(#Edit_1, #False)
-              DisableGadget(#Date_1, #False) : DisableGadget(#Frame_1, #False) : DisableGadget(#ListView_1, #False) : DisableGadget(#Hyper_1, #False)
-              DisableGadget(#Progres_1, #False) : DisableGadget(#Spin_1, #False) : DisableGadget(#String_1, #False) : DisableGadget(#Splitter_1, #False)
-              DisableGadget(#Panel_1, #False) : DisableGadget(#Calend_1, #False) : DisableGadget(#Combo_1, #False) : DisableGadget(#ApplyTheme_1, #False)
-            EndIf
-            If IsWindow(#Window_2)
-              DisableGadget(#ExpList_1, #False) : DisableGadget(#ExpTree_1, #False) : DisableGadget(#ListIcon_1, #False) : DisableGadget(#Splitter_2, #False)
-              : DisableGadget(#Combo_2, #False) :DisableGadget(#ScrlArea_1, #False) : DisableGadget(#Cont_2, #False) : DisableGadget(#Track_1, #False)
-              DisableGadget(#Scrlbar_1, #False) : DisableGadget(#Tree_1, #False) : DisableGadget(#String_2, #False) : DisableGadget(#Combo_3, #False) : DisableGadget(#ApplyTheme_2, #False)
-            EndIf
-          EndIf
           
         Case #ApplyTheme_1
           Select GetGadgetText(#ApplyTheme_1)
@@ -234,16 +230,21 @@ Repeat
               SetGadgetText(#ApplyTheme_1, "Apply Light Blue Theme")
               SetObjectTheme(#ObjectTheme_DarkRed)
           EndSelect
+          If GetGadgetState(#Check_1)
+            SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True)
+          Else
+            SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #False)
+          EndIf
           
         Case #ApplyTheme_2
           Define Color = ColorRequester(GetWindowColor(#Window_2))
           SetObjectTheme(#ObjectTheme_Auto, Color)
+          If GetGadgetState(#Check_1)
+            SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True)
+          Else
+            SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #False)
+          EndIf
           
       EndSelect
   EndSelect
 ForEver
-
-; IDE Options = PureBasic 6.03 LTS (Windows - x64)
-; EnableXP
-; DPIAware
-; EnableOnError

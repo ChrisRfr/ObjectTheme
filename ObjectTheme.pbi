@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2024-06-11
-;           Version: 1.5.6
+; modification Date: 2025-01-08
+;           Version: 1.6.0
 ;        PB-Version: 5.73 - 6.10 x64/x86
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -30,17 +30,22 @@
 ;         Either you call the SetObjectTheme() function at the beginning of the program before creating the Windows and ComboBoxes
 ;         Or add the flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED to the ComboBoxes (but Not to the Combox Images) so that the drop-down List is painted
 ;
-; See ObjectTheme_DataSection.pbi for the theme color attribute for each GadgetType
+;   Note to appli a Theme above a window background image, applied with SetClassLongPtr_(WindowID, #GCL_HBRBACKGROUND, BrushBackground)
+;     Use: SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True) after SetObjectTheme()
+;     Or enable (#True) the #PB_Gadget_BrushBackground constant in DataSection
+;   Static Gadgets will use a null brush to have a transparent background color and to see the image behind
+;
+; See ObjectTheme DataSection for the theme color attribute for each GadgetType
 ; . It uses the same attributes as SetGadgetColor():
 ;     #PB_Gadget_FrontColor, #PB_Gadget_BackColor, #PB_Gadget_LineColor, #PB_Gadget_TitleFrontColor, #PB_Gadget_TitleBackColor, #PB_Gadget_GrayTextColor
 ; . With new attributes:
-;     #PB_Gadget_DarkMode, #PB_Gadget_ActiveTabColor , #PB_Gadget_InactiveTabColor , #PB_Gadget_HighLightColor, #PB_Gadget_EditBoxColor, #PB_Gadget_OuterColor,
-;     #PB_Gadget_CornerColor, #PB_Gadget_GrayBackColor, #PB_Gadget_EnableShadow, #PB_Gadget_ShadowColor, #PB_Gadget_BorderColor, #PB_Gadget_RoundX,
+;     #PB_Gadget_DarkMode, #PB_Gadget_BrushBackground, #PB_Gadget_ActiveTabColor , #PB_Gadget_InactiveTabColor , #PB_Gadget_HighLightColor, #PB_Gadget_EditBoxColor,
+;     #PB_Gadget_OuterColor, #PB_Gadget_CornerColor, #PB_Gadget_GrayBackColor, #PB_Gadget_EnableShadow, #PB_Gadget_ShadowColor, #PB_Gadget_BorderColor, #PB_Gadget_RoundX,
 ;     #PB_Gadget_RoundY, #PB_Gadget_SplitterBorder, #PB_Gadget_SplitterBorderColor, #PB_Gadget_UseUxGripper, #PB_Gadget_GripperColor, #PB_Gadget_LargeGripper
 ;
 ;  ----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 ;  |             Public Functions                            |      Description                                                                                    |
-;  |---------------------------------------------------------|-----------------------------------------------------------------------------------------------------| 
+;  |---------------------------------------------------------|-----------------------------------------------------------------------------------------------------|
 ;  | SetObjectTheme(#Theme [, WindowColor])                  | Apply or change a Theme. Optional WindowColor, the new color to use for the window background       |
 ;  |     Ex: SetObjectTheme(#ObjectTheme_DarkBlue)           |                                                                                                     |
 ;  |     Ex: SetObjectTheme(#ObjectTheme_Auto, #Black)       |                                                                                                     |
@@ -52,7 +57,7 @@
 ;  | FreeObjectTheme()                                       | Free the theme, ObjectTheme and associated resources and return to the standard Gadget              |
 ;  |                                                         |                                                                                                     |
 ;  | SetObjectThemeAttribute(ObjectType, #Attribut, Value)   | Changes a theme color attribute value                                                               |
-;  |                                                         | Dependent color attributes with #PB_Default value, will be recalculated according to this new color |
+;  |                                                           Dependent color attributes with #PB_Default value, will be recalculated according to this new color |
 ;  |   - Ex: SetObjectThemeAttribute(#PB_GadgetType_Button, #PB_Gadget_BackColor, #Blue) to change the theme Button back color attribute in blue                   |
 ;  |                                                         |                                                                                                     |
 ;  | GetObjectThemeAttribute(ObjectType, #Attribut)          | Returns a theme color attribute value                                                               |
@@ -107,6 +112,7 @@ DeclareModule ObjectTheme
   ;#PB_Gadget_GrayTextColor
   Enumeration #PB_Gadget_GrayTextColor + 1
     #PB_Gadget_DarkMode              ; Enable or disable DarkMode Explorer theme
+    #PB_Gadget_BrushBackground       ; Enable or disable the use of a Brush Image Background And With a transparent background For Static child gadgets
     #PB_Gadget_ActiveTabColor        ; Panel: Active tab color
     #PB_Gadget_InactiveTabColor      ; Panel: Inactive tab color
     #PB_Gadget_HighLightColor        ; ComboBox: High-light color of the item selected in the drop-down list
@@ -371,6 +377,7 @@ Module ObjectTheme
     lBackColor.l
     lBrushBackColor.l
     lGrayBackColor.l
+    IsBrushBackground.b
     lFrontColor.l
     lGrayTextColor.l
     lLineColor.l
@@ -430,6 +437,7 @@ Module ObjectTheme
   Declare SetWindowThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
   Declare AddWindowTheme(Window, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
   
+  Declare DeleteUnusedNullBrush()
   Declare IsBrushUsed(Brush)
   Declare DeleteUnusedBrush(Color)
   Declare SetObjectThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
@@ -447,7 +455,7 @@ Module ObjectTheme
   Global NewMap ThemeAttribute()
   Global NewMap ObjectTheme.ObjectTheme_INFO()
   Global NewMap ObjectBrush()
-  Global Tooltip
+  Global ObjectNullBrush, Tooltip
   
   ;
   ; -----------------------------------------------------------------------------
@@ -712,8 +720,8 @@ Module ObjectTheme
   
   Procedure SplitterCalc(hWnd, *rc.RECT)
     Protected hWnd1, hWnd2, r1.RECT, r2.RECT
-    hWnd1 = GadgetID(GetGadgetAttribute(GetDlgCtrlID_(hWnd), #PB_Splitter_FirstGadget))
-    hWnd2 = GadgetID(GetGadgetAttribute(GetDlgCtrlID_(hWnd), #PB_Splitter_SecondGadget))
+    hWnd1 = GadgetID(GetGadgetAttribute(GetProp_(hWnd, "PB_ID"), #PB_Splitter_FirstGadget))
+    hWnd2 = GadgetID(GetGadgetAttribute(GetProp_(hWnd, "PB_ID"), #PB_Splitter_SecondGadget))
     GetWindowRect_(hWnd1, r1)
     OffsetRect_(r1, -r1\left, -r1\top)
     If IsRectEmpty_(r1) = 0
@@ -1021,12 +1029,19 @@ Module ObjectTheme
     Protected *ObjectTheme.ObjectTheme_INFO
     
     Protected ParentGadget, Buffer.s, Text.s, Found
-    Protected *DrawItem.DRAWITEMSTRUCT, *lvCD.NMLVCUSTOMDRAW 
+    Protected *DrawItem.DRAWITEMSTRUCT, *lvCD.NMLVCUSTOMDRAW
     
     With *ObjectTheme
       Select uMsg
         Case #WM_CLOSE
-          PostEvent(#PB_Event_Gadget, GetDlgCtrlID_(hWnd), 0, #PB_Event_CloseWindow)   ; Required to manage it with #PB_Event_CloseWindow event, if the window is minimized and closed from the taskbar (Right CLick)
+          CompilerIf #PB_Compiler_Version < 600
+            ; with PB < 6.00, if the window is minimized and closed from the taskbar (Right CLick), #PB_Event_CloseWindow event is not sent, open the window and reminimize it to send the event
+            Protected Window = GetProp_(hWnd, "PB_WindowID")-1
+            If GetWindowState(Window) = #PB_Window_Minimize
+              SetWindowState(Window, #PB_Window_Normal)
+              SetWindowState(Window, #PB_Window_Minimize)
+            EndIf
+          CompilerEndIf
           
         Case #WM_NCDESTROY
           ; Delete map element for all children's gadgets that no longer exist after CloseWindow()
@@ -1043,11 +1058,12 @@ Module ObjectTheme
           Next
           ; Delete all unused brushes and map element
           ForEach ObjectBrush()
-            If Not IsBrushUsed(ObjectBrush())
+            If ObjectBrush() And Not IsBrushUsed(ObjectBrush())
               DeleteObject_(ObjectBrush())
               DeleteMapElement(ObjectBrush())
             EndIf
           Next
+          DeleteUnusedNullBrush()
           
           ; ---------- Static: CheckBoxGadget, FrameGadget, OptionGadget, TextGadget, TrackBarGadget ----------
         Case #WM_CTLCOLORSTATIC
@@ -1059,13 +1075,17 @@ Module ObjectTheme
           
           Select *ObjectTheme\PBGadgetType
             Case #PB_GadgetType_CheckBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Text, #PB_GadgetType_TrackBar
+              SetBkMode_(wParam, #TRANSPARENT)
               If IsWindowEnabled_(\IDGadget)
                 SetTextColor_(wParam, \ObjectInfo\lFrontColor)
               Else
                 SetTextColor_(wParam, \ObjectInfo\lGrayTextColor)
               EndIf
-              SetBkMode_(wParam, #TRANSPARENT)
-              ProcedureReturn \ObjectInfo\lBrushBackColor
+              If \ObjectInfo\IsBrushBackground
+                ProcedureReturn ObjectNullBrush
+              Else
+                ProcedureReturn \ObjectInfo\lBrushBackColor
+              EndIf
           EndSelect
           
           ; ----------  Edit ComboBoxGadget ----------
@@ -1218,6 +1238,10 @@ Module ObjectTheme
       EndSelect
     EndWith
     
+    CompilerIf Defined(IceDesign, #PB_Module)
+      UseModule IceDesign
+      XIncludeFile "ObjectThemeIceDesignAddition.pbi"
+    CompilerEndIf
     ProcedureReturn Result
   EndProcedure
   
@@ -1395,21 +1419,24 @@ Module ObjectTheme
         EndIf
         *ObjectTheme\ObjectInfo\lBackColor = Value
         _PB(SetWindowColor)(*ObjectTheme\PBGadget, Value)
-        If OSVersion() >= #PB_OS_Windows_11
-          If OpenLibrary(0, "dwmapi")
-            Protected.l TextColor, BackColor = *ObjectTheme\ObjectInfo\lBackColor
-            DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
-            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_CAPTION_COLOR, @BackColor, SizeOf(BackColor))
-            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_BORDER_COLOR,  @BackColor, SizeOf(BackColor))
-            If IsDarkColor(BackColor)
-              TextColor = #White
-            Else
-              TextColor = #Black
+        
+        CompilerIf #PB_Compiler_Version >= 600 And #PB_Compiler_Processor = #PB_Processor_x64
+          If OSVersion() >= #PB_OS_Windows_11
+            If OpenLibrary(0, "dwmapi")
+              Protected.l TextColor, BackColor = *ObjectTheme\ObjectInfo\lBackColor
+              DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
+              DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_CAPTION_COLOR, @BackColor, SizeOf(BackColor))
+              DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_BORDER_COLOR,  @BackColor, SizeOf(BackColor))
+              If IsDarkColor(BackColor)
+                TextColor = #White
+              Else
+                TextColor = #Black
+              EndIf
+              DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_TEXT_COLOR, @TextColor, SizeOf(TextColor))
+              CloseLibrary(0)
             EndIf
-            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_TEXT_COLOR, @TextColor, SizeOf(TextColor))
-            CloseLibrary(0)
           EndIf
-        EndIf       
+        CompilerEndIf
         
         If FindMapElement(ThemeAttribute(), Str(#PB_WindowType) + "|" + Str(#PB_Gadget_DarkMode))
           If ThemeAttribute() = #PB_Default
@@ -1447,6 +1474,20 @@ Module ObjectTheme
         _SubSetWindowThemeColor(#PB_GadgetType_TrackBar,     #PB_Gadget_BackColor)
         _SubSetWindowThemeColor(#PB_GadgetType_Tree,         #PB_Gadget_BackColor)
         ReturnValue = #True
+	
+      Case #PB_Gadget_BrushBackground
+        *ObjectTheme\ObjectInfo\IsBrushBackground = Value
+        If Value
+          _PB(SetWindowColor)(*ObjectTheme\PBGadget, #PB_Default)
+        Else
+          _PB(SetWindowColor)(*ObjectTheme\PBGadget, *ObjectTheme\ObjectInfo\lBackColor)
+        EndIf
+        
+        _SubSetWindowThemeColor(#PB_GadgetType_CheckBox,     #PB_Gadget_BackColor)
+        _SubSetWindowThemeColor(#PB_GadgetType_Frame,        #PB_Gadget_BackColor)
+        _SubSetWindowThemeColor(#PB_GadgetType_Option,       #PB_Gadget_BackColor)
+        _SubSetWindowThemeColor(#PB_GadgetType_Text,         #PB_Gadget_BackColor)
+        _SubSetWindowThemeColor(#PB_GadgetType_TrackBar,     #PB_Gadget_BackColor)
         
       Case #PB_Gadget_DarkMode
         If Value = #PB_Default
@@ -1466,26 +1507,28 @@ Module ObjectTheme
         Next
         PopMapPosition(ObjectTheme())
         
-        If OSVersion() >= #PB_OS_Windows_10
-          If OpenLibrary(0, "dwmapi")
-            DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
-            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_USE_IMMERSIVE_DARK_MODE, @Value, SizeOf(Value))
-            Protected ActiveWindow = GetActiveWindow()
-            ; To display the title bar with a light or dark theme for other non-active windows
-            If ActiveWindow <> *ObjectTheme\PBGadget
-              SetActiveWindow(*ObjectTheme\PBGadget)
-              SetActiveWindow(ActiveWindow)
-             EndIf 
-            CloseLibrary(0)
+        CompilerIf #PB_Compiler_Version >= 600 And #PB_Compiler_Processor = #PB_Processor_x64 
+          If OSVersion() >= #PB_OS_Windows_10
+            If OpenLibrary(0, "dwmapi")
+              DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")
+              DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_USE_IMMERSIVE_DARK_MODE, @Value, SizeOf(Value))
+              Protected ActiveWindow = GetActiveWindow()
+              ; To display the title bar with a light or dark theme for other non-active windows
+              If ActiveWindow <> -1 And ActiveWindow <> *ObjectTheme\PBGadget
+                SetActiveWindow(*ObjectTheme\PBGadget)
+                SetActiveWindow(ActiveWindow)
+              EndIf
+              CloseLibrary(0)
+            EndIf
           EndIf
-        EndIf
+        CompilerEndIf
         
         ReturnValue = #True
         
     EndSelect
     
-    ;If InitLevel = #True
-    ;EndIf
+    ;If InitLevel = #True : EndIf
+    RedrawWindow_(*ObjectTheme\PBGadget, #Null, #Null, #RDW_INVALIDATE | #RDW_ERASE | #RDW_ALLCHILDREN | #RDW_UPDATENOW)   ; InvalidateRect_(*ObjectTheme\PBGadget, #Null, #True)
     
     ProcedureReturn ReturnValue
   EndProcedure
@@ -1509,45 +1552,60 @@ Module ObjectTheme
       If \ObjectInfo\lBackColor = #PB_Default
         \ObjectInfo\lBackColor = GetSysColor_(#COLOR_WINDOW)
       EndIf
+      \ObjectInfo\IsBrushBackground = ThemeAttribute(ObjectType + Str(#PB_Gadget_BrushBackground))
       CompilerIf Defined(IceDesign, #PB_Module)
         If Window <> IceDesign::#WindowImage
-          _PB(SetWindowColor)(Window, \ObjectInfo\lBackColor)
+          If \ObjectInfo\IsBrushBackground
+            _PB(SetWindowColor)(Window, #PB_Default)
+          Else
+            _PB(SetWindowColor)(Window, \ObjectInfo\lBackColor)
+          EndIf
         EndIf
       CompilerElse
-        _PB(SetWindowColor)(Window, \ObjectInfo\lBackColor)
-      CompilerEndIf
-      If OSVersion() >= #PB_OS_Windows_11
-        If OpenLibrary(0, "dwmapi")
-          Protected.l TextColor, BackColor = \ObjectInfo\lBackColor
-          DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
-          DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_CAPTION_COLOR, @BackColor, SizeOf(BackColor))
-          DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_BORDER_COLOR,  @BackColor, SizeOf(BackColor))
-          If IsDarkColor(BackColor)
-            TextColor = #White
-          Else
-            TextColor = #Black
-          EndIf
-          DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_TEXT_COLOR, @TextColor, SizeOf(TextColor))
-          CloseLibrary(0)
+        If \ObjectInfo\IsBrushBackground
+          _PB(SetWindowColor)(Window, #PB_Default)
+        Else
+          _PB(SetWindowColor)(Window, \ObjectInfo\lBackColor)
         EndIf
-      EndIf
+      CompilerEndIf
+      
+      CompilerIf #PB_Compiler_Version >= 600 And #PB_Compiler_Processor = #PB_Processor_x64
+        If OSVersion() >= #PB_OS_Windows_11
+          If OpenLibrary(0, "dwmapi")
+            Protected.l TextColor, BackColor = \ObjectInfo\lBackColor
+            DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")
+            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_CAPTION_COLOR, @BackColor, SizeOf(BackColor))
+            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_BORDER_COLOR,  @BackColor, SizeOf(BackColor))
+            If IsDarkColor(BackColor)
+              TextColor = #White
+            Else
+              TextColor = #Black
+            EndIf
+            DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_TEXT_COLOR, @TextColor, SizeOf(TextColor))
+            CloseLibrary(0)
+          EndIf
+        EndIf
+      CompilerEndIf
       
       If FindMapElement(ThemeAttribute(), Str(#PB_WindowType) + "|" + Str(#PB_Gadget_DarkMode))
         If ThemeAttribute() = #PB_Default
           SetWindowThemeColor(*ObjectTheme, #PB_Gadget_DarkMode, #PB_Default)
-        Else  
-          If OSVersion() >= #PB_OS_Windows_10
-            If OpenLibrary(0, "dwmapi")
-              Protected DarkMode = ThemeAttribute()
-              DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
-              DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_USE_IMMERSIVE_DARK_MODE, @DarkMode, SizeOf(DarkMode))
-              CloseLibrary(0)
+        Else
+          CompilerIf #PB_Compiler_Version >= 600 And #PB_Compiler_Processor = #PB_Processor_x64
+            If OSVersion() >= #PB_OS_Windows_10
+              If OpenLibrary(0, "dwmapi")
+                Protected DarkMode = ThemeAttribute()
+                DwmSetWindowAttribute = GetFunction(0, "DwmSetWindowAttribute")  
+                DwmSetWindowAttribute(*ObjectTheme\IDGadget, #DWMWA_USE_IMMERSIVE_DARK_MODE, @DarkMode, SizeOf(DarkMode))
+                CloseLibrary(0)
+              EndIf
             EndIf
-          EndIf
+          CompilerEndIf
         EndIf
       EndIf
     EndWith
     
+    InvalidateRect_(WindowID(Window), #Null, #True)
     ProcedureReturn ReturnValue
   EndProcedure
   
@@ -1557,9 +1615,30 @@ Module ObjectTheme
   ; -----------------------------------------------------------------------------
   ;
   
+  Procedure DeleteUnusedNullBrush()
+    Protected NullBrushUsed
+    With ObjectTheme()\ObjectInfo
+      ;PushMapPosition(ObjectTheme())
+      ForEach ObjectTheme()
+        If ObjectTheme()\ObjectInfo
+          If ObjectTheme()\ObjectInfo\IsBrushBackground
+            NullBrushUsed = #True
+            Break
+          EndIf
+        EndIf
+      Next
+      ;PopMapPosition(ObjectTheme())
+    EndWith
+    If NullBrushUsed = #False
+      If ObjectNullBrush
+        DeleteObject_(ObjectNullBrush)
+        ObjectNullBrush = 0
+      EndIf
+    EndIf
+  EndProcedure
+  
   Procedure IsBrushUsed(Brush)
     Protected BrushUsed
-    
     With ObjectTheme()\ObjectInfo
       ;PushMapPosition(ObjectTheme())
       ForEach ObjectTheme()
@@ -1573,7 +1652,6 @@ Module ObjectTheme
       Next
       ;PopMapPosition(ObjectTheme())
     EndWith
-    
     ProcedureReturn BrushUsed
   EndProcedure
   
@@ -1592,13 +1670,28 @@ Module ObjectTheme
       If FindMapElement(ObjectBrush(), Str(Color))
         BrushColor = ObjectBrush()
       Else
-        ObjectBrush(Str(Color)) = CreateSolidBrush_(Color)
+        AddMapElement(ObjectBrush(), Str(Color))
+        ObjectBrush() = CreateSolidBrush_(Color)
         BrushColor = ObjectBrush()
       EndIf
-      
-      If SavColor
-        DeleteUnusedBrush(SavColor)
-      EndIf
+    EndIf
+    
+    Select *ObjectTheme\PBGadgetType
+      Case #PB_GadgetType_CheckBox, #PB_GadgetType_ComboBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Panel, #PB_GadgetType_Text, #PB_GadgetType_TrackBar
+        If *ObjectTheme\IDParent = GetAncestor_(*ObjectTheme\IDGadget, #GA_ROOT)
+          If ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BrushBackground))
+            *ObjectTheme\ObjectInfo\IsBrushBackground  = #True
+            If Not ObjectNullBrush
+              ObjectNullBrush = GetStockObject_(#NULL_BRUSH)
+            EndIf
+          Else
+            *ObjectTheme\ObjectInfo\IsBrushBackground  = #False
+          EndIf
+        EndIf
+    EndSelect
+    
+    If SavColor <> Color And SavColor
+      DeleteUnusedBrush(SavColor)
     EndIf
   EndMacro
   
@@ -3722,6 +3815,7 @@ Module ObjectTheme
     DarkBlue:
     Data.l #PB_WindowType,                 #PB_Gadget_BackColor,             $292521         ; Back Window Color: Color | #PB_Default = SetObjectTheme(Theme, WindowColor) else GetSysColor_(#COLOR_WINDOW)
     Data.l #PB_WindowType,                 #PB_Gadget_DarkMode,              #PB_Default     ; Enable Dark Mode: 0 | 1 | #PB_Default = If IsDarkColor Window, DarkMode_Explorer Theme else Explorer Theme
+    Data.l #PB_WindowType,                 #PB_Gadget_BrushBackground,       #False          ; #False or #True to use the Brush Image Background and with a transparent background for static child gadgets
     
     Data.l #PB_GadgetType_Calendar,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Calendar,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -3854,6 +3948,7 @@ Module ObjectTheme
     DarkRed:
     Data.l #PB_WindowType,                 #PB_Gadget_BackColor,             $060928         ; Back Window Color: Color | #PB_Default = SetObjectTheme(Theme, WindowColor) else GetSysColor_(#COLOR_WINDOW)
     Data.l #PB_WindowType,                 #PB_Gadget_DarkMode,              #PB_Default     ; Enable Dark Mode: 0 | 1 | #PB_Default = If IsDarkColor Window, DarkMode_Explorer Theme else Explorer Theme
+    Data.l #PB_WindowType,                 #PB_Gadget_BrushBackground,       #False          ; #False or #True to use the Brush Image Background and with a transparent background for static child gadgets
     
     Data.l #PB_GadgetType_Calendar,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Calendar,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -3986,6 +4081,7 @@ Module ObjectTheme
     LightBlue:
     Data.l #PB_WindowType,                 #PB_Gadget_BackColor,             $FFD7C9         ; Back Window Color: Color | #PB_Default = SetObjectTheme(Theme, WindowColor) else GetSysColor_(#COLOR_WINDOW)
     Data.l #PB_WindowType,                 #PB_Gadget_DarkMode,              #PB_Default     ; Enable Dark Mode: 0 | 1 | #PB_Default = If IsDarkColor Window, DarkMode_Explorer Theme else Explorer Theme
+    Data.l #PB_WindowType,                 #PB_Gadget_BrushBackground,       #False          ; #False or #True to use the Brush Image Background and with a transparent background for static child gadgets
     
     Data.l #PB_GadgetType_Calendar,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Calendar,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -4118,6 +4214,7 @@ Module ObjectTheme
     Auto:
     Data.l #PB_WindowType,                 #PB_Gadget_BackColor,             #PB_Default     ; Back Window Color: Color | #PB_Default = SetObjectTheme(Theme, WindowColor) else GetSysColor_(#COLOR_WINDOW)
     Data.l #PB_WindowType,                 #PB_Gadget_DarkMode,              #PB_Default     ; Enable Dark Mode: 0 | 1 | #PB_Default = If IsDarkColor Window, DarkMode_Explorer Theme else Explorer Theme
+    Data.l #PB_WindowType,                 #PB_Gadget_BrushBackground,       #False          ; #False or #True to use the Brush Image Background and with a transparent background for static child gadgets
     
     Data.l #PB_GadgetType_Calendar,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
     Data.l #PB_GadgetType_Calendar,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
@@ -4487,7 +4584,7 @@ Module ObjectTheme
   EndProcedure
   
   Procedure SetObjectTheme(Theme, WindowColor = #PB_Default)
-    Protected Window, Object, ReturnValue, ObjectID, Buffer.s = Space(64) 
+    Protected Window, Object, ReturnValue, ObjectID, Buffer.s = Space(64)
     
     If Theme = #PB_Default 
       If MapSize(ThemeAttribute()) = 0
@@ -4577,35 +4674,61 @@ CompilerIf #PB_Compiler_IsMainFile
   UseModule ObjectTheme
   
   Enumeration Window
-    #Window_0
+    #Window
   EndEnumeration
   
   Enumeration Gadgets
-    #ScrollArea_1
-    #Checkbox_1
+    #Checkbox
     #Option_1
     #Option_2
-    #Combo_1
-    #Editor_1
+    #Combo
+    #ComboEdit
+    #ComboImage
+    #Editor
+    #Text
+    #String
     #ApplyTheme
   EndEnumeration
   
-  Procedure Open_Window_0(X = 0, Y = 0, Width = 440, Height = 300)
-    If OpenWindow(#Window_0, X, Y, Width, Height, "Simple Demo ObjectTheme", #PB_Window_SystemMenu | #PB_Window_ScreenCentered)
-      SetWindowColor(#Window_0, RGB(8, 8, 64))
-      ScrollAreaGadget(#ScrollArea_1, 20, 20, 400, 200, 1200, 800, 10, #PB_ScrollArea_Flat)
-      CheckBoxGadget(#Checkbox_1, 20, 10, 170, 24, "Checkbox_1")
-      OptionGadget(#Option_1, 240, 10, 110, 24, "Option_1")
-      OptionGadget(#Option_2, 240, 40, 110, 24, "Option_2")      
-      ComboBoxGadget(#Combo_1, 20, 40, 170, 28, #PB_ComboBox_Editable | #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED)   ;  <== Specific ComboBox, Add the 2 Constants to be drawn.
-      AddGadgetItem(#Combo_1, -1, "Combo_Element_1") : AddGadgetItem(#Combo_1, -1, "Combo_Element_2")
-      SetGadgetState(#Combo_1, 0)
-      EditorGadget(#Editor_1, 20, 80, 330, 80)
-      AddGadgetItem(#Editor_1, -1, "Editor Line 1")
-      AddGadgetItem(#Editor_1, -1, "Editor Line 2")
-      AddGadgetItem(#Editor_1, -1, "Editor Line 3")
-      CloseGadgetList()   ; #ScrollArea_1
-      ButtonGadget(#ApplyTheme, 20, 230, 400, 50, "Apply Light Blue Theme")
+  Enumeration Image
+    #Imag_BugSPIN
+    #Imag_world
+  EndEnumeration
+  
+  UsePNGImageDecoder()
+  
+  LoadImage(#Imag_BugSPIN, #PB_Compiler_Home + "Examples\3D\Data\Textures\BugSPIN.png")
+  LoadImage(#Imag_world, #PB_Compiler_Home + "Examples\Sources\Data\world.png")
+  
+  Procedure Open_Window(X = 0, Y = 0, Width = 400, Height = 360)
+    Protected BrushBackground
+    If OpenWindow(#Window, X, Y, Width, Height, "Simple Demo ObjectTheme", #PB_Window_SystemMenu | #PB_Window_ScreenCentered)
+      
+      ResizeImage(#Imag_BugSPIN, DesktopScaledX(Width), DesktopScaledY(Height))
+      BrushBackground = CreatePatternBrush_(ImageID(#Imag_BugSPIN))
+      If BrushBackground
+        SetClassLongPtr_(WindowID(#Window), #GCL_HBRBACKGROUND, BrushBackground)
+        InvalidateRect_(WindowID(#Window), #Null, #True)
+      EndIf
+      ;SetWindowColor(#Window, RGB(8, 8, 64))
+      
+      CheckBoxGadget(#Checkbox, 20, 10, 210, 24, "Add an Image Background")
+      OptionGadget(#Option_1, 270, 10, 110, 24, "Option 1")
+      OptionGadget(#Option_2, 270, 40, 110, 24, "Option 2")      
+      ComboBoxGadget(#Combo, 20, 40, 210, 28, #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED)   ;  <== Specific ComboBox, Add the 2 Constants to be drawn.
+      AddGadgetItem(#Combo, -1, "Combo Element 1") : AddGadgetItem(#Combo, -1, "Combo Element 2")  : AddGadgetItem(#Combo, -1, "Combo Element 3")
+      SetGadgetState(#Combo, 0)
+      ComboBoxGadget(#ComboEdit, 20, 74, 210, 28, #PB_ComboBox_Editable | #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED)   ;  <== Specific ComboBox, Add the 2 Constants to be drawn.
+      AddGadgetItem(#ComboEdit, -1, "Combo Editable Element 1") : AddGadgetItem(#ComboEdit, -1, "Combo Editable Element 2")  : AddGadgetItem(#ComboEdit, -1, "Combo Editable Element 3")
+      SetGadgetState(#ComboEdit, 0)
+      ComboBoxGadget(#ComboImage, 20, 108, 210, 28, #PB_ComboBox_Image)   ;  <== Do not Add the 2 Constants #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED with #PB_ComboBox_Image.
+      AddGadgetItem(#ComboImage, -1, "Combo Image Element 1", ImageID(#Imag_world)) : AddGadgetItem(#ComboImage, -1, "Combo Image Element 2", ImageID(#Imag_world))  : AddGadgetItem(#ComboImage, -1, "Combo Image Element 3", ImageID(#Imag_world))
+      SetGadgetState(#ComboImage, 0)
+      EditorGadget(#Editor, 20, 146, 360, 80)
+      AddGadgetItem(#Editor, -1, "Editor Line 1") : AddGadgetItem(#Editor, -1, "Editor Line 2") : AddGadgetItem(#Editor, -1, "Editor Line 3")
+      TextGadget(#Text, 20, 233, 250, 48, "- Add a Background Image or Not" +#CRLF$+ "Using the CheckBox at the top" +#CRLF$+ "- Change the Theme with the Button below")
+      StringGadget(#String, 270, 243, 110, 24, "String")
+      ButtonGadget(#ApplyTheme, 20, 290, 360, 50, "Apply Light Blue Theme")
     EndIf
   EndProcedure
   
@@ -4613,7 +4736,8 @@ CompilerIf #PB_Compiler_IsMainFile
     CompilerIf #EnableOnError : OnErrorCall(@ErrorHandler()) : CompilerEndIf
   CompilerEndIf
   
-  Open_Window_0()
+  ;SetObjectTheme(#ObjectTheme_DarkBlue)
+  Open_Window()
   
   ;- ---> Add SetObjectTheme() 
   ; It can be positioned anywhere in the code
@@ -4627,14 +4751,17 @@ CompilerIf #PB_Compiler_IsMainFile
         Break
       Case #PB_Event_Gadget
         Select EventGadget()
-          Case #Checkbox_1
+          Case #Checkbox
+            If GetGadgetState(#Checkbox)
+              SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True)
+            Else
+              SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #False)
+            EndIf
             ; ----- Test OnError (Enable OnError line numbering support in the compiler options) -----
             ;Define DivBy0 = 2 : DivBy0 = DivBy0/0
             ; ----- Test ObjectTheme function -----
             ;SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BackColor, #Cyan)
-            ;SetObjectColor(#Combo_1, #PB_Gadget_BackColor,  #Cyan)
-            ;SetObjectColor(#Editor_1, #PB_Gadget_BackColor,  #Yellow)
-            ;SetObjectColor(#ApplyTheme, #PB_Gadget_BackColor,  #Cyan)
+            ;SetObjectColor(#Editor, #PB_Gadget_BackColor,  #Yellow)
             
           Case #ApplyTheme
             Select GetObjectTheme()
@@ -4648,9 +4775,13 @@ CompilerIf #PB_Compiler_IsMainFile
                 SetGadgetText(#ApplyTheme, "Apply Light Blue Theme")
                 SetObjectTheme(#ObjectTheme_DarkBlue)
             EndSelect
+            If GetGadgetState(#Checkbox)
+              SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True)
+            Else
+              SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #False)
+            EndIf
         EndSelect
     EndSelect
   ForEver
   
 CompilerEndIf
-
