@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2025-02-07
-;           Version: 1.6.1
+; modification Date: 2026-01-06
+;           Version: 1.6.2
 ;        PB-Version: 5.73 - 6.10 x64/x86
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -1193,14 +1193,21 @@ Procedure LoadThemeAttribute(Theme, WindowColor)
 EndProcedure
 
 Procedure SetWindowTheme(GadgetID, Theme.s)
-  Protected ChildGadget, Buffer.s
+    Protected ChildGadget, hHeader, Buffer.s 
   If FindMapElement(ObjectTheme(), Str(GadgetID))
     With ObjectTheme()
       Select \PBGadgetType
-        Case #PB_GadgetType_Editor, #PB_GadgetType_ExplorerList, #PB_GadgetType_ExplorerTree, #PB_GadgetType_ListIcon, #PB_GadgetType_ListView,
+          Case #PB_GadgetType_Editor, #PB_GadgetType_ExplorerTree, #PB_GadgetType_ListView,
              #PB_GadgetType_ScrollArea, #PB_GadgetType_ScrollBar, #PB_GadgetType_Tree
           SetWindowTheme_(GadgetID, @Theme, 0)
-          
+            
+          Case #PB_GadgetType_ExplorerList,  #PB_GadgetType_ListIcon
+            SetWindowTheme_(GadgetID, @Theme, 0)
+            hHeader = SendMessage_(GadgetID, #LVM_GETHEADER, 0, 0)
+            If hHeader
+              SetWindowTheme_(hHeader,"","STARTPANEL")
+            EndIf
+            
         Case #PB_GadgetType_ComboBox
           Buffer = Space(64)
           If GetClassName_(GadgetID, @Buffer, 64)
