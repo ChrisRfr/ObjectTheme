@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme_Demo.pb
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2025-01-09
-;           Version: 1.6
+; modification Date: 2026-03-06
+;           Version: 1.6.3
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -237,6 +237,8 @@ Repeat
           EndIf
           
         Case #ApplyTheme_2
+          ;SetObjectTheme(#PB_Default)                                ; For testing FreeObjectTheme()
+          ;SetObjectTheme(#PB_Default, GetSysColor_(#COLOR_WINDOW))   ; For Testing ObjectTheme() with default Window Color
           Define Color = ColorRequester(GetWindowColor(#Window_2))
           SetObjectTheme(#ObjectTheme_Auto, Color)
           If IsGadget(#Check_1) And GetGadgetState(#Check_1)

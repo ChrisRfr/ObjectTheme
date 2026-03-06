@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2026-01-06
-;           Version: 1.6.2
+; modification Date: 2026-03-06
+;           Version: 1.6.4
 ;        PB-Version: 5.73 - 6.10 x64/x86
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -433,7 +433,7 @@ Module ObjectTheme
   Declare ImagePB(ImageID)
   
   Declare LoadThemeAttribute(Theme, WindowColor)
-  Declare SetWindowTheme(GadgetID, Theme.s)
+  Declare SetWindowTheme(GadgetID, Theme$)
   Declare SetWindowThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
   Declare AddWindowTheme(Window, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
   
@@ -591,52 +591,52 @@ Module ObjectTheme
       CompilerEndIf
       
       Procedure ErrorHandler()
-        Protected EventID, SystemInfo.SYSTEM_INFO, ErrorMessage.s
+        Protected EventID, SystemInfo.SYSTEM_INFO, ErrorMessage$
         Protected ErrorHandler_Window, ErrorHandler_ExitBtn, ErrorHandler_clipboardBtn
         
         #PROCESSOR_ARCHITECTURE_INTEL = 0
         #PROCESSOR_ARCHITECTURE_AMD64 = 9   ; AMD or Intel 64bit processor (std defined by AMD)
         
         ;Protected FileVersion = GetFileProperty(ProgramFilename(), "FileVersion")   ;"FileVersion","FileDescription","LegalCopyright","InternalName","OriginalFilename","ProductName","ProductVersion","CompanyName","LegalTrademarks","SpecialBuild","PrivateBuild","Comments","Language","Email","Website","Special"
-        ;ErrorMessage + "ObjecTheme Version: " + FileVersion +#CRLF$
-        ErrorMessage + "ObjecTheme" +#CRLF$+#CRLF$
+        ;ErrorMessage$ + "ObjecTheme Version: " + FileVersion +#CRLF$
+        ErrorMessage$ + "ObjecTheme" +#CRLF$+#CRLF$
         
         Select OSVersion()
-          Case #PB_OS_Windows_8_1            : ErrorMessage + "Windows: 8.1"
-          Case #PB_OS_Windows_8              : ErrorMessage + "Windows: 8"
-          Case #PB_OS_Windows_XP             : ErrorMessage + "Windows: XP"
-          Case #PB_OS_Windows_Vista          : ErrorMessage + "Windows: Vista"
-          Case #PB_OS_Windows_7              : ErrorMessage + "Windows: 7"
-          Case #PB_OS_Windows_2000           : ErrorMessage + "Windows: 2000"
-          Case #PB_OS_Windows_95             : ErrorMessage + "Windows: 95"
-          Case #PB_OS_Windows_98             : ErrorMessage + "Windows: 98"
-          Case #PB_OS_Windows_Future         : ErrorMessage + "Windows: Future"
-          Case #PB_OS_Windows_ME             : ErrorMessage + "Windows: ME"
-          Case #PB_OS_Windows_NT3_51         : ErrorMessage + "Windows: NT3_51"
-          Case #PB_OS_Windows_NT_4           : ErrorMessage + "Windows: NT_4"
-          Case #PB_OS_Windows_Server_2003    : ErrorMessage + "Windows: Server_2003"
-          Case #PB_OS_Windows_Server_2008    : ErrorMessage + "Windows: Server_2008"
-          Case #PB_OS_Windows_Server_2008_R2 : ErrorMessage + "Windows: Server_2008_R2"
-          Case #PB_OS_Windows_Server_2012    : ErrorMessage + "Windows: Server_2012"
-          Case #PB_OS_Windows_Server_2012_R2 : ErrorMessage + "Windows: Server_2012_R2"
-          Case #PB_OS_Windows_10             : ErrorMessage + "Windows: 10"
-          Case #PB_OS_Windows_11             : ErrorMessage + "Windows: 11"
+          Case #PB_OS_Windows_8_1            : ErrorMessage$ + "Windows: 8.1"
+          Case #PB_OS_Windows_8              : ErrorMessage$ + "Windows: 8"
+          Case #PB_OS_Windows_XP             : ErrorMessage$ + "Windows: XP"
+          Case #PB_OS_Windows_Vista          : ErrorMessage$ + "Windows: Vista"
+          Case #PB_OS_Windows_7              : ErrorMessage$ + "Windows: 7"
+          Case #PB_OS_Windows_2000           : ErrorMessage$ + "Windows: 2000"
+          Case #PB_OS_Windows_95             : ErrorMessage$ + "Windows: 95"
+          Case #PB_OS_Windows_98             : ErrorMessage$ + "Windows: 98"
+          Case #PB_OS_Windows_Future         : ErrorMessage$ + "Windows: Future"
+          Case #PB_OS_Windows_ME             : ErrorMessage$ + "Windows: ME"
+          Case #PB_OS_Windows_NT3_51         : ErrorMessage$ + "Windows: NT3_51"
+          Case #PB_OS_Windows_NT_4           : ErrorMessage$ + "Windows: NT_4"
+          Case #PB_OS_Windows_Server_2003    : ErrorMessage$ + "Windows: Server_2003"
+          Case #PB_OS_Windows_Server_2008    : ErrorMessage$ + "Windows: Server_2008"
+          Case #PB_OS_Windows_Server_2008_R2 : ErrorMessage$ + "Windows: Server_2008_R2"
+          Case #PB_OS_Windows_Server_2012    : ErrorMessage$ + "Windows: Server_2012"
+          Case #PB_OS_Windows_Server_2012_R2 : ErrorMessage$ + "Windows: Server_2012_R2"
+          Case #PB_OS_Windows_10             : ErrorMessage$ + "Windows: 10"
+          Case #PB_OS_Windows_11             : ErrorMessage$ + "Windows: 11"
         EndSelect
         
         GetSystemInfo_(SystemInfo)
         Select SystemInfo\wProcessorArchitecture
-          Case #PROCESSOR_ARCHITECTURE_AMD64 : ErrorMessage + " x64" +#CRLF$
-          Case #PROCESSOR_ARCHITECTURE_INTEL : ErrorMessage + " x86" +#CRLF$
+          Case #PROCESSOR_ARCHITECTURE_AMD64 : ErrorMessage$ + " x64" +#CRLF$
+          Case #PROCESSOR_ARCHITECTURE_INTEL : ErrorMessage$ + " x86" +#CRLF$
         EndSelect
         
         CompilerIf #PB_Compiler_LineNumbering
-          ErrorMessage + "Source Code File: " + GetFilePart(ErrorFile()) +#CRLF$
-          ErrorMessage + "Source Code Line: " + Str(ErrorLine()) +#CRLF$
+          ErrorMessage$ + "Source Code File: " + GetFilePart(ErrorFile()) +#CRLF$
+          ErrorMessage$ + "Source Code Line: " + Str(ErrorLine()) +#CRLF$
         CompilerEndIf
         
-        ErrorMessage +#CRLF$+ "Error Message: " + ErrorMessage()  +#CRLF$
+        ErrorMessage$ +#CRLF$+ "Error Code: " + ErrorCode() +#CRLF$+ "Error Message: " + ErrorMessage() +#CRLF$
         If ErrorCode() = #PB_OnError_InvalidMemory   
-          ErrorMessage + "Target Address: " + Str(ErrorTargetAddress()) +#CRLF$
+          ErrorMessage$ + "Target Address: " + Str(ErrorTargetAddress()) +#CRLF$
         EndIf
         
         ErrorHandler_Window = _PB(OpenWindow)(#PB_Any, 0, 0, DesktopScaledX(520), DesktopScaledY(230), "ObjectTheme: an Error Occured, Sorry!", #PB_Window_ScreenCentered)
@@ -644,7 +644,7 @@ Module ObjectTheme
           _PB(TextGadget)(#PB_Any,   DesktopScaledX(10),  DesktopScaledY(10),  DesktopScaledX(500), DesktopScaledY(17), "Please Send this Information by PM or on ObjectTheme Topic, in Purebasic Forum.")
           _PB(TextGadget)(#PB_Any,   DesktopScaledX(10),  DesktopScaledY(27),  DesktopScaledX(500), DesktopScaledY(17), "If You Remember the Last Manipulations Done, Please Pass Them on to Try to Reproduce.")
           
-          _PB(StringGadget)(#PB_Any, DesktopScaledX(10),  DesktopScaledY(50),  DesktopScaledX(500), DesktopScaledY(140), ErrorMessage, #ES_MULTILINE|#WS_VSCROLL)
+          _PB(StringGadget)(#PB_Any, DesktopScaledX(10),  DesktopScaledY(50),  DesktopScaledX(500), DesktopScaledY(140), ErrorMessage$, #ES_MULTILINE|#WS_VSCROLL)
           
           ErrorHandler_clipboardBtn = _PB(ButtonGadget)(#PB_Any, DesktopScaledX(10),  DesktopScaledY(195), DesktopScaledX(120), DesktopScaledY(30), "Copy to Clipboard")
           ErrorHandler_ExitBtn      = _PB(ButtonGadget)(#PB_Any, DesktopScaledX(390), DesktopScaledY(195), DesktopScaledX(120), DesktopScaledY(30), "Exit")
@@ -659,7 +659,7 @@ Module ObjectTheme
                     CloseWindow(ErrorHandler_Window)
                     Break
                   Case  ErrorHandler_clipboardBtn 
-                    SetClipboardText(ErrorMessage)
+                    SetClipboardText(ErrorMessage$)
                 EndSelect
             EndSelect
           ForEver
@@ -924,7 +924,7 @@ Module ObjectTheme
                 Result = #CDRF_NOTIFYITEMDRAW
                 
               Case #CDDS_ITEMPREPAINT
-                Protected Text.s = GetGadgetItemText(\PBGadget, -1, *pnmCDraw\dwItemSpec)
+                Protected Text$ = GetGadgetItemText(\PBGadget, -1, *pnmCDraw\dwItemSpec)
                 If *pnmCDraw\uItemState & #CDIS_SELECTED
                   DrawFrameControl_(*pnmCDraw\hdc, *pnmCDraw\rc, #DFC_BUTTON, #DFCS_BUTTONPUSH | #DFCS_PUSHED)
                   *pnmCDraw\rc\left + 1 : *pnmCDraw\rc\top + 1
@@ -936,7 +936,7 @@ Module ObjectTheme
                 FillRect_(*pnmCDraw\hdc, *pnmCDraw\rc, \ObjectInfo\hBrushTitleBackColor)
                 SetTextColor_(*pnmCDraw\hdc, \ObjectInfo\lTitleFrontColor)
                 If *pnmCDraw\rc\right > *pnmCDraw\rc\left
-                  DrawText_(*pnmCDraw\hdc, @Text, Len(Text), *pnmCDraw\rc, #DT_CENTER | #DT_VCENTER | #DT_SINGLELINE | #DT_END_ELLIPSIS)
+                  DrawText_(*pnmCDraw\hdc, @Text$, Len(Text$), *pnmCDraw\rc, #DT_CENTER | #DT_VCENTER | #DT_SINGLELINE | #DT_END_ELLIPSIS)
                 EndIf
                 Result = #CDRF_SKIPDEFAULT
                 
@@ -1028,7 +1028,7 @@ Module ObjectTheme
     Protected Result = #PB_ProcessPureBasicEvents
     Protected *ObjectTheme.ObjectTheme_INFO
     
-    Protected ParentGadget, Buffer.s, Text.s, Found
+    Protected ParentGadget, Buffer$, Text$, Found
     Protected *DrawItem.DRAWITEMSTRUCT, *lvCD.NMLVCUSTOMDRAW
     
     With *ObjectTheme
@@ -1097,9 +1097,12 @@ Module ObjectTheme
             EndIf
           Else  
             ParentGadget = GetParent_(lParam)
-            Buffer = Space(64)
-            If GetClassName_(ParentGadget, @Buffer, 64)
-              If Buffer = "ComboBox"
+            Buffer$ = Space(64)
+            If GetClassName_(ParentGadget, @Buffer$, 64)
+              CompilerIf #PB_Compiler_Version >= 640
+                Buffer$ = PeekS(@Buffer$)
+              CompilerEndIf
+              If Buffer$ = "ComboBox"
                 If FindMapElement(ObjectTheme(), Str(ParentGadget))
                   *ObjectTheme = @ObjectTheme()
                   Found = #True
@@ -1152,9 +1155,9 @@ Module ObjectTheme
                 Else
                   SetTextColor_(*DrawItem\hDC, \ObjectInfo\lFrontColor)
                 EndIf
-                Text = GetGadgetItemText(*DrawItem\CtlID, *DrawItem\itemID)
+                Text$ = GetGadgetItemText(*DrawItem\CtlID, *DrawItem\itemID)
                 *DrawItem\rcItem\left + DesktopScaledX(4)
-                DrawText_(*DrawItem\hDC, Text, Len(Text), *DrawItem\rcItem, #DT_LEFT | #DT_SINGLELINE | #DT_VCENTER)
+                DrawText_(*DrawItem\hDC, Text$, Len(Text$), *DrawItem\rcItem, #DT_LEFT | #DT_SINGLELINE | #DT_VCENTER)
               EndIf
             EndIf
           EndIf
@@ -1181,10 +1184,10 @@ Module ObjectTheme
             Else
               SetTextColor_(*DrawItem\hDC, \ObjectInfo\lFrontColor)
             EndIf
-            Text = GetGadgetItemText(\PBGadget, *DrawItem\itemID)
+            Text$ = GetGadgetItemText(\PBGadget, *DrawItem\itemID)
             *DrawItem\rcItem\left + DesktopScaledX(4)
-            ;TextOut_(*DrawItem\hDC, *DrawItem\rcItem\left, *DrawItem\rcItem\top, Text, Len(Text))
-            DrawText_(*DrawItem\hDC, @Text, Len(Text), @*DrawItem\rcItem, #DT_LEFT | #DT_VCENTER | #DT_SINGLELINE)
+            ;TextOut_(*DrawItem\hDC, *DrawItem\rcItem\left, *DrawItem\rcItem\top, Text$, Len(Text$))
+            DrawText_(*DrawItem\hDC, @Text$, Len(Text$), @*DrawItem\rcItem, #DT_LEFT | #DT_VCENTER | #DT_SINGLELINE)
             ProcedureReturn #True
           EndIf
           
@@ -1314,7 +1317,7 @@ Module ObjectTheme
   ;
   
   Procedure LoadThemeAttribute(Theme, WindowColor)
-    Protected Buffer.i, ObjectType.s, ObjectAttribute.s, I.i, J.i 
+    Protected Buffer.i, ObjectType$, ObjectAttribute$, I.i, J.i 
     
     Select Theme
       Case #ObjectTheme_DarkBlue
@@ -1326,7 +1329,7 @@ Module ObjectTheme
       Case #ObjectTheme_Auto
         Restore Auto
       Default
-        Restore DarkBlue
+        Restore Auto
     EndSelect
     ThemeAttribute(Str(#ObjectTheme)) = Theme
     For I = 1 To 999
@@ -1337,60 +1340,66 @@ Module ObjectTheme
             If Buffer = #PB_Gadget_END
               Break 2
             EndIf
-            ObjectType = Str(Buffer) + "|"
+            ObjectType$ = Str(Buffer) + "|"
           Case 2
-            ObjectAttribute = ObjectType + Str(Buffer)
+            ObjectAttribute$ = ObjectType$ + Str(Buffer)
           Case 3
-            If ObjectAttribute = Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor)
+            If ObjectAttribute$ = Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor)
               If WindowColor = #PB_Default
-                ThemeAttribute(ObjectAttribute) = Buffer
+                ThemeAttribute(ObjectAttribute$) = Buffer
               Else
-                ThemeAttribute(ObjectAttribute) = WindowColor
+                ThemeAttribute(ObjectAttribute$) = WindowColor
               EndIf
             Else
-              ThemeAttribute(ObjectAttribute) = Buffer
+              ThemeAttribute(ObjectAttribute$) = Buffer
             EndIf
         EndSelect
       Next
     Next
   EndProcedure
   
-  Procedure SetWindowTheme(GadgetID, Theme.s)
-    Protected ChildGadget, hHeader, Buffer.s 
+  Procedure SetWindowTheme(GadgetID, Theme$)
+    Protected ChildGadget, hHeader, Buffer$ 
     If FindMapElement(ObjectTheme(), Str(GadgetID))
       With ObjectTheme()
         Select \PBGadgetType
           Case #PB_GadgetType_Editor, #PB_GadgetType_ExplorerTree, #PB_GadgetType_ListView,
                #PB_GadgetType_ScrollArea, #PB_GadgetType_ScrollBar, #PB_GadgetType_Tree
-            SetWindowTheme_(GadgetID, @Theme, 0)
+            SetWindowTheme_(GadgetID, @Theme$, 0)
             
           Case #PB_GadgetType_ExplorerList,  #PB_GadgetType_ListIcon
-            SetWindowTheme_(GadgetID, @Theme, 0)
+            SetWindowTheme_(GadgetID, @Theme$, 0)
             hHeader = SendMessage_(GadgetID, #LVM_GETHEADER, 0, 0)
             If hHeader
               SetWindowTheme_(hHeader,"","STARTPANEL")
             EndIf
             
           Case #PB_GadgetType_ComboBox
-            Buffer = Space(64)
-            If GetClassName_(GadgetID, @Buffer, 64)
-              If Buffer = "ComboBox"
-                If OSVersion() >= #PB_OS_Windows_10 And Theme = "DarkMode_Explorer"
+            Buffer$ = Space(64)
+            If GetClassName_(GadgetID, @Buffer$, 64)
+              CompilerIf #PB_Compiler_Version >= 640
+                Buffer$ = PeekS(@Buffer$)
+              CompilerEndIf
+              If Buffer$ = "ComboBox"
+                If OSVersion() >= #PB_OS_Windows_10 And Theme$ = "DarkMode_Explorer"
                   SetWindowTheme_(GadgetID, "DarkMode_CFD", "Combobox")
                 Else
-                  SetWindowTheme_(GadgetID, @Theme, 0)
+                  SetWindowTheme_(GadgetID, @Theme$, 0)
                 EndIf
               EndIf
             EndIf
             ChildGadget = GetWindow_(GadgetID, #GW_CHILD)
             If ChildGadget
-              Buffer = Space(64)
-              If GetClassName_(ChildGadget, @Buffer, 64)
-                If Buffer = "ComboBox"
-                  If OSVersion() >= #PB_OS_Windows_10 And Theme = "DarkMode_Explorer"
+              Buffer$ = Space(64)
+              If GetClassName_(ChildGadget, @Buffer$, 64)
+                CompilerIf #PB_Compiler_Version >= 640
+                  Buffer$ = PeekS(@Buffer$)
+                CompilerEndIf
+                If Buffer$ = "ComboBox"
+                  If OSVersion() >= #PB_OS_Windows_10 And Theme$ = "DarkMode_Explorer"
                     SetWindowTheme_(ChildGadget, "DarkMode_CFD", "Combobox")
                   Else
-                    SetWindowTheme_(ChildGadget, @Theme, 0)
+                    SetWindowTheme_(ChildGadget, @Theme$, 0)
                   EndIf
                 EndIf 
               EndIf
@@ -1544,7 +1553,7 @@ Module ObjectTheme
   
   Procedure AddWindowTheme(Window, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
     _ProcedureReturnIf(Not IsWindow(Window))
-    Protected ObjectType.s, ReturnValue
+    Protected ObjectType$, ReturnValue
     Protected DwmSetWindowAttribute_.DwmSetWindowAttribute
     
     With *ObjectTheme
@@ -1555,13 +1564,13 @@ Module ObjectTheme
         \PBGadgetType            = #PB_WindowType
         \ObjectInfo              = AllocateMemory(SizeOf(ObjectInfo_INFO))
       EndIf
-      ObjectType                 = Str(\PBGadgetType) + "|"
+      ObjectType$                = Str(\PBGadgetType) + "|"
       
-      \ObjectInfo\lBackColor   = ThemeAttribute(ObjectType + Str(#PB_Gadget_BackColor))
-      If \ObjectInfo\lBackColor = #PB_Default
-        \ObjectInfo\lBackColor = GetSysColor_(#COLOR_WINDOW)
+      \ObjectInfo\lBackColor     = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_BackColor))
+      If \ObjectInfo\lBackColor  = #PB_Default
+        \ObjectInfo\lBackColor   = GetSysColor_(#COLOR_WINDOW)
       EndIf
-      \ObjectInfo\IsBrushBackground = ThemeAttribute(ObjectType + Str(#PB_Gadget_BrushBackground))
+      \ObjectInfo\IsBrushBackground = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_BrushBackground))
       CompilerIf Defined(IceDesign, #PB_Module)
         If Window <> IceDesign::#WindowImage
           If \ObjectInfo\IsBrushBackground
@@ -1981,7 +1990,7 @@ Module ObjectTheme
   
   Procedure AddObjectTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
     _ProcedureReturnIf(Not IsGadget(Gadget)) 
-    Protected ObjectType.s, SavBackColor, DarkMode, ReturnValue
+    Protected ObjectType$, SavBackColor, DarkMode, ReturnValue
     
     With *ObjectTheme
       If Not UpdateTheme
@@ -1991,7 +2000,7 @@ Module ObjectTheme
         \PBGadgetType            = GadgetType(Gadget)
         \ObjectInfo              = AllocateMemory(SizeOf(ObjectInfo_INFO))
       EndIf
-      ObjectType                 = Str(\PBGadgetType) + "|"
+      ObjectType$                 = Str(\PBGadgetType) + "|"
     EndWith
     
     ; ---------- SetWindowTheme  ----------
@@ -2013,7 +2022,7 @@ Module ObjectTheme
     
     With *ObjectTheme\ObjectInfo
       ; ---------- BackColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_BackColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_BackColor))
         SavBackColor  = \lBackColor
         \lBackColor   = ThemeAttribute()
         If \lBackColor = #PB_Default
@@ -2047,7 +2056,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- GrayBackColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_GrayBackColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_GrayBackColor))
         \lGrayBackColor = ThemeAttribute()
         If \lGrayBackColor = #PB_Default
           If IsDarkColor(\lBackColor) : \lGrayBackColor = DisabledDarkColor(\lBackColor) : Else : \lGrayBackColor = DisabledLightColor(\lBackColor) : EndIf
@@ -2055,7 +2064,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- ActiveTabColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_ActiveTabColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_ActiveTabColor))
         SavBackColor  = \lActiveTabColor
         \lActiveTabColor = ThemeAttribute()
         If \lActiveTabColor = #PB_Default
@@ -2065,7 +2074,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- InactiveTabColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_InactiveTabColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_InactiveTabColor))
         SavBackColor  = \lInactiveTabColor
         \lInactiveTabColor = ThemeAttribute()
         If \lInactiveTabColor = #PB_Default
@@ -2075,7 +2084,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- HighLightColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_HighLightColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_HighLightColor))
         SavBackColor  = \lHighLightColor
         \lHighLightColor = ThemeAttribute()
         If \lHighLightColor = #PB_Default
@@ -2085,7 +2094,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- EditBoxColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_EditBoxColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_EditBoxColor))
         SavBackColor  = \lEditBoxColor
         \lEditBoxColor = ThemeAttribute()
         If \lEditBoxColor = #PB_Default
@@ -2095,7 +2104,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- SplitterBorderColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_SplitterBorderColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_SplitterBorderColor))
         \lSplitterBorderColor = ThemeAttribute()
         If \lSplitterBorderColor = #PB_Default
           If IsDarkColor(\lBackColor) : \lSplitterBorderColor = AccentColor(\lBackColor, 60) : Else : \lSplitterBorderColor = AccentColor(\lBackColor, -60) : EndIf
@@ -2103,7 +2112,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- FrontColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_FrontColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_FrontColor))
         \lFrontColor = ThemeAttribute()
         If \lFrontColor = #PB_Default
           Select *ObjectTheme\PBGadgetType
@@ -2123,7 +2132,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- GrayTextColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_GrayTextColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_GrayTextColor))
         \lGrayTextColor = ThemeAttribute()
         If \lGrayTextColor = #PB_Default
           If IsDarkColor(\lFrontColor) : \lGrayTextColor = DisabledDarkColor(\lFrontColor) : Else : \lGrayTextColor = DisabledLightColor(\lFrontColor) : EndIf
@@ -2131,7 +2140,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- LineColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_LineColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_LineColor))
         \lLineColor = ThemeAttribute()
         If \lLineColor = #PB_Default
           If IsDarkColor(\lBackColor) : \lLineColor = #White : Else : \lLineColor = #Black : EndIf
@@ -2140,7 +2149,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- TitleBackColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_TitleBackColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_TitleBackColor))
         \lTitleBackColor = ThemeAttribute()
         If \lTitleBackColor = #PB_Default
           Select *ObjectTheme\PBGadgetType
@@ -2159,7 +2168,7 @@ Module ObjectTheme
       EndIf    
       
       ; ---------- TitleFrontColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_TitleFrontColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_TitleFrontColor))
         \lTitleFrontColor = ThemeAttribute()
         If \lTitleFrontColor = #PB_Default
           If IsDarkColor(\lTitleBackColor) : \lTitleFrontColor = #White : Else : \lTitleFrontColor = #Black : EndIf
@@ -2168,7 +2177,7 @@ Module ObjectTheme
       EndIf 
       
       ; ---------- SplitterBorder ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_SplitterBorder))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_SplitterBorder))
         \bSplitterBorder = ThemeAttribute()
         If \bSplitterBorder = #PB_Default
           \bSplitterBorder = #True
@@ -2176,7 +2185,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- LargeGripper ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_LargeGripper))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_LargeGripper))
         \bLargeGripper = ThemeAttribute()
         If \bLargeGripper = #PB_Default
           \bLargeGripper = #True
@@ -2184,7 +2193,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- GripperColor ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_GripperColor))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_GripperColor))
         \lGripperColor = ThemeAttribute()
         If \lGripperColor = #PB_Default
           If IsDarkColor(\lBackColor): \lGripperColor = AccentColor(\lBackColor, 40) : Else : \lGripperColor = AccentColor(\lBackColor, -40) : EndIf
@@ -2192,7 +2201,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- UseUxGripper ----------
-      If FindMapElement(ThemeAttribute(), ObjectType + Str(#PB_Gadget_UseUxGripper))
+      If FindMapElement(ThemeAttribute(), ObjectType$ + Str(#PB_Gadget_UseUxGripper))
         \bUseUxGripper = ThemeAttribute()
         If \bUseUxGripper = #PB_Default
           \bUseUxGripper = #False
@@ -2309,7 +2318,7 @@ Module ObjectTheme
     Else
       ProcedureReturn DefWindowProc_(hWnd, uMsg, wParam, lParam)
     EndIf
-    Protected cX, cY, Margin = 2, Xofset, Yofset, HFlag, VFlag, Text.s, TextLen, TxtHeight, In_Button_Rect, hDC_to_use
+    Protected cX, cY, Margin = 2, Xofset, Yofset, HFlag, VFlag, Text$, TextLen, TxtHeight, In_Button_Rect, hDC_to_use
     Protected CursorPos.POINT, ps.PAINTSTRUCT, Rect.RECT
     
     With *ObjectTheme
@@ -2450,8 +2459,8 @@ Module ObjectTheme
           ; Calculate text height for multiline buttons, then adapt rectangle to center text vertically (DT_VCenter doesn't do the trick)
           ; It must be done before BitBlt() to be overwritten
           If (\BtnInfo\sButtonText <> "") And (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_MULTILINE = #BS_MULTILINE) 
-            Text  = \BtnInfo\sButtonText
-            TextLen = Len(Text)
+            Text$  = \BtnInfo\sButtonText
+            TextLen = Len(Text$)
             SelectObject_(ps\hdc, \BtnInfo\iActiveFont)
             SetBkMode_(ps\hdc, #TRANSPARENT)
             SetTextColor_(ps\hdc, \BtnInfo\lFrontColor)
@@ -2459,24 +2468,24 @@ Module ObjectTheme
             Rect\top        = Yofset + Margin
             Rect\right      = cX + Xofset - Margin
             Rect\bottom     = cY + Yofset - Margin
-            TxtHeight = DrawText_(ps\hdc, @Text, TextLen, @Rect, #DT_CENTER | #DT_VCENTER | #DT_WORDBREAK)
+            TxtHeight = DrawText_(ps\hdc, @Text$, TextLen, @Rect, #DT_CENTER | #DT_VCENTER | #DT_WORDBREAK)
           EndIf
           
           SelectClipRgn_(ps\hdc, \BtnInfo\hRgn)
           BitBlt_(ps\hdc, 0, 0, cX, cY, hDC_to_use, 0, 0, #SRCCOPY)
           
           If \BtnInfo\sButtonText <> ""
-            Text  = \BtnInfo\sButtonText
-            TextLen = Len(Text)
+            Text$  = \BtnInfo\sButtonText
+            TextLen = Len(Text$)
             If (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & (#BS_LEFT | #BS_RIGHT) = (#BS_LEFT | #BS_RIGHT)) : HFlag | #DT_CENTER
             ElseIf (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_LEFT = #BS_LEFT)                         : HFlag | #DT_LEFT
             ElseIf (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_RIGHT = #BS_RIGHT)                       : HFlag | #DT_RIGHT
-            Else                                                                                                        : HFlag | #DT_CENTER
+            Else                                                                                            : HFlag | #DT_CENTER
             EndIf
             If (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & (#BS_TOP | #BS_BOTTOM) = (#BS_TOP | #BS_BOTTOM)) : VFlag | #DT_VCENTER
             ElseIf (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_TOP = #BS_TOP)                           : VFlag | #DT_TOP
             ElseIf (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_BOTTOM = #BS_BOTTOM)                     : VFlag | #DT_BOTTOM
-            Else                                                                                                        : VFlag | #DT_VCENTER
+            Else                                                                                            : VFlag | #DT_VCENTER
             EndIf
             If (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_MULTILINE = #BS_MULTILINE) 
               VFlag | #DT_WORDBREAK
@@ -2501,7 +2510,7 @@ Module ObjectTheme
                   Rect\top + (Rect\bottom - TxtHeight) - Margin
                 EndIf
               EndIf
-              DrawText_(ps\hdc, @Text, TextLen, @Rect, HFlag | VFlag)
+              DrawText_(ps\hdc, @Text$, TextLen, @Rect, HFlag | VFlag)
             EndIf
             
             If \BtnInfo\bButtonEnable
@@ -2521,7 +2530,7 @@ Module ObjectTheme
                 Rect\top + (Rect\bottom - TxtHeight) - Margin
               EndIf
             EndIf
-            DrawText_(ps\hdc, @Text, TextLen, @Rect, HFlag | VFlag)
+            DrawText_(ps\hdc, @Text$, TextLen, @Rect, HFlag | VFlag)
             
           EndIf
           EndPaint_(hWnd, @ps)
@@ -2542,8 +2551,8 @@ Module ObjectTheme
           ; Calculate text height for multiline buttons, then adapt rectangle to center text vertically (DT_VCenter doesn't do the trick)
           ; It must be done before BitBlt() to be overwritten
           If (\BtnInfo\sButtonText <> "") And (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_MULTILINE = #BS_MULTILINE) 
-            Text  = \BtnInfo\sButtonText
-            TextLen = Len(Text)
+            Text$  = \BtnInfo\sButtonText
+            TextLen = Len(Text$)
             SelectObject_(wParam, \BtnInfo\iActiveFont)
             SetBkMode_(wParam, #TRANSPARENT)
             SetTextColor_(wParam, \BtnInfo\lFrontColor)
@@ -2551,24 +2560,24 @@ Module ObjectTheme
             Rect\top        = Yofset + Margin
             Rect\right      = cX + Xofset - Margin
             Rect\bottom     = cY + Yofset - Margin
-            TxtHeight = DrawText_(wParam, @Text, TextLen, @Rect, #DT_CENTER | #DT_VCENTER | #DT_WORDBREAK)
+            TxtHeight = DrawText_(wParam, @Text$, TextLen, @Rect, #DT_CENTER | #DT_VCENTER | #DT_WORDBREAK)
           EndIf
           
           SelectClipRgn_(wParam, \BtnInfo\hRgn)
           BitBlt_(wParam, 0, 0, cX, cY, hDC_to_use, 0, 0, #SRCCOPY)
           
           If \BtnInfo\sButtonText <> ""
-            Text           = \BtnInfo\sButtonText
-            TextLen        = Len(Text)
+            Text$           = \BtnInfo\sButtonText
+            TextLen        = Len(Text$)
             If (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & (#BS_LEFT | #BS_RIGHT) = (#BS_LEFT | #BS_RIGHT)) : HFlag | #DT_CENTER
             ElseIf (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_LEFT = #BS_LEFT)                         : HFlag | #DT_LEFT
             ElseIf (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_RIGHT = #BS_RIGHT)                       : HFlag | #DT_RIGHT
-            Else                                                                                                      : HFlag | #DT_CENTER
+            Else                                                                                            : HFlag | #DT_CENTER
             EndIf
             If (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & (#BS_TOP | #BS_BOTTOM) = (#BS_TOP | #BS_BOTTOM)) : VFlag | #DT_VCENTER
             ElseIf (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_TOP = #BS_TOP)                           : VFlag | #DT_TOP
             ElseIf (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_BOTTOM = #BS_BOTTOM)                     : VFlag | #DT_BOTTOM
-            Else                                                                                                      : VFlag | #DT_VCENTER
+            Else                                                                                            : VFlag | #DT_VCENTER
             EndIf
             If (GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #BS_MULTILINE = #BS_MULTILINE) 
               VFlag | #DT_WORDBREAK
@@ -2593,7 +2602,7 @@ Module ObjectTheme
                   Rect\top + (Rect\bottom - TxtHeight) - Margin
                 EndIf
               EndIf
-              DrawText_(wParam, @Text, TextLen, @Rect, HFlag | VFlag)
+              DrawText_(wParam, @Text$, TextLen, @Rect, HFlag | VFlag)
             EndIf
             
             If \BtnInfo\bButtonEnable
@@ -2613,7 +2622,7 @@ Module ObjectTheme
                 Rect\top + (Rect\bottom - TxtHeight) - Margin
               EndIf
             EndIf
-            DrawText_(wParam, @Text, TextLen, @Rect, HFlag | VFlag)
+            DrawText_(wParam, @Text$, TextLen, @Rect, HFlag | VFlag)
           EndIf
           ProcedureReturn #True
           
@@ -2915,7 +2924,7 @@ Module ObjectTheme
   EndProcedure
   
   Procedure FreeButtonTheme(IDGadget)
-    Protected SavText.s, SavState.b, ReturnValue
+    Protected SavText$, SavState.b, ReturnValue
     Protected *ObjectTheme.ObjectTheme_INFO : _ObjectThemeID(*ObjectTheme, IDGadget, #False)
     Protected Gadget = *ObjectTheme\PBGadget
     
@@ -2935,7 +2944,7 @@ Module ObjectTheme
       If \imgDisabled  And IsImage(\imgDisabled)   : FreeImage(\imgDisabled)  : EndIf
     EndWith
     
-    SavText  = *ObjectTheme\BtnInfo\sButtonText
+    SavText$  = *ObjectTheme\BtnInfo\sButtonText
     SavState = *ObjectTheme\BtnInfo\bButtonState
     
     If (GetWindowLongPtr_(IDGadget, #GWL_STYLE) & #BS_PUSHLIKE = #BS_PUSHLIKE)
@@ -2949,7 +2958,7 @@ Module ObjectTheme
     DeleteMapElement(ObjectTheme())
     
     If IsGadget(Gadget)
-      SetGadgetText(Gadget, SavText)
+      SetGadgetText(Gadget, SavText$)
       SetGadgetState(Gadget, SavState)
       InvalidateRect_(GadgetID(Gadget), #Null, #False)
     EndIf
@@ -2968,7 +2977,6 @@ Module ObjectTheme
   
   Procedure SetButtonThemeColor(*ObjectTheme.ObjectTheme_INFO, Attribute, Value, InitLevel = #True)
     Protected ReturnValue = #PB_Default
-    Protected ObjectType.s = Str(*ObjectTheme\PBGadgetType) + "|"
     
     With *ObjectTheme\BtnInfo
       Select Attribute
@@ -3134,7 +3142,7 @@ Module ObjectTheme
   
   Procedure AddButtonTheme(Gadget, *ObjectTheme.ObjectTheme_INFO, UpdateTheme = #False)
     _ProcedureReturnIf(Not IsGadget(Gadget)) 
-    Protected hGenDC, ObjectType.s, CancelOut, ReturnValue
+    Protected hGenDC, ObjectType$, CancelOut, ReturnValue
     
     If UpdateTheme
       With *ObjectTheme\BtnInfo
@@ -3158,7 +3166,7 @@ Module ObjectTheme
     EndIf
     
     With *ObjectTheme
-      ObjectType               = Str(\PBGadgetType) + "|"
+      ObjectType$               = Str(\PBGadgetType) + "|"
       
       ; ---------- ButtonImage ----------
       If \PBGadgetType = #PB_GadgetType_ButtonImage
@@ -3184,7 +3192,7 @@ Module ObjectTheme
       \bButtonEnable = IsWindowEnabled_(*ObjectTheme\IDGadget)
       
       ; ---------- BackColor ----------
-      \lButtonBackColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_BackColor)) 
+      \lButtonBackColor = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_BackColor)) 
       If \lButtonBackColor = #PB_Default
         \lButtonBackColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
         If \lButtonBackColor = #PB_Default
@@ -3194,7 +3202,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- OuterColor ----------
-      \lButtonOuterColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_OuterColor))
+      \lButtonOuterColor = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_OuterColor))
       If \lButtonOuterColor = #PB_Default
         \lButtonOuterColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
         If \lButtonOuterColor = #PB_Default
@@ -3204,7 +3212,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- CornerColor ----------
-      \lButtonCornerColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_CornerColor))
+      \lButtonCornerColor = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_CornerColor))
       If \lButtonCornerColor = #PB_Default
         \lButtonCornerColor = ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor))
         If \lButtonCornerColor = #PB_Default
@@ -3213,7 +3221,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- GrayBackColor ----------
-      \lGrayBackColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_GrayBackColor))
+      \lGrayBackColor = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_GrayBackColor))
       If \lGrayBackColor = #PB_Default
         If IsDarkColor(\lButtonBackColor)
           \lGrayBackColor = DisabledDarkColor(\lButtonBackColor)
@@ -3225,7 +3233,7 @@ Module ObjectTheme
       \iActiveFont  = SendMessage_(*ObjectTheme\IDGadget, #WM_GETFONT, 0, 0)
       
       ; ---------- FrontColor ----------
-      \lFrontColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_FrontColor))
+      \lFrontColor = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_FrontColor))
       If \lFrontColor = #PB_Default
         If IsDarkColor(\lButtonBackColor)
           \lFrontColor = #White
@@ -3235,7 +3243,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- GrayTextColor ----------
-      \lGrayTextColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_GrayTextColor))
+      \lGrayTextColor = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_GrayTextColor))
       If \lGrayTextColor = #PB_Default
         If IsDarkColor(\lFrontColor)
           \lGrayTextColor = DisabledDarkColor(\lFrontColor)
@@ -3245,11 +3253,11 @@ Module ObjectTheme
       EndIf
       
       ; ---------- EnableShadow ----------
-      \bEnableShadow = ThemeAttribute(ObjectType + Str(#PB_Gadget_EnableShadow))
+      \bEnableShadow = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_EnableShadow))
       If \bEnableShadow = #PB_Default : \bEnableShadow = 0 : EndIf
       
       ; ---------- ShadowColor ----------
-      \lShadowColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_ShadowColor))
+      \lShadowColor = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_ShadowColor))
       If \lShadowColor = #PB_Default
         If IsDarkColor(\lFrontColor)
           \lShadowColor = #White
@@ -3259,7 +3267,7 @@ Module ObjectTheme
       EndIf
       
       ; ---------- BorderColor ----------
-      \lBorderColor = ThemeAttribute(ObjectType + Str(#PB_Gadget_BorderColor))
+      \lBorderColor = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_BorderColor))
       If \lBorderColor = #PB_Default
         If IsDarkColor(ThemeAttribute(Str(#PB_WindowType) + "|" + Str(#PB_Gadget_BackColor)))
           \lBorderColor = \lButtonBackColor
@@ -3269,17 +3277,17 @@ Module ObjectTheme
       EndIf
       
       ; ---------- HighLightBorder ----------
-      \lHighLightBorder = ThemeAttribute(ObjectType + Str(#PB_Gadget_HighLightBorder))
+      \lHighLightBorder = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_HighLightBorder))
       If \lHighLightBorder = #PB_Default
         \lHighLightBorder = GetSysColor_(#COLOR_HIGHLIGHT)
       EndIf
       
       ; ---------- RoundX ----------
-      \lRoundX = ThemeAttribute(ObjectType + Str(#PB_Gadget_RoundX))
+      \lRoundX = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_RoundX))
       If \lRoundX = #PB_Default : \lRoundX = 8 : EndIf
       
       ; ---------- RoundY ----------
-      \lRoundY = ThemeAttribute(ObjectType + Str(#PB_Gadget_RoundY))
+      \lRoundY = ThemeAttribute(ObjectType$ + Str(#PB_Gadget_RoundY))
       If \lRoundY = #PB_Default : \lRoundY = 8 : EndIf
       
       If \hRgn : DeleteObject_(\hRgn) : EndIf
@@ -4535,6 +4543,33 @@ Module ObjectTheme
     Protected ReturnValue
     
     With ObjectTheme()
+      ; Return to default Gadget(Window) Color
+      ForEach ObjectTheme()
+        Select ObjectTheme()\PBGadgetType
+          Case #PB_GadgetType_Container, #PB_GadgetType_ScrollArea
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_BackColor,       #PB_Default)
+          Case #PB_GadgetType_Editor, #PB_GadgetType_HyperLink, #PB_GadgetType_ListView, #PB_GadgetType_ProgressBar, #PB_GadgetType_Spin, 
+               #PB_GadgetType_String, #PB_GadgetType_Text
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_BackColor,       #PB_Default)
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_FrontColor,      #PB_Default)
+          Case #PB_GadgetType_ExplorerList, #PB_GadgetType_ExplorerTree, #PB_GadgetType_ListIcon, #PB_GadgetType_Tree
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_BackColor,       #PB_Default)
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_FrontColor,      #PB_Default)
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_LineColor,       #PB_Default)
+          Case #PB_GadgetType_Calendar
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_BackColor,       #PB_Default)
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_GrayTextColor,   #PB_Default)  
+          Case #PB_GadgetType_Date
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_BackColor,       #PB_Default)
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_FrontColor,      #PB_Default)
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_TitleBackColor,  #PB_Default)
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_TitleFrontColor, #PB_Default)
+            _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_GrayTextColor,   #PB_Default)
+          Case #PB_WindowType
+            _PB(SetWindowColor)(\PBGadget, GetSysColor_(#COLOR_WINDOW))   ;_PB(SetWindowColor)(\PBGadget, #PB_Default)
+        EndSelect
+      Next
+      
       ForEach ObjectTheme()
         Select ObjectTheme()\PBGadgetType
           Case #PB_GadgetType_CheckBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Text, #PB_GadgetType_TrackBar,
@@ -4559,10 +4594,10 @@ Module ObjectTheme
             ReturnValue = #True
             
           Case #PB_GadgetType_ListView
-            FreeMemory(\ObjectInfo)
-            DeleteMapElement(ObjectTheme())
             SetWindowLongPtr_(\IDGadget, #GWL_STYLE, GetWindowLongPtr_(\IDGadget, #GWL_STYLE) &~ #WS_BORDER)
             SetWindowLongPtr_(\IDGadget, #GWL_EXSTYLE, GetWindowLongPtr_(\IDGadget, #GWL_EXSTYLE) | #WS_EX_CLIENTEDGE)
+            FreeMemory(\ObjectInfo)
+            DeleteMapElement(ObjectTheme())
             ReturnValue = #True
             
           Case #PB_GadgetType_Splitter
@@ -4577,11 +4612,13 @@ Module ObjectTheme
           Case #PB_GadgetType_Button, #PB_GadgetType_ButtonImage
             FreeButtonTheme(\IDGadget)
             ReturnValue = #True
+            
         EndSelect
       Next
     EndWith
     ClearMap(ObjectBrush())
     ClearMap(ThemeAttribute())
+    SetWindowCallback(0)
     
     ProcedureReturn ReturnValue
   EndProcedure
@@ -4597,10 +4634,16 @@ Module ObjectTheme
   EndProcedure
   
   Procedure SetObjectTheme(Theme, WindowColor = #PB_Default)
-    Protected Window, Object, ReturnValue, ObjectID, Buffer.s = Space(64)
+    Protected Window, Object, ObjectID, ReturnValue = #True, Buffer$ = Space(64)
     
-    If Theme = #PB_Default 
-      If MapSize(ThemeAttribute()) = 0
+    If Theme = #PB_Default
+      If WindowColor = #PB_Default
+        FreeObjectTheme()
+        ProcedureReturn ReturnValue
+      Else
+        If MapSize(ThemeAttribute())
+          ClearMap(ThemeAttribute())
+        EndIf
         LoadThemeAttribute(Theme, WindowColor)
       EndIf
     Else  
@@ -4634,25 +4677,30 @@ Module ObjectTheme
         Case #PB_GadgetType_ComboBox
           ; Check ComboBox flags and _AddObjectTheme()
           ObjectID = GadgetID(Object)
-          Buffer = Space(64) : GetClassName_(ObjectID, @Buffer, 64)
-          Select Buffer
-            Case "ComboBox"       ; Not a ComboBox Image
-              If Not (GetWindowLongPtr_(ObjectID, #GWL_STYLE) & #CBS_OWNERDRAWFIXED = #CBS_OWNERDRAWFIXED)
-                CompilerIf #PB_Compiler_Debugger
-                  Debug "The flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED should be added to the ComboBox number " + Str(Object) + " to have the drop-down list painted by ObjectTheme."
-                CompilerElse
-                  MessageRequester("ComboBox flags warning!" ,"The flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED should be added To the ComboBox number " + Str(Object) + " to have the drop-down List painted by ObjectTheme.")
-                CompilerEndIf
-              EndIf
-            Case "ComboBoxEx32"   ; A ComboBox Image
-              If GetWindowLongPtr_(ObjectID, #GWL_STYLE) & #CBS_OWNERDRAWFIXED = #CBS_OWNERDRAWFIXED
-                CompilerIf #PB_Compiler_Debugger
-                  Debug "The flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED should not be added to the ComboBox Image number " + Str(Object) + " to be able to be painted."
-                CompilerElse
-                  MessageRequester("ComboBox flags warning!" ,"The flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED should not be added to the ComboBox Image number " + Str(Object) + " to be able to be painted.")
-                CompilerEndIf
-              EndIf
-          EndSelect
+          Buffer$ = Space(64)
+          If GetClassName_(ObjectID, @Buffer$, 64)
+            CompilerIf #PB_Compiler_Version >= 640
+              Buffer$ = PeekS(@Buffer$)
+            CompilerEndIf
+            Select Buffer$
+              Case "ComboBox"       ; Not a ComboBox Image
+                If Not (GetWindowLongPtr_(ObjectID, #GWL_STYLE) & #CBS_OWNERDRAWFIXED = #CBS_OWNERDRAWFIXED)
+                  CompilerIf #PB_Compiler_Debugger
+                    Debug "The flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED should be added to the ComboBox number " + Str(Object) + " to have the drop-down list painted by ObjectTheme."
+                  CompilerElse
+                    MessageRequester("ComboBox flags warning!" ,"The flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED should be added To the ComboBox number " + Str(Object) + " to have the drop-down List painted by ObjectTheme.")
+                  CompilerEndIf
+                EndIf
+              Case "ComboBoxEx32"   ; A ComboBox Image
+                If GetWindowLongPtr_(ObjectID, #GWL_STYLE) & #CBS_OWNERDRAWFIXED = #CBS_OWNERDRAWFIXED
+                  CompilerIf #PB_Compiler_Debugger
+                    Debug "The flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED should not be added to the ComboBox Image number " + Str(Object) + " to be able to be painted."
+                  CompilerElse
+                    MessageRequester("ComboBox flags warning!" ,"The flags #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED should not be added to the ComboBox Image number " + Str(Object) + " to be able to be painted.")
+                  CompilerEndIf
+                EndIf
+            EndSelect
+          EndIf
           _AddObjectTheme(Object)
           
         Case #PB_GadgetType_Button, #PB_GadgetType_ButtonImage
