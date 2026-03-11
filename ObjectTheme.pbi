@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2026-03-06
-;           Version: 1.6.4
+; modification Date: 2026-03-12
+;           Version: 1.6.5
 ;        PB-Version: 5.73 - 6.10 x64/x86
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -1011,12 +1011,6 @@ Module ObjectTheme
             _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_FrontColor, \ObjectInfo\lGrayTextColor)
           EndIf
           ProcedureReturn #False
-          
-        Case #WM_ERASEBKGND
-          Protected Rect.RECT
-          GetClientRect_(hWnd, Rect)
-          FillRect_(wParam, @Rect, \ObjectInfo\lBrushBackColor)
-          ProcedureReturn #True
           
       EndSelect
     EndWith
@@ -2252,7 +2246,14 @@ Module ObjectTheme
         Case #PB_GadgetType_Editor, #PB_GadgetType_Spin, #PB_GadgetType_String
           If Not UpdateTheme
             \OldProc = GetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC)
-            SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, @EditProc())
+            If IsWindowEnabled_(\IDGadget)
+              SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, @EditProc())
+            Else
+              DisableGadget(\PBGadget, #False)
+              SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, @EditProc())
+              SendMessage_(\IDGadget, #WM_ENABLE, #True, 0)
+              DisableGadget(\PBGadget, #True)
+            EndIf
           EndIf
           SendMessage_(\IDGadget, #WM_ENABLE, IsWindowEnabled_(\IDGadget), 0)
           
