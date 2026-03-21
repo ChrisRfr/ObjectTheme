@@ -26,7 +26,7 @@ SetObjectTheme(#ObjectTheme_LightBlue):<br>
 <br>
 ![Alt text](/Images/ObjectTheme_LightBlue.png?raw=true "ObjectTheme_LightBlue")<br>
 <br>
-SetObjectTheme(#SetObjectTheme(#ObjectTheme_Auto, #Black)):<br>
+SetObjectTheme(#ObjectTheme_Auto, #Black):<br>
 <br>
 ![Alt text](/Images/ObjectTheme_Auto_Black.png?raw=true "ObjectTheme_LightBlue")<br>
 <br>
