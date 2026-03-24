@@ -7,9 +7,9 @@
 ;       Source Name: ObjectTheme.pbi
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2026-03-12
-;           Version: 1.6.5
-;        PB-Version: 5.73 - 6.10 x64/x86
+; modification Date: 2026-03-24
+;           Version: 1.6.6
+;        PB-Version: 5.73 - 6.30 x64/x86
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
 ;  -------------------------------------------------------------------------------------------------------------------------------------------------
@@ -320,15 +320,17 @@ Module ObjectTheme
     
   #PB_Gadget_END = 99
   
-  #STAP_ALLOW_NONCLIENT = 1
-  #STAP_ALLOW_CONTROLS = 2
+  #STAP_ALLOW_NONCLIENT  = 1
+  #STAP_ALLOW_CONTROLS   = 2
   #STAP_ALLOW_WEBCONTENT = 4
   
-  Enumeration DWMWindowAttribute
+  Enumeration
     #DWMWA_USE_IMMERSIVE_DARK_MODE = 20
-    #DWMWA_BORDER_COLOR = 34
-    #DWMWA_CAPTION_COLOR = 35
-    #DWMWA_TEXT_COLOR = 36
+    #DWMWA_BORDER_COLOR            = 34
+    #DWMWA_CAPTION_COLOR           = 35
+    #DWMWA_TEXT_COLOR              = 36
+    #DWMWA_COLOR_DEFAULT           = $FFFFFFFF   ; Default system color
+    #DWMWA_COLOR_NONE              = $FFFFFFFE   ; No color (transparent border)
   EndEnumeration
   
   Structure ObjectBTN_INFO
@@ -1433,9 +1435,9 @@ Module ObjectTheme
         CompilerIf #PB_Compiler_Version >= 600
           If OSVersion() >= #PB_OS_Windows_11
             If OpenLibrary(0, "dwmapi")
-              Protected.l TextColor, BackColor = *ObjectTheme\ObjectInfo\lBackColor
               DwmSetWindowAttribute_ = GetFunction(0, "DwmSetWindowAttribute")
               If DwmSetWindowAttribute_
+                Protected TextColor.l, BackColor.l = *ObjectTheme\ObjectInfo\lBackColor
                 DwmSetWindowAttribute_(*ObjectTheme\IDGadget, #DWMWA_CAPTION_COLOR, @BackColor, SizeOf(BackColor))
                 DwmSetWindowAttribute_(*ObjectTheme\IDGadget, #DWMWA_BORDER_COLOR,  @BackColor, SizeOf(BackColor))
                 If IsDarkColor(BackColor)
@@ -1524,7 +1526,8 @@ Module ObjectTheme
             If OpenLibrary(0, "dwmapi")
               DwmSetWindowAttribute_ = GetFunction(0, "DwmSetWindowAttribute")
               If DwmSetWindowAttribute_
-                DwmSetWindowAttribute_(*ObjectTheme\IDGadget, #DWMWA_USE_IMMERSIVE_DARK_MODE, @Value, SizeOf(Value))
+                Protected DarkMode.l = Value
+                DwmSetWindowAttribute_(*ObjectTheme\IDGadget, #DWMWA_USE_IMMERSIVE_DARK_MODE, @DarkMode, SizeOf(DarkMode))
                 If IsWindowVisible_(*ObjectTheme\IDGadget)
                   HideWindow(*ObjectTheme\PBGadget, #True)
                   HideWindow(*ObjectTheme\PBGadget, #False)
@@ -1540,7 +1543,7 @@ Module ObjectTheme
     EndSelect
     
     ;If InitLevel = #True : EndIf
-    RedrawWindow_(*ObjectTheme\PBGadget, #Null, #Null, #RDW_INVALIDATE | #RDW_ERASE | #RDW_ALLCHILDREN | #RDW_UPDATENOW)   ; InvalidateRect_(*ObjectTheme\PBGadget, #Null, #True)
+    RedrawWindow_(*ObjectTheme\IDGadget, #Null, #Null, #RDW_INVALIDATE | #RDW_ERASE | #RDW_ALLCHILDREN | #RDW_UPDATENOW)   ; InvalidateRect_(*ObjectTheme\IDGadget, #Null, #True)
     
     ProcedureReturn ReturnValue
   EndProcedure
@@ -1584,9 +1587,9 @@ Module ObjectTheme
       CompilerIf #PB_Compiler_Version >= 600
         If OSVersion() >= #PB_OS_Windows_11
           If OpenLibrary(0, "dwmapi")
-            Protected.l TextColor, BackColor = \ObjectInfo\lBackColor
             DwmSetWindowAttribute_ = GetFunction(0, "DwmSetWindowAttribute")
             If DwmSetWindowAttribute_
+              Protected TextColor.l, BackColor.l = \ObjectInfo\lBackColor
               DwmSetWindowAttribute_(*ObjectTheme\IDGadget, #DWMWA_CAPTION_COLOR, @BackColor, SizeOf(BackColor))
               DwmSetWindowAttribute_(*ObjectTheme\IDGadget, #DWMWA_BORDER_COLOR,  @BackColor, SizeOf(BackColor))
               If IsDarkColor(BackColor)
@@ -1608,9 +1611,9 @@ Module ObjectTheme
           CompilerIf #PB_Compiler_Version >= 600
             If OSVersion() >= #PB_OS_Windows_10
               If OpenLibrary(0, "dwmapi")
-                Protected DarkMode = ThemeAttribute()
                 DwmSetWindowAttribute_ = GetFunction(0, "DwmSetWindowAttribute")
                 If DwmSetWindowAttribute_
+                  Protected DarkMode.l = ThemeAttribute()
                   DwmSetWindowAttribute_(*ObjectTheme\IDGadget, #DWMWA_USE_IMMERSIVE_DARK_MODE, @DarkMode, SizeOf(DarkMode))
                 EndIf
                 CloseLibrary(0)
@@ -1974,7 +1977,7 @@ Module ObjectTheme
           Case #PB_GadgetType_Editor, #PB_GadgetType_Spin, #PB_GadgetType_String
             SendMessage_(\IDGadget, #WM_ENABLE, IsWindowEnabled_(\IDGadget), 0)
           Case  #PB_GadgetType_Splitter
-            RedrawWindow_(\IDGadget, #Null, #Null, #RDW_INVALIDATE | #RDW_ERASE | #RDW_UPDATENOW)
+            InvalidateRect_(\IDGadget, #Null, #True)
         EndSelect
       EndWith
     EndIf
@@ -2294,7 +2297,7 @@ Module ObjectTheme
             \OldProc = GetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC)
             SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, @SplitterProc())
           EndIf
-          ;RedrawWindow_(\IDGadget, #Null, #Null, #RDW_INVALIDATE | #RDW_ERASE | #RDW_UPDATENOW) ; Not required here
+          ;InvalidateRect_(\IDGadget, #Null, #True)   ; Not required here
           
         Case #PB_GadgetType_ProgressBar
           SetWindowTheme_(\IDGadget, "", "")
@@ -4544,9 +4547,9 @@ Module ObjectTheme
     Protected ReturnValue
     
     With ObjectTheme()
-      ; Return to default Gadget(Window) Color
+      ; Restore default Gadget(Window) Color
       ForEach ObjectTheme()
-        Select ObjectTheme()\PBGadgetType
+        Select \PBGadgetType
           Case #PB_GadgetType_Container, #PB_GadgetType_ScrollArea
             _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_BackColor,       #PB_Default)
           Case #PB_GadgetType_Editor, #PB_GadgetType_HyperLink, #PB_GadgetType_ListView, #PB_GadgetType_ProgressBar, #PB_GadgetType_Spin, 
@@ -4567,16 +4570,49 @@ Module ObjectTheme
             _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_TitleFrontColor, #PB_Default)
             _PB(SetGadgetColor)(\PBGadget, #PB_Gadget_GrayTextColor,   #PB_Default)
           Case #PB_WindowType
-            _PB(SetWindowColor)(\PBGadget, GetSysColor_(#COLOR_WINDOW))   ;_PB(SetWindowColor)(\PBGadget, #PB_Default)
+            _PB(SetWindowColor)(\PBGadget, #PB_Default)   ; Or optionally: _PB(SetWindowColor)(\PBGadget, GetSysColor_(#COLOR_WINDOW))
+            
+            ; Restore Default DWM attributes
+            CompilerIf #PB_Compiler_Version >= 600
+              If OSVersion() >= #PB_OS_Windows_10
+                If OpenLibrary(0, "dwmapi")
+                  Protected DwmSetWindowAttribute_.DwmSetWindowAttribute
+                  DwmSetWindowAttribute_ = GetFunction(0, "DwmSetWindowAttribute")
+                  If DwmSetWindowAttribute_
+                    Protected DefaultDWMAttribute.l = 0   ; Defaut system value (Light Mode)
+                    DwmSetWindowAttribute_(\IDGadget,   #DWMWA_USE_IMMERSIVE_DARK_MODE, @DefaultDWMAttribute, SizeOf(DefaultDWMAttribute))
+                    If OSVersion() >= #PB_OS_Windows_11
+                      DefaultDWMAttribute = #DWMWA_COLOR_NONE
+                      DwmSetWindowAttribute_(\IDGadget, #DWMWA_BORDER_COLOR,            @DefaultDWMAttribute, SizeOf(DefaultDWMAttribute))
+                      DefaultDWMAttribute = #DWMWA_COLOR_DEFAULT
+                      DwmSetWindowAttribute_(\IDGadget, #DWMWA_BORDER_COLOR,            @DefaultDWMAttribute, SizeOf(DefaultDWMAttribute))
+                      DwmSetWindowAttribute_(\IDGadget, #DWMWA_CAPTION_COLOR,           @DefaultDWMAttribute, SizeOf(DefaultDWMAttribute))
+                      DwmSetWindowAttribute_(\IDGadget, #DWMWA_TEXT_COLOR,              @DefaultDWMAttribute, SizeOf(DefaultDWMAttribute))
+                    EndIf
+                  EndIf
+                  CloseLibrary(0)
+                EndIf
+              EndIf
+            CompilerEndIf
         EndSelect
       Next
       
       ForEach ObjectTheme()
         Select ObjectTheme()\PBGadgetType
-          Case #PB_GadgetType_CheckBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Text, #PB_GadgetType_TrackBar,
-               #PB_GadgetType_Calendar, #PB_GadgetType_ExplorerList, #PB_GadgetType_ListIcon
+          Case #PB_GadgetType_CheckBox, #PB_GadgetType_Frame, #PB_GadgetType_Option, #PB_GadgetType_Text, #PB_GadgetType_TrackBar, #PB_GadgetType_Calendar
             If \OldProc : SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc) : EndIf          
             SetWindowTheme_(\IDGadget, 0, 0)
+            FreeMemory(\ObjectInfo)
+            DeleteMapElement(ObjectTheme())
+            ReturnValue = #True
+            
+          Case #PB_GadgetType_ExplorerList,  #PB_GadgetType_ListIcon
+            If \OldProc : SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc) : EndIf
+            SetWindowTheme_(\IDGadget, 0, 0)
+            Protected hHeader = SendMessage_(\IDGadget, #LVM_GETHEADER, 0, 0)
+            If hHeader
+              SetWindowTheme_(hHeader, 0, 0)
+            EndIf
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
             ReturnValue = #True
@@ -4584,12 +4620,36 @@ Module ObjectTheme
           Case #PB_GadgetType_Panel, #PB_GadgetType_Editor, #PB_GadgetType_Spin, #PB_GadgetType_String  
             SetWindowLongPtr_(\IDGadget, #GWL_STYLE, GetWindowLongPtr_(\IDGadget, #GWL_STYLE) &~ #TCS_OWNERDRAWFIXED)
             If \OldProc : SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc) : EndIf   
+            SetWindowTheme_(\IDGadget, 0, 0)
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
             ReturnValue = #True
             
-          Case #PB_GadgetType_Container, #PB_GadgetType_ProgressBar, #PB_GadgetType_ScrollArea, #PB_GadgetType_HyperLink, #PB_GadgetType_Spin, #PB_GadgetType_String,
-               #PB_GadgetType_ExplorerTree, #PB_GadgetType_Tree, #PB_GadgetType_Date, #PB_GadgetType_ComboBox, #PB_GadgetType_ScrollBar
+          Case #PB_GadgetType_ComboBox
+            SetWindowTheme_(\IDGadget, 0, 0)
+            Protected ChildGadget = GetWindow_(\IDGadget, #GW_CHILD)
+            If ChildGadget
+              Protected Buffer$ = Space(64)
+              If GetClassName_(ChildGadget, @Buffer$, 64)
+                CompilerIf #PB_Compiler_Version >= 640
+                  Buffer$ = PeekS(@Buffer$)
+                CompilerEndIf
+                If Buffer$ = "ComboBox"
+                  SetWindowTheme_(ChildGadget, 0, 0)
+                EndIf 
+              EndIf
+            EndIf
+            If GetWindowLongPtr_(\IDGadget, #GWL_STYLE) & #CBS_OWNERDRAWFIXED = #CBS_OWNERDRAWFIXED
+              Debug "The ComboBox number " + Str(\PBGadget) + " has the flag #CBS_OWNERDRAWFIXED, with default values, its drop-down list will not be painted." +
+                    " You must recreate this combobox without the #CBS_OWNERDRAWFIXED flag and add its elements."
+            EndIf
+            FreeMemory(\ObjectInfo)
+            DeleteMapElement(ObjectTheme())
+            ReturnValue = #True
+            
+          Case #PB_GadgetType_Container, #PB_GadgetType_ProgressBar, #PB_GadgetType_ScrollArea, #PB_GadgetType_HyperLink,
+               #PB_GadgetType_ExplorerTree, #PB_GadgetType_Tree, #PB_GadgetType_Date, #PB_GadgetType_ScrollBar
+            SetWindowTheme_(\IDGadget, 0, 0)
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
             ReturnValue = #True
@@ -4605,7 +4665,8 @@ Module ObjectTheme
             If \ObjectInfo\hObjSplitterGripper : DeleteObject_(\ObjectInfo\hObjSplitterGripper) : EndIf
             SetClassLongPtr_(\IDGadget, #GCL_STYLE, GetClassLongPtr_(\IDGadget, #GCL_STYLE) &~ #CS_DBLCLKS)
             SetWindowLongPtr_(\IDGadget, #GWL_STYLE, GetWindowLongPtr_(\IDGadget, #GWL_STYLE) &~ #WS_CLIPCHILDREN)
-            If \OldProc : SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc) : EndIf 
+            If \OldProc : SetWindowLongPtr_(\IDGadget, #GWLP_WNDPROC, \OldProc) : EndIf
+            InvalidateRect_(\IDGadget, #Null, #True)
             FreeMemory(\ObjectInfo)
             DeleteMapElement(ObjectTheme())
             ReturnValue = #True
@@ -4763,15 +4824,8 @@ CompilerIf #PB_Compiler_IsMainFile
   LoadImage(#Imag_world, #PB_Compiler_Home + "Examples\Sources\Data\world.png")
   
   Procedure Open_Window(X = 0, Y = 0, Width = 400, Height = 360)
-    Protected BrushBackground
     If OpenWindow(#Window, X, Y, Width, Height, "Simple Demo ObjectTheme", #PB_Window_SystemMenu | #PB_Window_ScreenCentered)
-      
       ResizeImage(#Imag_BugSPIN, DesktopScaledX(Width), DesktopScaledY(Height))
-      BrushBackground = CreatePatternBrush_(ImageID(#Imag_BugSPIN))
-      If BrushBackground
-        SetClassLongPtr_(WindowID(#Window), #GCL_HBRBACKGROUND, BrushBackground)
-        InvalidateRect_(WindowID(#Window), #Null, #True)
-      EndIf
       ;SetWindowColor(#Window, RGB(8, 8, 64))
       
       CheckBoxGadget(#Checkbox, 20, 10, 210, 24, "Add an Image Background")
@@ -4794,6 +4848,8 @@ CompilerIf #PB_Compiler_IsMainFile
     EndIf
   EndProcedure
   
+  Define BrushBackground
+  
   CompilerIf #PB_Compiler_Debugger = #False
     CompilerIf #EnableOnError : OnErrorCall(@ErrorHandler()) : CompilerEndIf
   CompilerEndIf
@@ -4815,8 +4871,18 @@ CompilerIf #PB_Compiler_IsMainFile
         Select EventGadget()
           Case #Checkbox
             If GetGadgetState(#Checkbox)
+              BrushBackground = CreatePatternBrush_(ImageID(#Imag_BugSPIN))
+              If BrushBackground
+                SetClassLongPtr_(WindowID(#Window), #GCL_HBRBACKGROUND, BrushBackground)
+                InvalidateRect_(WindowID(#Window), #Null, #True)
+              EndIf
               SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True)
             Else
+              If BrushBackground
+                DeleteObject_(BrushBackground)
+                SetClassLongPtr_(WindowID(#Window), #GCL_HBRBACKGROUND, #NULL_BRUSH)
+                InvalidateRect_(WindowID(#Window), #Null, #True)
+              EndIf
               SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #False)
             EndIf
             ; ----- Test OnError (Enable OnError line numbering support in the compiler options) -----
@@ -4846,4 +4912,6 @@ CompilerIf #PB_Compiler_IsMainFile
     EndSelect
   ForEver
   
+  If BrushBackground : DeleteObject_(BrushBackground) : EndIf 
 CompilerEndIf
+

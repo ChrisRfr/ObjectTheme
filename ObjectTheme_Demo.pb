@@ -7,8 +7,8 @@
 ;       Source Name: ObjectTheme_Demo.pb
 ;            Author: ChrisR
 ;     Creation Date: 2023-11-06
-; modification Date: 2026-03-06
-;           Version: 1.6.3
+; modification Date: 2026-03-24
+;           Version: 1.6.6
 ;        PB-Version: 6.0 or other
 ;                OS: Windows Only
 ;             Forum: https://www.purebasic.fr/english/viewtopic.php?t=82890
@@ -32,11 +32,6 @@ Enumeration Window
 EndEnumeration
 
 Enumeration Gadgets
-  #Cont_1
-  #Txt_2
-  #Check_1
-  #Opt_1
-  #Opt_2
   #Edit_1
   #ExpList_1
   #ExpTree_1
@@ -46,6 +41,7 @@ Enumeration Gadgets
   #ListView_1
   #Hyper_1
   #Progres_1
+  #Check_3
   #Spin_1
   #String_1
   #Txt_1
@@ -62,9 +58,16 @@ Enumeration Gadgets
   #Combo_1
   #Combo_2
   #Combo_3
+  #Cont_1
+  #Txt_2
+  #Check_1
+  #Check_2
+  #Opt_1
+  #Opt_2
   #ApplyTheme_1
   #ApplyTheme_2
 EndEnumeration
+#Max_DisableGadget = #Cont_1 - 1
 
 Enumeration Font
   #Font
@@ -82,23 +85,43 @@ LoadImage(#Imag_Wood,   #PB_Compiler_Home + "Examples\3D\Data\Textures\Wood.jpg"
 LoadImage(#Imag_clouds, #PB_Compiler_Home + "Examples\3D\Data\Textures\clouds.jpg")
 LoadImage(#Imag, #PB_Compiler_Home + "examples/sources/Data/world.png")
 
+Procedure CreateComboBox(OwnerDraw = #False)
+  Protected Flags, State, I
+  
+  If OwnerDraw = #True
+    Flags = #CBS_HASSTRINGS | #CBS_OWNERDRAWFIXED
+  EndIf
+  
+  OpenGadgetList(#Panel_1, 0)
+  State = GetGadgetState(#Combo_1)
+  ComboBoxGadget(#Combo_1, GadgetX(#Combo_1), GadgetY(#Combo_1), GadgetWidth(#Combo_1), GadgetHeight(#Combo_1), #PB_ComboBox_Editable | Flags)
+  SendMessage_(GadgetID(#Combo_1), #CB_SETMINVISIBLE, 5, 0)           ; Only 5 elements visible to display the ScrollBar for the Dark or Explorer theme
+  For I = 1 To 10 : AddGadgetItem(#Combo_1, -1, "Combo Editable Element " + Str(I)) : Next
+  SetGadgetState(#Combo_1, State)
+  CloseGadgetList()
+  
+  OpenGadgetList(#ScrlArea_1)
+  State = GetGadgetState(#Combo_3)
+  ComboBoxGadget(#Combo_3, GadgetX(#Combo_3), GadgetY(#Combo_3), GadgetWidth(#Combo_3), GadgetHeight(#Combo_3), Flags)
+  SendMessage_(GadgetID(#Combo_3), #CB_SETMINVISIBLE, 5, 0)   ; Only 5 elements visible to display the ScrollBar for the Dark or Explorer theme
+  For I = 1 To 10 : AddGadgetItem(#Combo_3, -1, "Combo Element " + Str(I)) : Next
+  SetGadgetState(#Combo_3, State)
+  CloseGadgetList()
+EndProcedure
+
 Procedure Open_Window_1(X = 20, Y = 20, Width = 580, Height = 460)
-  Protected I, BrushBackground
+  Protected I
   If OpenWindow(#Window_1, X, Y, Width, Height, "Demo ObjectTheme Window_1", #PB_Window_MinimizeGadget | #PB_Window_SystemMenu)
-    
     ResizeImage(#Imag_Wood, DesktopScaledX(Width), DesktopScaledY(Height))
-    BrushBackground = CreatePatternBrush_(ImageID(#Imag_Wood))
-    If BrushBackground
-      SetClassLongPtr_(WindowID(#Window_1), #GCL_HBRBACKGROUND, BrushBackground)
-      InvalidateRect_(WindowID(#Window_1), #Null, #True)
-    EndIf
+    
     ButtonGadget(#ApplyTheme_1, 20, 390, 540, 50, "Apply Dark Blue Theme", #PB_Button_Default)
     
-    ContainerGadget(#Cont_1, 20, 20, 320, 70, #PB_Container_Flat)
-    TextGadget(#Txt_2, 5, 5, 150, 20, "Container")
-    CheckBoxGadget(#Check_1, 20, 20, 160, 30, "Add Image Background")
-    OptionGadget(#Opt_1, 180, 10, 120, 24, "Option_1")
-    OptionGadget(#Opt_2, 180, 35, 120, 24, "Option_2")
+    ContainerGadget(#Cont_1, 20, 20, 320, 75, #PB_Container_Flat)
+    TextGadget(#Txt_2, 5, 5, 180, 20, "Customize the display:")
+    CheckBoxGadget(#Check_1, 20, 25, 160, 20, "Add Image Background")
+    CheckBoxGadget(#Check_2, 20, 45, 160, 20, "Disable Gadgets")
+    OptionGadget(#Opt_1, 190, 25, 120, 20, "Object Theme")
+    OptionGadget(#Opt_2, 190, 45, 120, 20, "Default Theme")
     SetGadgetState(#Opt_1, #True)
     CloseGadgetList()   ; #Cont_1
     
@@ -117,9 +140,10 @@ Procedure Open_Window_1(X = 20, Y = 20, Width = 580, Height = 460)
     
     PanelGadget(#Panel_1, 280, 195, 280, 180)
     AddGadgetItem(#Panel_1, -1, "Tab_0", ImageID(#Imag))
-    ProgressBarGadget(#Progres_1, 20, 20, 160, 16, 0, 100)
+    ProgressBarGadget(#Progres_1, 20, 20, 140, 16, 0, 100)
+    CheckBoxGadget(#Check_3, 180, 20, 90, 20, "CheckBox")
     SetGadgetState(#Progres_1, 66)
-    SpinGadget(#Spin_1, 20, 56, 80, 26, 0, 100, #PB_Spin_Numeric)
+    SpinGadget(#Spin_1, 20, 56, 80, 26, 0, 100, #PB_Spin_Numeric)  ; #PB_Spin_ReadOnly
     SetGadgetState(#Spin_1, 66)
     StringGadget(#String_1, 110, 56, 150, 26, "String_1")
     
@@ -135,14 +159,9 @@ Procedure Open_Window_1(X = 20, Y = 20, Width = 580, Height = 460)
 EndProcedure
 
 Procedure Open_Window_2(X = 620, Y = 20, Width = 420, Height = 460)
-  Protected I, BrushBackground
+  Protected I
   If OpenWindow(#Window_2, X, Y, Width, Height, "Demo ObjectTheme Window_2", #PB_Window_MinimizeGadget | #PB_Window_SystemMenu)
     ResizeImage(#Imag_clouds, DesktopScaledX(Width), DesktopScaledY(Height))
-    BrushBackground = CreatePatternBrush_(ImageID(#Imag_clouds))
-    If BrushBackground
-      SetClassLongPtr_(WindowID(#Window_2), #GCL_HBRBACKGROUND, BrushBackground)
-      InvalidateRect_(WindowID(#Window_1), #Null, #True)
-    EndIf
     
     ButtonGadget(#ApplyTheme_2, 20, 390, 380, 50, "Apply Auto Theme With Selected Color", #PB_Button_Default)
     
@@ -182,6 +201,8 @@ Procedure Open_Window_2(X = 620, Y = 20, Width = 420, Height = 460)
   EndIf
 EndProcedure
 
+Define Brush_Imag_Wood, Brush_Imag_clouds, Disable, I
+
 ; Uncomment for Testing with a Font 
 ; SetGadgetFont(#PB_Default, FontID(#Font))
 
@@ -205,11 +226,32 @@ Repeat
       Select EventGadget()
         Case #Check_1                             
           If GetGadgetState(#Check_1)
+            Brush_Imag_Wood = CreatePatternBrush_(ImageID(#Imag_Wood))
+            If Brush_Imag_Wood
+              SetClassLongPtr_(WindowID(#Window_1), #GCL_HBRBACKGROUND, Brush_Imag_Wood)
+              InvalidateRect_(WindowID(#Window_1), #Null, #True)
+            EndIf                
+            Brush_Imag_clouds = CreatePatternBrush_(ImageID(#Imag_clouds))
+            If Brush_Imag_clouds
+              SetClassLongPtr_(WindowID(#Window_2), #GCL_HBRBACKGROUND, Brush_Imag_clouds)
+              InvalidateRect_(WindowID(#Window_2), #Null, #True)
+            EndIf
             SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True)
           Else
+            If Brush_Imag_Wood
+              DeleteObject_(Brush_Imag_Wood)
+              SetClassLongPtr_(WindowID(#Window_1), #GCL_HBRBACKGROUND, #NULL_BRUSH)
+              InvalidateRect_(WindowID(#Window_1), #Null, #True)
+            EndIf
+            If Brush_Imag_clouds
+              DeleteObject_(Brush_Imag_clouds)
+              SetClassLongPtr_(WindowID(#Window_2), #GCL_HBRBACKGROUND, #NULL_BRUSH)
+              InvalidateRect_(WindowID(#Window_2), #Null, #True)
+            EndIf
             SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #False)
           EndIf
           ; For Testing
+          ;DisableGadget(#Spin_1, GetGadgetState(#Check_1))
           ;SetObjectThemeAttribute(0, #PB_Gadget_BackColor,  #Red)
           ;SetWindowColor(#Window_1, #Red)
           ;SetObjectTypeColor(#PB_GadgetType_Button, #PB_Gadget_FrontColor, #Red)
@@ -218,7 +260,36 @@ Repeat
           ;SetGadgetColor(#Progres_1, #PB_Gadget_BackColor,  #Yellow)
           ;SetGadgetColor(#Progres_1, #PB_Gadget_FrontColor, #Red)
           
+        Case #Check_2
+          Disable = GetGadgetState(#Check_2)
+          For I = 0 To #Max_DisableGadget
+            DisableGadget(I, Disable)
+          Next
+          
+        Case #Opt_1
+          Select GetGadgetText(#ApplyTheme_1)
+            Case "Apply Dark Blue Theme"
+              SetObjectTheme(#ObjectTheme_LightBlue)
+            Case "Apply Light Blue Theme"
+              SetObjectTheme(#ObjectTheme_DarkRed)
+            Case "Apply Dark Red Theme"
+              SetObjectTheme(#ObjectTheme_DarkBlue)
+          EndSelect
+          CreateComboBox(#True)   ; Recreate ComboBoxGadget with the #CBS_OWNERDRAWFIXED flag to paint its drop-down list
+          If GetGadgetState(#Check_1)
+            SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #True)
+          Else
+            SetObjectThemeAttribute(#PB_WindowType, #PB_Gadget_BrushBackground, #False)
+          EndIf
+          
+        Case #Opt_2
+          SetObjectTheme(#PB_Default)
+          CreateComboBox()   ; Recreate ComboBoxGadget without the #CBS_OWNERDRAWFIXED flag to paint its drop-down list with default value
+          
         Case #ApplyTheme_1
+          If GetGadgetState(#Opt_2)
+            SetGadgetState(#Opt_1, #True)
+          EndIf
           Select GetGadgetText(#ApplyTheme_1)
             Case "Apply Dark Blue Theme"
               SetGadgetText(#ApplyTheme_1, "Apply Dark Red Theme")
@@ -237,8 +308,10 @@ Repeat
           EndIf
           
         Case #ApplyTheme_2
-          ;SetObjectTheme(#PB_Default)                                ; For testing FreeObjectTheme()
           ;SetObjectTheme(#PB_Default, GetSysColor_(#COLOR_WINDOW))   ; For Testing ObjectTheme() with default Window Color
+          If GetGadgetState(#Opt_2)
+            SetGadgetState(#Opt_1, #True)
+          EndIf
           Define Color = ColorRequester(GetWindowColor(#Window_2))
           SetObjectTheme(#ObjectTheme_Auto, Color)
           If IsGadget(#Check_1) And GetGadgetState(#Check_1)
@@ -250,3 +323,7 @@ Repeat
       EndSelect
   EndSelect
 ForEver
+
+If Brush_Imag_Wood   : DeleteObject_(Brush_Imag_Wood)   : EndIf
+If Brush_Imag_clouds : DeleteObject_(Brush_Imag_clouds) : EndIf
+
