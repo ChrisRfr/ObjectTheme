@@ -22,7 +22,7 @@
 ;     Add: XIncludeFile "ObjectTheme.pbi"
 ;     Add: UseModule ObjectTheme (Mandatory)
 ;     And apply a theme with the function:
-;         - SetObjectTheme(#ObjectTheme [, WindowColor]) - With #ObjectTheme = #ObjectTheme_DarkBlue, #ObjectTheme_LightBlue or #ObjectTheme_Auto
+;         - SetObjectTheme(#ObjectTheme [, WindowColor]) - With #ObjectTheme = #ObjectTheme_DarkBlue, #ObjectTheme_LightBlue or #ObjectTheme_Auto or your custom theme #ObjectTheme_Custom
 ;   Easy ;) That's all :) 
 ;
 ;   Note that you can SetObjectTheme(Theme [, WindowColor]) anywhere you like in your source, before or after creating the Window, Gadget's
@@ -99,6 +99,7 @@ DeclareModule ObjectTheme
     #ObjectTheme_DarkRed
     #ObjectTheme_LightBlue
     #ObjectTheme_Auto
+    #ObjectTheme_Custom
   EndEnumeration
   
   #PB_WindowType = 0
@@ -1324,6 +1325,8 @@ Module ObjectTheme
         Restore LightBlue
       Case #ObjectTheme_Auto
         Restore Auto
+      Case #ObjectTheme_Custom
+        Restore Custom
       Default
         Restore Auto
     EndSelect
@@ -4365,6 +4368,140 @@ Module ObjectTheme
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_RoundX,                #PB_Default     ; The radius of the RoundBox corners in the x direction
     Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_RoundY,                #PB_Default     ; The radius of the RoundBox corners in the y direction
     Data.l #PB_Gadget_END
+    
+    ; -------------------------------------------------------------------------------------------------------------------
+    ;- Your Custom Theme
+    ; -------------------------------------------------------------------------------------------------------------------
+    Custom:
+    Data.l #PB_WindowType,                 #PB_Gadget_BackColor,             #Black          ; Back Window Color: Color | #PB_Default = SetObjectTheme(Theme, WindowColor) else GetSysColor_(#COLOR_WINDOW)
+    Data.l #PB_WindowType,                 #PB_Gadget_DarkMode,              #PB_Default     ; Enable Dark Mode: 0 | 1 | #PB_Default = If IsDarkColor Window, DarkMode_Explorer Theme else Explorer Theme
+    Data.l #PB_WindowType,                 #PB_Gadget_BrushBackground,       #False          ; #False or #True to use the Brush Image Background and with a transparent background for static child gadgets
+    
+    Data.l #PB_GadgetType_Calendar,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_Calendar,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Calendar,        #PB_Gadget_TitleBackColor,        #PB_Default     ; Title Back Color: Color | #PB_Default = BackColor
+    Data.l #PB_GadgetType_Calendar,        #PB_Gadget_TitleFrontColor,       #PB_Default     ; Title Front Color: Color | #PB_Default = If IsDarkColor TitleBackColor, #White else #Black
+    
+    Data.l #PB_GadgetType_CheckBox,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_CheckBox,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_CheckBox,        #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
+    
+    Data.l #PB_GadgetType_ComboBox,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_ComboBox,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_ComboBox,        #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
+    Data.l #PB_GadgetType_ComboBox,        #PB_Gadget_HighLightColor,        #PB_Default     ; HighLight Color: Color | #PB_Default = GetSysColor_(#COLOR_HIGHLIGHT)
+    Data.l #PB_GadgetType_ComboBox,        #PB_Gadget_EditBoxColor,          #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor BackColor, Accentolor(15) else Accentolor(-15)
+    
+    Data.l #PB_GadgetType_Container,       #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    
+    Data.l #PB_GadgetType_Date,            #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_Date,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Date,            #PB_Gadget_TitleBackColor,        #PB_Default     ; Title Back Color: Color | #PB_Default = BackColor
+    Data.l #PB_GadgetType_Date,            #PB_Gadget_TitleFrontColor,       #PB_Default     ; Title Front Color: Color | #PB_Default = If IsDarkColor TitleBackColor, #White else #Black
+    
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Editor,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
+    
+    Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_LineColor,             #PB_Default     ; Line Color: Color | #PB_Default = If IsDarkColor BackColor White else Black
+    Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_TitleBackColor,        #PB_Default     ; Title Back Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
+    Data.l #PB_GadgetType_ExplorerList,    #PB_Gadget_TitleFrontColor,       #PB_Default     ; Title Front Color: Color | #PB_Default = If IsDarkColor TitleBackColor, #White else #Black
+    
+    Data.l #PB_GadgetType_ExplorerTree,    #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_ExplorerTree,    #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_ExplorerTree,    #PB_Gadget_LineColor,             #PB_Default     ; Line Color: Color | #PB_Default = If IsDarkColor BackColor White else Black
+    
+    Data.l #PB_GadgetType_Frame,           #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_Frame,           #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Frame,           #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
+    
+    Data.l #PB_GadgetType_HyperLink,       #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_HyperLink,       #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    
+    Data.l #PB_GadgetType_ListIcon,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_ListIcon,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_ListIcon,        #PB_Gadget_LineColor,             #PB_Default     ; Line Color: Color | #PB_Default = If IsDarkColor BackColor White else Black
+    Data.l #PB_GadgetType_ListIcon,        #PB_Gadget_TitleBackColor,        #PB_Default     ; Title Back Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
+    Data.l #PB_GadgetType_ListIcon,        #PB_Gadget_TitleFrontColor,       #PB_Default     ; Title Front Color: Color | #PB_Default = If IsDarkColor TitleBackColor, #White else #Black
+    
+    Data.l #PB_GadgetType_ListView,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_ListView,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    
+    Data.l #PB_GadgetType_Option,          #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_Option,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Option,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
+    
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_ActiveTabColor,        #PB_Default     ; Active Tab Color: Color | #PB_Default = BackColor
+    Data.l #PB_GadgetType_Panel,           #PB_Gadget_InactiveTabColor,      #PB_Default     ; Inactive Tab Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) else AccentColor(-40)
+    
+    Data.l #PB_GadgetType_ProgressBar,     #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor BackColor, Accentolor(40) else Accentolor(-40)
+    Data.l #PB_GadgetType_ProgressBar,     #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, Accentolor(100) else Accentolor(-100)
+    
+    Data.l #PB_GadgetType_ScrollArea,      #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Spin,            #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
+    
+    Data.l #PB_GadgetType_Splitter,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(30) else Accentolor(-30)
+    Data.l #PB_GadgetType_Splitter,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Splitter,        #PB_Gadget_SplitterBorder,        #True           ; Enable Splitter Border: 0 | 1 | #PB_Default = 1
+    Data.l #PB_GadgetType_Splitter,        #PB_Gadget_SplitterBorderColor,   #PB_Default     ; Splitter Border Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(60) Else AccentColor(-60)
+    Data.l #PB_GadgetType_Splitter,        #PB_Gadget_UseUxGripper,          #False          ; Splitter Gripper:  0 = Custom | 1 = Uxtheme | #PB_Default = #False
+    Data.l #PB_GadgetType_Splitter,        #PB_Gadget_GripperColor,          #PB_Default     ; Splitter Gripper Color: Color | #PB_Default = If IsDarkColor BackColor, AccentColor(40) Else AccentColor(-40)
+    Data.l #PB_GadgetType_Splitter,        #PB_Gadget_LargeGripper,          #True           ; Large Splitter Gripper: 0 | 1 | #PB_Default = 1
+    
+    Data.l #PB_GadgetType_String,          #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = If IsDarkColor Window BackColor, Accentolor(15) else Accentolor(-15)
+    Data.l #PB_GadgetType_String,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled BackColor
+    Data.l #PB_GadgetType_String,          #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_String,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
+    
+    Data.l #PB_GadgetType_Text,            #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_Text,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Text,            #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
+    
+    Data.l #PB_GadgetType_TrackBar,        #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_TrackBar,        #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_TrackBar,        #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disable color filter on FrontColor
+    
+    Data.l #PB_GadgetType_Tree,            #PB_Gadget_BackColor,             #PB_Default     ; Back Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_Tree,            #PB_Gadget_FrontColor,            #PB_Default     ; Front or Text Color: Color | #PB_Default = If IsDarkColor BackColor, #White else #Black
+    Data.l #PB_GadgetType_Tree,            #PB_Gadget_LineColor,             #PB_Default     ; Line Color: Color | #PB_Default = If IsDarkColor BackColor White else Black
+    
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_BackColor,             #PB_Default     ; Background Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_OuterColor,            #PB_Default     ; Outer Color: Color | #PB_Default = Window BackColor. If not IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_CornerColor,           #PB_Default     ; Corner Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled Button BackColor
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_FrontColor,            #PB_Default     ; Text Color: Color | #PB_Default = If IsDarkColor Button BackColor White else Black
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disabled Button FrontColor
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_EnableShadow,          #PB_Default     ; Enable Shadow Color 0 | 1 | #PB_Default = 0
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_ShadowColor,           #PB_Default     ; Shadow Color: Color | #PB_Default = If IsDarkColor Button FrontColor White else Black
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_BorderColor,           #PB_Default     ; Border Color: Color | #PB_Default = if IsDarkColor(Window) Button BackColor else Button OuterColor
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_HighLightBorder,       #PB_Default     ; HighLight Border Color: Color | #PB_Default = GetSysColor_(#COLOR_HIGHLIGHT)
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_RoundX,                #PB_Default     ; The radius of the RoundBox corners in the x direction
+    Data.l #PB_GadgetType_Button,          #PB_Gadget_RoundY,                #PB_Default     ; The radius of the RoundBox corners in the y direction
+    
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_BackColor,             #PB_Default     ; Background Color: Color | #PB_Default = Window BackColor. If IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_OuterColor,            #PB_Default     ; Outer Color: Color | #PB_Default = Window BackColor. If not IsDarkColor AccentColor 80
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_CornerColor,           #PB_Default     ; Corner Color: Color | #PB_Default = Window BackColor
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_GrayBackColor,         #PB_Default     ; Gray Back Color: Color | #PB_Default = Disabled Button BackColor
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_FrontColor,            #PB_Default     ; Text Color: Color | #PB_Default = If IsDarkColor Button BackColor White else Black
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_GrayTextColor,         #PB_Default     ; Gray Text Color: Color | #PB_Default = Disabled Button FrontColor
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_EnableShadow,          #PB_Default     ; Enable Shadow Color 0 | 1 | #PB_Default = 0
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_ShadowColor,           #PB_Default     ; Shadow Color: Color | #PB_Default = If IsDarkColor Button FrontColor White else Black
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_BorderColor,           #PB_Default     ; Border Color: Color | #PB_Default = if IsDarkColor(Window) Button BackColor else Button OuterColor
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_HighLightBorder,       #PB_Default     ; HighLight Border Color: Color | #PB_Default = GetSysColor_(#COLOR_HIGHLIGHT)
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_RoundX,                #PB_Default     ; The radius of the RoundBox corners in the x direction
+    Data.l #PB_GadgetType_ButtonImage,     #PB_Gadget_RoundY,                #PB_Default     ; The radius of the RoundBox corners in the y direction
+    Data.l #PB_Gadget_END
+    
   EndDataSection
   
   ;

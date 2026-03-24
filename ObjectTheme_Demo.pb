@@ -309,6 +309,7 @@ Repeat
           
         Case #ApplyTheme_2
           ;SetObjectTheme(#PB_Default, GetSysColor_(#COLOR_WINDOW))   ; For Testing ObjectTheme() with default Window Color
+          ;SetObjectTheme(#ObjectTheme_Custom)  ; For Testing your Custom theme
           If GetGadgetState(#Opt_2)
             SetGadgetState(#Opt_1, #True)
           EndIf
